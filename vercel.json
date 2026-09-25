@@ -1,0 +1,7 @@
+{
+  "framework": "nextjs",
+  "rewrites": [
+    { "source": "/cinematic", "destination": "/" },
+    { "source": "/sunblix_cinematic.html", "destination": "/" }
+  ]
+}

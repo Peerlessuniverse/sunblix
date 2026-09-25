@@ -58,7 +58,7 @@ button {
   inset: 0;
   z-index: 99999;
   background: #ffffff;
-  transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1), visibility 1s ease;
+  transition: opacity 1.4s cubic-bezier(0.4, 0, 0.2, 1), visibility 1.4s ease;
   pointer-events: all;
 }
 
@@ -82,9 +82,9 @@ button {
 }
 
 .loader-logo-wrap.moving {
-  transition: left 1s cubic-bezier(0.25, 1, 0.5, 1),
-              top 1s cubic-bezier(0.25, 1, 0.5, 1),
-              width 1s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: left 1.4s cubic-bezier(0.22, 1, 0.36, 1),
+              top 1.4s cubic-bezier(0.22, 1, 0.36, 1),
+              width 1.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .loader-logo-wrap img {
@@ -235,7 +235,7 @@ button {
    CINEMATIC STORY WRAPPER & PINNED STAGE
    ============================================================ */
 .story {
-  height: 1350vh;
+  height: 1750vh;
   position: relative;
 }
 
@@ -254,7 +254,7 @@ button {
 .hero-bg {
   position: absolute;
   inset: -3%;
-  background-image: url("asset/herobg.png");
+  background-image: url("/asset/herobg.png");
   background-size: cover;
   background-position: center center;
   transform-origin: 78% 48%;
@@ -707,7 +707,7 @@ button {
   aspect-ratio: 16 / 9;
   overflow: hidden;
   border-radius: 14px;
-  background-image: linear-gradient(180deg, rgba(4, 24, 49, 0.15) 0%, rgba(4, 24, 49, 0.78) 100%), url("asset/video_thumb_haris.jpg");
+  background-image: linear-gradient(180deg, rgba(4, 24, 49, 0.15) 0%, rgba(4, 24, 49, 0.78) 100%), url("/asset/video_thumb_haris.jpg");
   background-size: cover;
   background-position: center center;
   box-shadow: 0 16px 40px rgba(7, 37, 70, 0.22);
@@ -941,7 +941,7 @@ button {
   pointer-events: none;
   will-change: opacity, transform;
   color: var(--navy);
-  padding: clamp(68px, 9.5vh, 84px) clamp(28px, 5.5vw, 80px) clamp(14px, 2.5vh, 22px);
+  padding: clamp(96px, 12.5vh, 120px) clamp(28px, 5.5vw, 80px) clamp(14px, 2.5vh, 22px);
   background: linear-gradient(180deg, #ffffff 0%, #f4f8fc 100%);
 }
 
@@ -967,6 +967,8 @@ button {
 
 .product-head {
   padding: 0;
+  margin-top: clamp(6px, 1.2vh, 14px);
+  margin-bottom: clamp(4px, 0.8vh, 10px);
   flex: 0 0 auto;
   background: transparent;
 }
@@ -2292,10 +2294,21 @@ button {
   overflow: hidden;
 }
 
+.indonesia-map-wrapper {
+  position: relative;
+  aspect-ratio: 1000 / 368;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .indonesia-map-img {
   width: 100%;
-  max-height: 94%;
-  object-fit: contain;
+  height: 100%;
   display: block;
   filter: drop-shadow(0 8px 24px rgba(8, 123, 232, 0.12));
 }
@@ -2392,6 +2405,18 @@ button {
   left: 0;
   right: auto;
   transform: none;
+}
+.city-pin.label-top-left .pin-label {
+  top: auto;
+  bottom: 12px;
+  left: auto;
+  right: 0;
+  transform: none;
+}
+.city-pin.label-bottom .pin-label {
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .city-pin:hover .pin-dot,
@@ -2816,6 +2841,18 @@ button {
   box-shadow: 0 8px 20px rgba(8, 123, 232, 0.35);
 }
 
+.calc-chips-group {
+  display: none;
+}
+
+.calc-slider-wrapper {
+  display: none;
+}
+
+.calc-mobile-actions {
+  display: none;
+}
+
 /* Right Result Card */
 .calc-result-card {
   background: #f8fbfe;
@@ -3053,7 +3090,7 @@ button {
 .finale-panorama-bg {
   position: absolute;
   inset: 0;
-  background-image: url('asset/herobg.png');
+  background-image: url('/asset/herobg.png');
   background-size: cover;
   background-repeat: no-repeat;
   /* 8% 44% positions the expansive sunrise horizon and city skyline as the vast majority of the frame, showing only a subtle touch of the rooftop solar panel on the far right */
@@ -3728,6 +3765,112 @@ button {
   100% { transform: scale(1.25); opacity: 0; }
 }
 
+/* ============================================================
+   FLOATING BACK TO TOP NAVIGATION BUTTON
+   ============================================================ */
+.floating-back-to-top {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 989;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(16px) scale(0.9);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 0.6s ease;
+  pointer-events: none;
+}
+
+.floating-back-to-top.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.back-to-top-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(10, 22, 40, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  box-shadow: 0 8px 25px rgba(0, 45, 98, 0.32), 0 2px 6px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  outline: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.back-to-top-btn:hover {
+  background: #002d62;
+  border-color: rgba(245, 158, 11, 0.6);
+  color: #f59e0b;
+  transform: translateY(-3px) scale(1.06);
+  box-shadow: 0 12px 30px rgba(245, 158, 11, 0.3), 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.back-to-top-btn:active {
+  transform: translateY(0) scale(0.94);
+}
+
+.back-to-top-icon {
+  transition: transform 0.25s ease;
+}
+
+.back-to-top-btn:hover .back-to-top-icon {
+  transform: translateY(-2px);
+}
+
+/* Tooltip on Desktop hover */
+.back-to-top-tooltip {
+  position: absolute;
+  right: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%) translateX(6px);
+  background: rgba(10, 22, 40, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 5px 11px;
+  border-radius: 8px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+}
+
+.back-to-top-btn:hover .back-to-top-tooltip {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+@media (max-width: 768px) {
+  .floating-back-to-top {
+    bottom: 74px;
+    right: 18px;
+  }
+
+  .back-to-top-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .back-to-top-tooltip {
+    display: none;
+  }
+}
+
 /* HERO TRUST STRIP */
 .hero-trust-strip {
   display: flex;
@@ -3785,7 +3928,7 @@ button {
   font-size: 11.5px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.45s cubic-bezier(0.25, 1, 0.5, 1);
   white-space: nowrap;
   text-align: center;
 }
@@ -3902,12 +4045,16 @@ button {
 
   /* BABAK 3: PRODUCT DISCOVERY */
   .scene-three {
-    padding: 68px 3vw 10px;
+    padding: 86px 4vw 14px;
   }
   .product-shell {
     width: 94vw;
-    max-height: calc(100vh - 75px);
+    max-height: calc(100vh - 92px);
     overflow: hidden;
+  }
+  .product-head {
+    margin-top: 6px;
+    margin-bottom: 8px;
   }
   .product-head h2 {
     font-size: 24px;
@@ -4050,147 +4197,532 @@ button {
     display: none;
   }
 
-  /* BABAK 6: PROJECTS & CALCULATOR */
+  /* BABAK 6: PROJECTS & SOLAR CALCULATOR */
   .project-shell {
-    padding: 64px 3vw 14px;
+    padding: 68px 3.5vw 16px;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
   .project-container {
-    gap: 6px;
+    gap: 8px;
     height: 100%;
-  }
-  .project-top-row {
     display: flex;
     flex-direction: column;
-    min-height: 0;
+  }
+  .project-mobile-tabs {
+    display: flex;
+    gap: 6px;
+    width: 100%;
+    margin-bottom: 4px;
+    flex-shrink: 0;
+  }
+  .pm-tab-btn {
     flex: 1;
+    padding: 9px 4px;
+    font-size: 11px;
+    font-weight: 750;
+    border-radius: 9px;
+    text-align: center;
+    border: 1px solid rgba(6, 43, 99, 0.12);
+    background: #ffffff;
+    color: var(--navy);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+  }
+  .pm-tab-btn.is-active {
+    background: var(--navy);
+    color: #ffffff;
+    border-color: var(--navy);
+    box-shadow: 0 4px 14px rgba(6, 43, 99, 0.18);
+  }
+
+  /* Babak 6 Mobile Tab State Switching */
+  .project-container[data-active-tab="calc"] .project-top-row {
+    display: none !important;
+  }
+  .project-container[data-active-tab="calc"] .calculator-horizontal-bar {
+    display: flex !important;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .project-container[data-active-tab="map"] .project-top-row {
+    display: flex !important;
+    flex: 1;
+    min-height: 0;
   }
   .project-container[data-active-tab="map"] .project-map-card {
-    display: flex;
+    display: flex !important;
+    flex: 1;
   }
   .project-container[data-active-tab="map"] .project-terms-card {
-    display: none;
+    display: none !important;
+  }
+  .project-container[data-active-tab="map"] .calculator-horizontal-bar {
+    display: none !important;
+  }
+
+  .project-container[data-active-tab="terms"] .project-top-row {
+    display: flex !important;
+    flex: 1;
+    min-height: 0;
   }
   .project-container[data-active-tab="terms"] .project-map-card {
-    display: none;
+    display: none !important;
   }
   .project-container[data-active-tab="terms"] .project-terms-card {
-    display: flex;
-    width: 100%;
+    display: flex !important;
+    flex: 1;
     overflow-y: auto;
   }
+  .project-container[data-active-tab="terms"] .calculator-horizontal-bar {
+    display: none !important;
+  }
+
+  /* Map Viewport on Mobile */
   .project-map-card {
     height: 100%;
     min-height: 0;
-    padding: 10px 10px 6px;
+    padding: 12px 12px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
   .project-map-title {
-    font-size: 14px;
+    font-size: 15px;
   }
   .project-map-sub {
-    font-size: 7.5px;
+    font-size: 8px;
   }
   .indonesia-map-stage {
     min-height: 140px;
     flex: 1;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Mobile Map Pins: Compact, High-Precision & Elegant */
+  .city-pin .pin-dot {
+    width: 6.5px;
+    height: 6.5px;
+    border-width: 1.2px;
+  }
+  .city-pin .pin-ring {
+    width: 14px;
+    height: 14px;
+  }
+  .city-pin .pin-label {
+    display: none;
+    font-size: 7.5px;
+    padding: 1px 4px;
+  }
+  .city-pin.show-mobile-label .pin-label,
+  .city-pin.is-active .pin-label {
+    display: block;
+  }
+
+  /* Mobile Project Tooltip: Clean Bottom Status Card */
+  .city-tooltip {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    margin-top: 6px;
+    width: 100%;
+    min-width: 0;
+    padding: 7px 12px;
+    flex-shrink: 0;
+    pointer-events: auto;
+    box-shadow: 0 4px 14px rgba(6, 43, 99, 0.15);
+  }
+  .tooltip-city-name {
+    font-size: 12px;
+  }
+  .tooltip-type {
+    font-size: 9px;
+    margin: 1px 0 2px;
+  }
+  .tooltip-meta {
+    font-size: 8.5px;
+    gap: 8px;
   }
   
-  /* Horizontal Calculator Responsive Ultra-Compact Stack */
+  /* ============================================================
+     PREMIUM MOBILE SOLAR CALCULATOR
+     ============================================================ */
   .calculator-horizontal-bar {
     flex-direction: column;
-    gap: 5px;
-    padding: 8px 10px;
+    gap: 14px;
+    padding: 16px 14px 22px;
     align-items: stretch;
     height: auto;
     max-height: none;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 10px 30px rgba(6, 43, 99, 0.08);
+    border: 1px solid rgba(8, 123, 232, 0.14);
     flex-shrink: 0;
   }
+
+  /* Title Block on Mobile */
   .calc-title-block {
-    display: none;
-  }
-  .calc-inputs-row {
-    width: 100%;
-    display: flex;
+    display: flex !important;
     flex-direction: column;
     gap: 4px;
+    text-align: left;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(6, 43, 99, 0.08);
   }
-  .calc-field:nth-child(1) {
-    display: none; /* Defaults to House */
-  }
-  .calc-field:nth-child(3) {
-    display: none; /* Defaults to Medium */
-  }
-  .calc-action-btn {
-    display: none; /* Auto-calculates instantaneously on pill tap */
-  }
-  .calc-field:nth-child(2) label {
+  .calc-eyebrow {
     font-size: 10px;
-    font-weight: 750;
-    color: var(--navy);
-    margin-bottom: 2px;
+    font-weight: 850;
+    color: var(--blue);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
   }
+  .calc-accent-line {
+    width: 38px;
+    height: 3px;
+    margin: 4px 0 6px;
+    background: linear-gradient(90deg, #16b7ef 0%, #42dc61 50%, #ffd21a 100%);
+    border-radius: 2px;
+  }
+  .calc-main-title {
+    font-size: 19px;
+    line-height: 1.15;
+    font-weight: 850;
+    color: var(--navy);
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+  .calc-desc {
+    font-size: 11.5px;
+    line-height: 1.45;
+    color: #4b6b94;
+    margin: 2px 0 0;
+    font-weight: 500;
+  }
+
+  /* Inputs Row on Mobile */
+  .calc-inputs-row {
+    width: 100%;
+    display: flex !important;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .calc-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .calc-field label {
+    font-size: 11.5px;
+    font-weight: 800;
+    color: var(--navy);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* Hide raw select dropdown on mobile in favor of tactile chips */
+  .calc-field .select-wrapper {
+    display: none !important;
+  }
+
+  /* Tactile Chips Group on Mobile */
+  .calc-chips-group {
+    display: grid !important;
+    gap: 6px;
+    width: 100%;
+  }
+  .calc-chips-property {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .calc-chips-rooftop {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .calc-chip-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 8px;
+    border-radius: 10px;
+    border: 1px solid rgba(6, 43, 99, 0.12);
+    background: #fbfdff;
+    color: var(--navy);
+    font-size: 11.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: center;
+  }
+  .calc-chip-btn .chip-icon {
+    font-size: 15px;
+    line-height: 1;
+  }
+  .calc-chip-btn.is-active {
+    background: #edf5ff;
+    border-color: var(--blue);
+    color: var(--blue);
+    font-weight: 800;
+    box-shadow: 0 2px 10px rgba(8, 123, 232, 0.16);
+  }
+
+  /* Currency Input on Mobile */
   .input-currency-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 8px;
+    width: 100%;
   }
   #calcBill {
-    font-size: 13.5px;
-    height: 30px;
-    padding: 3px 10px;
-    font-weight: 800;
+    font-size: 18px;
+    height: 44px;
+    padding: 6px 14px;
+    font-weight: 850;
+    color: var(--navy);
+    background: #f8fbfe;
+    border: 1.5px solid rgba(8, 123, 232, 0.25);
+    border-radius: 10px;
+    text-align: center;
+    letter-spacing: -0.01em;
   }
+
+  /* Range Slider on Mobile */
+  .calc-slider-wrapper {
+    display: flex !important;
+    flex-direction: column;
+    gap: 4px;
+    padding: 4px 0 2px;
+    width: 100%;
+  }
+  .calc-range-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 8px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #16b7ef 0%, #087be8 100%);
+    outline: none;
+    cursor: pointer;
+  }
+  .calc-range-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 3px solid var(--blue);
+    box-shadow: 0 2px 8px rgba(6, 43, 99, 0.3);
+    cursor: pointer;
+    transition: transform 0.15s ease;
+  }
+  .calc-range-slider::-webkit-slider-thumb:active {
+    transform: scale(1.18);
+  }
+  .calc-slider-scale {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9.5px;
+    font-weight: 700;
+    color: #64748b;
+    padding: 0 2px;
+  }
+
+  /* Quick Pills on Mobile */
   .quick-pill-row {
     width: 100%;
     display: flex;
-    gap: 4px;
+    gap: 6px;
   }
   .quick-bill-btn {
     flex: 1;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 5px 3px;
-    border-radius: 6px;
+    font-size: 11.5px;
+    font-weight: 750;
+    padding: 7px 4px;
+    border-radius: 8px;
+    background: rgba(6, 43, 99, 0.05);
+    color: #385985;
+    border: 1px solid rgba(6, 43, 99, 0.08);
   }
+  .quick-bill-btn.is-active {
+    background: var(--blue);
+    color: #ffffff;
+    border-color: var(--blue);
+    box-shadow: 0 3px 10px rgba(8, 123, 232, 0.25);
+  }
+
+  /* Hide Desktop Action Button on Mobile */
+  .calc-desktop-btn {
+    display: none !important;
+  }
+
+  /* Result Card on Mobile */
   .calc-result-card {
     width: 100%;
-    padding: 8px 10px;
-    border-radius: 10px;
+    padding: 16px 14px 18px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #f8fbfe 0%, #f0f7ff 100%);
+    border: 1.5px solid rgba(8, 123, 232, 0.25);
+    box-shadow: 0 8px 24px rgba(8, 123, 232, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
   .result-header {
-    margin-bottom: 3px;
+    margin-bottom: 2px;
+  }
+  .result-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
   .result-label {
-    font-size: 7.5px;
+    font-size: 9.5px;
+    font-weight: 850;
+    color: #4b6b94;
+    letter-spacing: 0.08em;
+  }
+  .result-tier-badge {
+    font-size: 9px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 850;
+    color: #087be8;
+    background: rgba(8, 123, 232, 0.12);
   }
   .result-system-name {
-    font-size: 14px;
+    font-size: 19px;
+    font-weight: 900;
+    color: var(--navy);
+    margin: 3px 0 0;
   }
+  .result-accent-bar {
+    width: 34px;
+    height: 2.5px;
+    margin: 4px 0 8px;
+    background: linear-gradient(90deg, #16b7ef 0%, #ffd21a 100%);
+    border-radius: 2px;
+  }
+
+  /* 4 Spec Metric Cards on Mobile */
   .result-metrics-grid {
-    grid-template-columns: repeat(3, 1fr) 30px;
-    gap: 4px;
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+  .result-metric {
+    background: #ffffff;
+    padding: 9px 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(8, 123, 232, 0.12);
+    box-shadow: 0 2px 6px rgba(6, 43, 99, 0.04);
   }
   .result-metric strong {
-    font-size: 12px;
+    font-size: 14px;
+    font-weight: 850;
+    color: var(--blue);
   }
   .result-metric span {
-    font-size: 7.5px;
+    font-size: 9.5px;
+    font-weight: 650;
+    color: #4b6b94;
+    margin-top: 2px;
   }
   .result-arrow-btn {
-    width: 30px;
-    height: 30px;
-    font-size: 13px;
+    display: none !important;
   }
+
+  /* Savings Summary Box on Mobile */
   .result-summary-bar {
-    padding: 4px 8px;
-    margin-top: 4px;
+    flex-direction: column !important;
+    gap: 8px !important;
+    padding: 10px 12px !important;
+    border-radius: 10px !important;
+    background: #ffffff !important;
+    border: 1px solid rgba(16, 185, 129, 0.25) !important;
+    margin-top: 2px !important;
+  }
+  .calc-summary-divider {
+    width: 100%;
+    height: 1px;
+    background: rgba(6, 43, 99, 0.08);
+  }
+  .summary-label {
+    font-size: 9px;
+    font-weight: 750;
+    color: #64748b;
   }
   .summary-val {
-    font-size: 11px;
+    font-size: 15px;
+    font-weight: 850;
+    line-height: 1.2;
+    margin-top: 1px;
   }
-  .summary-label,
+  .summary-val.highlight-green {
+    color: #059669;
+  }
   .summary-sub {
-    font-size: 7.5px;
+    font-size: 9.5px;
+    font-weight: 600;
+    color: #475569;
+    margin-top: 2px;
+  }
+
+  /* Dual Action CTAs on Mobile */
+  .calc-mobile-actions {
+    display: flex !important;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    margin-top: 4px;
+  }
+  .calc-mobile-actions .calc-action-btn {
+    display: flex !important;
+    width: 100%;
+    height: 44px;
+    padding: 0 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 800;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 0;
+    background: linear-gradient(135deg, #087be8 0%, #065ebb 100%);
+    box-shadow: 0 4px 14px rgba(8, 123, 232, 0.35);
+    color: #ffffff;
+    border: 0;
+    cursor: pointer;
+  }
+  .calc-mobile-actions .calc-wa-action-btn {
+    display: flex !important;
+    width: 100%;
+    height: 44px;
+    padding: 0 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 800;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    background: #10b981;
+    color: #ffffff;
+    text-decoration: none;
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+    margin-top: 0;
   }
 
   /* BABAK 7: FINALE & FOOTER */

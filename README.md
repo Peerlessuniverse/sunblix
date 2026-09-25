@@ -29,7 +29,7 @@ Situs resmi dan pengalaman interaktif sinematik **SUNBLIX**, spesialis solusi te
 
 6. **Proyek Indonesia & Kalkulator Surya Cerdas (Babak 6)**
    - Peta vektor interaktif dengan 19 pin kota di seluruh Indonesia.
-   - Rincian jaminan *Turnkey All-In* resmi.
+   - Rincian jaminan *Paket Siap Pakai* resmi.
    - **Kalkulator Surya Dinamis**: Menghitung kapasitas kWp, jumlah panel, luas atap, dan estimasi penghematan bulanan.
    - Tombol integrasi konsultasi WhatsApp dengan pesan otomatis terformat rapi sesuai hasil kalkulasi.
 
@@ -58,13 +58,13 @@ Situs ini dibangun menggunakan arsitektur web statis modern (HTML5, Vanilla CSS,
 ## 📁 Struktur Direktori
 
 ```text
-├── asset/                   # Aset visual (SVG, PNG, JPG, MP4, Favicons)
-├── index.html               # File utama untuk root deployment Vercel
-├── sunblix_cinematic.html   # File source template sinematik
+├── app/                     # Next.js App Router (page.jsx, layout.jsx, globals.css, api/)
+├── components/              # Komponen modular sinematik (Hero, Products, Calculator, QuoteModal, dll)
+├── public/ & asset/         # Aset visual (SVG, PNG, JPG, MP4, Favicons)
+├── index.html               # File fallback statis tunggal
 ├── sunblix_cinematic.css    # Stylesheet terpadu
-├── sunblix_cinematic.js     # Script interaksi, scroll engine, dan kalkulator
-├── vercel.json              # Konfigurasi routing & clean URLs Vercel
-├── HANDOVER.md              # Catatan serah terima pekerjaan
+├── sunblix_cinematic.js     # Script interaksi versi statis
+├── package.json             # Konfigurasi dependensi Next.js & React
 └── README.md                # Dokumentasi proyek
 ```
 

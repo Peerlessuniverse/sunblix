@@ -1,0 +1,9 @@
+{
+  "name": "sunblix-web",
+  "version": "1.0.0",
+  "description": "SUNBLIX - Power Your World | Premium Cinematic Solar Web Experience",
+  "private": true,
+  "devDependencies": {
+    "puppeteer-core": "^25.12.0"
+  }
+}

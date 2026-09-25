@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "SUNBLIX - Power Your World | Premium Cinematic Solar Web Experience",
   "private": true,
+  "scripts": {
+    "dev": "npx serve -l 3000 .",
+    "start": "npx serve -l 3000 ."
+  },
   "devDependencies": {
     "puppeteer-core": "^25.12.0"
   }

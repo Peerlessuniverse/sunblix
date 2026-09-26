@@ -1,8 +1,18 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
-export default function CinematicEngine() {
+export default function CinematicEngine({ staticCamera = false }) {
+  const staticCameraRef = useRef(staticCamera);
+
+  useEffect(() => {
+    staticCameraRef.current = staticCamera;
+    const heroBg = document.getElementById('heroBg');
+    if (heroBg && staticCamera) {
+      heroBg.style.transform = 'none';
+    }
+  }, [staticCamera]);
+
   useEffect(() => {
     const story = document.getElementById('story');
     const heroBg = document.getElementById('heroBg');
@@ -167,11 +177,15 @@ export default function CinematicEngine() {
         nav.classList.toggle('scrolled', scrollY > 20);
       }
 
-      // One camera push
+      // One camera push (or locked-off static camera)
       if (heroBg) {
-        const cameraT = ease(clamp(progress / 0.55));
-        const scale = 1.015 + cameraT * 0.2;
-        heroBg.style.transform = `scale(${scale})`;
+        if (staticCameraRef.current) {
+          heroBg.style.transform = 'none';
+        } else {
+          const cameraT = ease(clamp(progress / 0.55));
+          const scale = 1.015 + cameraT * 0.2;
+          heroBg.style.transform = `scale(${scale})`;
+        }
       }
 
       // Atmospheric curtain
@@ -181,11 +195,22 @@ export default function CinematicEngine() {
         curtain.style.transform = `translate3d(${-4 + 4 * curtainT}%,0,0) scaleX(${0.96 + 0.04 * curtainT})`;
       }
 
-      // Hero copy leaves as scroll begins (slow, gradual fade)
+      // Hero copy & bottom controls leave promptly before Scene 2 enters
+      const heroExitT = ease(clamp(progress / 0.08));
+      const heroVisible = heroExitT < 0.99;
+
       if (heroContent) {
-        const heroTextT = ease(clamp((progress - 0.05) / 0.15));
-        heroContent.style.opacity = String(1 - heroTextT);
-        heroContent.style.transform = `translateY(-50%) translate3d(0,${-22 * heroTextT}px,0)`;
+        heroContent.style.opacity = String(1 - heroExitT);
+        heroContent.style.transform = `translateY(-50%) translate3d(0,${-28 * heroExitT}px,0)`;
+        heroContent.style.visibility = heroVisible ? 'visible' : 'hidden';
+        heroContent.style.pointerEvents = heroVisible ? 'auto' : 'none';
+      }
+
+      if (heroBottom) {
+        heroBottom.style.opacity = String(1 - heroExitT);
+        heroBottom.style.transform = `translate3d(0,${20 * heroExitT}px,0)`;
+        heroBottom.style.visibility = heroVisible ? 'visible' : 'hidden';
+        heroBottom.style.pointerEvents = heroVisible ? 'auto' : 'none';
       }
 
       // SCENE 2 (OUR PURPOSE)

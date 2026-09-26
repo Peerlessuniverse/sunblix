@@ -39,21 +39,6 @@ export default function HeroScene({ onOpenQuote }) {
             </button>
           </div>
 
-          {/* TRUST BADGES STRIP */}
-          <div className="hero-trust-strip">
-            <div className="trust-pill">
-              <span className="trust-icon">🛡️</span>
-              <span>Garansi 25 Thn</span>
-            </div>
-            <div className="trust-pill">
-              <span className="trust-icon">⚡</span>
-              <span>Resmi PLN & SLO</span>
-            </div>
-            <div className="trust-pill">
-              <span className="trust-icon">🏆</span>
-              <span>Tier-1 PV</span>
-            </div>
-          </div>
         </div>
       </div>
 

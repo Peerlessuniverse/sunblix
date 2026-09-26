@@ -71,20 +71,39 @@
     // Navbar state
     nav.classList.toggle('scrolled', scrollY > 20);
 
-    // One camera push
-    const cameraT = ease(clamp(progress / 0.55));
-    const scale = 1.015 + cameraT * 0.20;
-    heroBg.style.transform = `scale(${scale})`;
+    // One camera push (supports window.SUNBLIX_STATIC_CAMERA)
+    if (heroBg) {
+      if (window.SUNBLIX_STATIC_CAMERA) {
+        heroBg.style.transform = 'none';
+      } else {
+        const cameraT = ease(clamp(progress / 0.55));
+        const scale = 1.015 + cameraT * 0.20;
+        heroBg.style.transform = `scale(${scale})`;
+      }
+    }
 
     /* Atmospheric curtain: blooms in gently */
     const curtainT = ease(clamp((progress - 0.06) / 0.18));
     curtain.style.opacity = String(curtainT * 0.88);
     curtain.style.transform = `translate3d(${(-4 + 4 * curtainT)}%,0,0) scaleX(${0.96 + 0.04 * curtainT})`;
 
-    /* Hero copy leaves as scroll begins */
-    const heroTextT = ease(clamp((progress - 0.05) / 0.15));
-    heroContent.style.opacity = String(1 - heroTextT);
-    heroContent.style.transform = `translateY(-50%) translate3d(0,${-22 * heroTextT}px,0)`;
+    /* Hero copy & bottom controls leave promptly before Scene 2 enters */
+    const heroExitT = ease(clamp(progress / 0.08));
+    const heroVisible = heroExitT < 0.99;
+
+    if (heroContent) {
+      heroContent.style.opacity = String(1 - heroExitT);
+      heroContent.style.transform = `translateY(-50%) translate3d(0,${-28 * heroExitT}px,0)`;
+      heroContent.style.visibility = heroVisible ? 'visible' : 'hidden';
+      heroContent.style.pointerEvents = heroVisible ? 'auto' : 'none';
+    }
+
+    if (heroBottom) {
+      heroBottom.style.opacity = String(1 - heroExitT);
+      heroBottom.style.transform = `translate3d(0,${20 * heroExitT}px,0)`;
+      heroBottom.style.visibility = heroVisible ? 'visible' : 'hidden';
+      heroBottom.style.pointerEvents = heroVisible ? 'auto' : 'none';
+    }
 
     /*
       SCENE 2 (OUR PURPOSE):

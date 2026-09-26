@@ -26,7 +26,7 @@ export default function HeroSceneVideo({ onOpenQuote }) {
           playsInline
           poster="/asset/herobg.png"
         >
-          <source src="/asset/herobg-loop.mp4?v=kling1" type="video/mp4" />
+          <source src="/asset/herobg-loop.mp4?v=light1" type="video/mp4" />
         </video>
       </div>
 

@@ -269,6 +269,9 @@ button {
   object-fit: cover;
   object-position: 78% 48%;
   pointer-events: none;
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 .hero-content {

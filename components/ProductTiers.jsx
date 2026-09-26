@@ -1,6 +1,6 @@
 'use client';
 
-export default function ProductTiers() {
+export default function ProductTiers({ onOpenQuote }) {
   return (
     <div className="product-shell">
       <div className="product-head">
@@ -13,6 +13,7 @@ export default function ProductTiers() {
         {/* PRODUCT 1: STANDARD+ */}
         <article className="product-card" id="cardStandard">
           <div className="card-tier-header">
+            <span className="tier-pill-tag">PALING POPULER</span>
             <div className="tier-badge-title">STANDARD+</div>
             <div className="tier-badge-sub">RESIDENTIAL</div>
             <div className="tier-badge-accent" />
@@ -28,6 +29,23 @@ export default function ProductTiers() {
               FOR EVERYDAY NEEDS
             </div>
             <div className="product-accent" />
+
+            {/* VALUE PROPOSITION HIGHLIGHTS */}
+            <div className="product-highlights">
+              <div className="highlight-item">
+                <span className="highlight-check">✓</span>
+                <span>Garansi Performa Panel <strong>25 Tahun</strong></span>
+              </div>
+              <div className="highlight-item">
+                <span className="highlight-check">✓</span>
+                <span>Smart IoT Monitoring via <strong>Smartphone 24/7</strong></span>
+              </div>
+              <div className="highlight-item">
+                <span className="highlight-check">✓</span>
+                <span>Komponen Tier-1 SNI &amp; Bebas Biaya Survei</span>
+              </div>
+            </div>
+
             <div className="product-specs">
               <div className="product-spec">
                 <div className="product-icon">
@@ -60,12 +78,31 @@ export default function ProductTiers() {
                 <span className="spec-desc">Untuk kebutuhan residential sehari-hari.</span>
               </div>
             </div>
+
+            {/* ACTION CTA BUTTON */}
+            <button
+              type="button"
+              className="product-cta-btn"
+              onClick={() =>
+                onOpenQuote &&
+                onOpenQuote({
+                  sysName: 'SUNBLIX STANDARD+',
+                  kwp: '2.34 – 7.02 kWp',
+                  inverter: '1 Phase On-Grid',
+                  area: '14 – 42 m²',
+                })
+              }
+            >
+              <span>Pilih Paket STANDARD+</span>
+              <span className="cta-arrow">→</span>
+            </button>
           </div>
         </article>
 
         {/* PRODUCT 2: PRO */}
         <article className="product-card" id="cardPro">
           <div className="card-tier-header">
+            <span className="tier-pill-tag pro">BEST PERFORMANCE</span>
             <div className="tier-badge-title">PRO</div>
             <div className="tier-badge-sub">PREMIUM RESIDENTIAL</div>
             <div className="tier-badge-accent" />
@@ -81,6 +118,23 @@ export default function ProductTiers() {
               MORE CONTROL.
             </div>
             <div className="product-accent" />
+
+            {/* VALUE PROPOSITION HIGHLIGHTS */}
+            <div className="product-highlights">
+              <div className="highlight-item">
+                <span className="highlight-check">✓</span>
+                <span>Garansi Performa <strong>25 Tahun</strong> + On-Grid PRO</span>
+              </div>
+              <div className="highlight-item">
+                <span className="highlight-check">✓</span>
+                <span>Kompatibel <strong>Battery Energy Storage</strong></span>
+              </div>
+              <div className="highlight-item">
+                <span className="highlight-check">✓</span>
+                <span>Dual MPPT untuk Efisiensi Atap Kompleks</span>
+              </div>
+            </div>
+
             <div className="product-specs">
               <div className="product-spec">
                 <div className="product-icon">
@@ -113,14 +167,33 @@ export default function ProductTiers() {
                 <span className="spec-desc">Untuk rumah besar, villa, dan kebutuhan energi lebih tinggi.</span>
               </div>
             </div>
+
+            {/* ACTION CTA BUTTON */}
+            <button
+              type="button"
+              className="product-cta-btn pro"
+              onClick={() =>
+                onOpenQuote &&
+                onOpenQuote({
+                  sysName: 'SUNBLIX PRO',
+                  kwp: '8.19 – 14.04 kWp',
+                  inverter: '1 Phase On-Grid PRO',
+                  area: '45 – 80 m²',
+                })
+              }
+            >
+              <span>Pilih Paket PRO</span>
+              <span className="cta-arrow">→</span>
+            </button>
           </div>
         </article>
 
         {/* PRODUCT 3: PRO+ */}
         <article className="product-card" id="cardProPlus">
           <div className="card-tier-header">
+            <span className="tier-pill-tag pro-plus">KOMERSIAL &amp; BISNIS</span>
             <div className="tier-badge-title">PRO+</div>
-            <div className="tier-badge-sub">COMMERCIAL & LARGE PROPERTY</div>
+            <div className="tier-badge-sub">COMMERCIAL &amp; LARGE PROPERTY</div>
             <div className="tier-badge-accent" />
           </div>
           <div className="product-photo">
@@ -134,6 +207,23 @@ export default function ProductTiers() {
               THREE-PHASE READY.
             </div>
             <div className="product-accent" />
+
+            {/* VALUE PROPOSITION HIGHLIGHTS */}
+            <div className="product-highlights">
+              <div className="highlight-item">
+                <span className="highlight-check">✓</span>
+                <span>Konfigurasi <strong>3-Phase Industrial Grade</strong></span>
+              </div>
+              <div className="highlight-item">
+                <span className="highlight-check">✓</span>
+                <span>Pangkas Biaya Operasional Bisnis Optimal</span>
+              </div>
+              <div className="highlight-item">
+                <span className="highlight-check">✓</span>
+                <span>Pendampingan Sertifikasi <strong>SLO PLN Resmi</strong></span>
+              </div>
+            </div>
+
             <div className="product-specs">
               <div className="product-spec">
                 <div className="product-icon">
@@ -172,6 +262,24 @@ export default function ProductTiers() {
                 <span className="spec-desc">Untuk properti dengan kebutuhan daya lebih tinggi.</span>
               </div>
             </div>
+
+            {/* ACTION CTA BUTTON */}
+            <button
+              type="button"
+              className="product-cta-btn pro-plus"
+              onClick={() =>
+                onOpenQuote &&
+                onOpenQuote({
+                  sysName: 'SUNBLIX PRO+',
+                  kwp: '9.36 – 16.38 kWp',
+                  inverter: '3 Phase Commercial',
+                  area: '50 – 95+ m²',
+                })
+              }
+            >
+              <span>Pilih Paket PRO+</span>
+              <span className="cta-arrow">→</span>
+            </button>
           </div>
         </article>
       </div>

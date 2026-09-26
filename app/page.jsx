@@ -64,7 +64,7 @@ export default function HomePage() {
 
           {/* SCENE 3: PRODUCTS */}
           <div className="scene-three" id="sceneThree" aria-label="Find Your SUNBLIX">
-            <ProductTiers />
+            <ProductTiers onOpenQuote={handleOpenQuote} />
             <SunlightDiagram />
             <WhySunblix />
 

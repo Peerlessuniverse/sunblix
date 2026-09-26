@@ -29,7 +29,7 @@ export default function WhySunblix() {
           </button>
         </div>
 
-        <div className="how-card-wrapper">
+        <div className="how-card-wrapper" id="howCardWrapper" data-active-tab={mobileTab}>
           {/* LEFT PANE */}
           <div className="how-left-pane">
             <div className="how-hero-img-wrap">

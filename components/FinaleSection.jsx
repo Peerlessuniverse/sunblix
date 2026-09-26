@@ -77,7 +77,7 @@ export default function FinaleSection({ onOpenQuote }) {
             <div className="footer-legal-title">PT SUNBLIX ENERGI INDONESIA</div>
             <p className="footer-brand-desc">
               Mitra Resmi Spesialis Solusi PLTS Rooftop Terpercaya di Indonesia. Berstandar internasional dengan
-              garansi performa 25 tahun, izin resmi PLN, dan Sertifikasi Laik Operasi (SLO) ESDM.
+              garansi performa 25 tahun.
             </p>
           </div>
 
@@ -122,7 +122,14 @@ export default function FinaleSection({ onOpenQuote }) {
             <ul className="footer-nav-list footer-contact-list">
               <li className="footer-contact-item">
                 <span className="f-contact-icon">📍</span>
-                <span>Jakarta, Indonesia (Layanan: Jawa, Bali, &amp; 19+ Kota)</span>
+                <span>
+                  Kawasan Rasuna Epicentrum<br />
+                  Epiwalk Office Suite Lt. 5 Unit A501<br />
+                  Jl. HR Rasuna Said, RT 02/RW 05<br />
+                  Kel. Karet Kuningan, Kec. Setiabudi<br />
+                  Jakarta Selatan, DKI Jakarta 12940<br />
+                  Indonesia.
+                </span>
               </li>
               <li className="footer-contact-item">
                 <span className="f-contact-icon">📞</span>
@@ -130,7 +137,7 @@ export default function FinaleSection({ onOpenQuote }) {
               </li>
               <li className="footer-contact-item">
                 <span className="f-contact-icon">✉️</span>
-                <a href="mailto:halo@sunblix.com">halo@sunblix.com</a>
+                <a href="mailto:hello@sunblix.id">hello@sunblix.id</a>
               </li>
               <li className="footer-contact-item">
                 <span className="f-contact-icon">💬</span>

@@ -1,7 +1,7 @@
 import './globals.css';
 
 export const metadata = {
-  metadataBase: new URL('https://sunblix.com'),
+  metadataBase: new URL('https://sunblix.id'),
   title: 'SUNBLIX — Power Your World | Solusi Solar Panel PLTS Indonesia',
   description:
     'SUNBLIX adalah penyedia solusi terpercaya PLTS Rooftop residensial dan komersial di Indonesia. Hemat tagihan listrik hingga 80% dengan garansi performa 25 tahun, komponen Tier-1, dan izin resmi PLN & SLO ESDM.',
@@ -27,7 +27,7 @@ export const metadata = {
   openGraph: {
     type: 'website',
     siteName: 'SUNBLIX',
-    url: 'https://sunblix.com/',
+    url: 'https://sunblix.id/',
     title: 'SUNBLIX — Power Your World | Solusi Solar Panel PLTS Indonesia',
     description:
       'Spesialis PLTS Rooftop Terpercaya di 19+ Kota Indonesia. Hemat biaya listrik hingga 80% dengan garansi performa 25 tahun dan izin resmi PLN & SLO.',

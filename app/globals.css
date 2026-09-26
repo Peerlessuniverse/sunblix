@@ -717,7 +717,7 @@ button {
   aspect-ratio: 16 / 9;
   overflow: hidden;
   border-radius: 14px;
-  background-image: linear-gradient(180deg, rgba(4, 24, 49, 0.15) 0%, rgba(4, 24, 49, 0.78) 100%), url("/asset/video_thumb_haris.jpg");
+  background-image: linear-gradient(180deg, rgba(4, 24, 49, 0.15) 0%, rgba(4, 24, 49, 0.78) 100%), url("/asset/SUNBLIX_thumbnail.png");
   background-size: cover;
   background-position: center center;
   box-shadow: 0 16px 40px rgba(7, 37, 70, 0.22);

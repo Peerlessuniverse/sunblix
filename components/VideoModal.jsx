@@ -90,8 +90,8 @@ export default function VideoModal({ isOpen, onClose }) {
         <video
           ref={videoRef}
           id="modalVideo"
-          src="/asset/video_kang_haris.mp4"
-          poster="/asset/video_thumb_haris.jpg"
+          src="/asset/SUNBLIX_vid.mp4"
+          poster="/asset/SUNBLIX_thumbnail.png"
           controls
           playsInline
           preload="none"

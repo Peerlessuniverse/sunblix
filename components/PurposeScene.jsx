@@ -87,18 +87,18 @@ export default function PurposeScene({ onOpenVideo }) {
           onClick={onOpenVideo}
           role="button"
           tabIndex={0}
-          aria-label="Tonton video kisah Kang Haris"
+          aria-label="Tonton video SUNBLIX"
           style={{ cursor: 'pointer' }}
         >
           <div className="story-live-badge">
             <span className="live-dot" />
-            <span>VIDEO KISAH KONSUMEN</span>
+            <span>VIDEO SUNBLIX</span>
           </div>
           <div className="story-play" aria-hidden="true" />
           <div className="story-thumb-copy">
-            <span className="story-badge-brand">SUNBLIX REAL STORY</span>
+            <span className="story-badge-brand">SUNBLIX STORY</span>
             <strong className="story-title">A CLEANER INDONESIA STARTS TODAY</strong>
-            <p className="story-sub">Kisah nyata Kang Haris beralih ke energi surya mandiri.</p>
+            <p className="story-sub">Sekilas tentang Sunblix dan energi surya mandiri.</p>
           </div>
         </div>
         <div className="story-meta-bar">
@@ -110,7 +110,7 @@ export default function PurposeScene({ onOpenVideo }) {
             style={{ background: 'none', border: 'none', cursor: 'pointer', font: 'inherit' }}
           >
             <span className="story-link-icon">▶</span>
-            <span>Tonton Video (1:20)</span>
+            <span>Tonton Video (5:24)</span>
           </button>
           <span className="story-pill-tag">⚡ 25-Year Warranty</span>
         </div>

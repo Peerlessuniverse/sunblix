@@ -1499,41 +1499,7 @@
     </button>
   </aside>
 
-  <!-- FLOATING PREVIEW CONTROLLER -->
-  <div
-    style="position: fixed; top: 80px; right: 20px; z-index: 9999; background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 12px; padding: 12px 18px; color: #ffffff; font-size: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.35); display: flex; flex-direction: column; gap: 8px;">
-    <div style="display: flex; align-items: center; justify-content: space-between; gap: 14px;">
-      <span style="font-weight: 600; color: #38bdf8;">🎥 Preview Mode: Video Loop</span>
-      <a href="index.html" style="color: #94a3b8; text-decoration: underline; font-size: 11px;">← Index Utama</a>
-    </div>
-    <div style="display: flex; align-items: center; gap: 8px;">
-      <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
-        <input type="checkbox" id="toggleStaticCam" checked style="cursor: pointer;">
-        <span>Kamera Statis (Tanpa Zoom Scroll)</span>
-      </label>
-    </div>
-    <div style="font-size: 11px; color: #94a3b8; line-height: 1.4;">
-      File video: <code>asset/herobg-loop.mp4</code><br>
-      (Jika file video belum diletakkan, poster gambar otomatis tampil)
-    </div>
-  </div>
-
-  <script>
-    window.SUNBLIX_STATIC_CAMERA = true;
-  </script>
   <script src="script.js"></script>
-  <script>
-    const toggleCam = document.getElementById('toggleStaticCam');
-    const heroBgEl = document.getElementById('heroBg');
-    if (toggleCam) {
-      toggleCam.addEventListener('change', () => {
-        window.SUNBLIX_STATIC_CAMERA = toggleCam.checked;
-        if (toggleCam.checked && heroBgEl) {
-          heroBgEl.style.transform = 'none';
-        }
-      });
-    }
-  </script>
 </body>
 
 </html>

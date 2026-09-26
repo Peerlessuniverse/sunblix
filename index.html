@@ -137,8 +137,12 @@
   <main class="story" id="story">
     <section class="stage" id="stage">
 
-      <!-- HERO BACKGROUND (Single continuous camera) -->
-      <div class="hero-bg" id="heroBg"></div>
+      <!-- HERO BACKGROUND (Ambient Looping Cinemagraph) -->
+      <div class="hero-bg" id="heroBg">
+        <video class="hero-bg-video" autoplay loop muted playsinline poster="asset/herobg.png">
+          <source src="asset/herobg-loop.mp4?v=light1" type="video/mp4">
+        </video>
+      </div>
 
       <!-- HERO COPY -->
       <div class="hero-content" id="heroContent">

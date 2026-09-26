@@ -1,10 +1,34 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
+
 export default function HeroScene({ onOpenQuote }) {
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.defaultMuted = true;
+      videoRef.current.muted = true;
+      videoRef.current.play().catch(() => {});
+    }
+  }, []);
+
   return (
     <>
-      {/* HERO BACKGROUND (Single continuous camera push) */}
-      <div className="hero-bg" id="heroBg" />
+      {/* HERO BACKGROUND (Ambient Looping Cinemagraph) */}
+      <div className="hero-bg" id="heroBg">
+        <video
+          ref={videoRef}
+          className="hero-bg-video"
+          autoPlay
+          loop
+          muted
+          playsInline
+          poster="/asset/herobg.png"
+        >
+          <source src="/asset/herobg-loop.mp4?v=light1" type="video/mp4" />
+        </video>
+      </div>
 
       {/* HERO COPY */}
       <div className="hero-content" id="heroContent">

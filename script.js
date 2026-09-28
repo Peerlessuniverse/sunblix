@@ -71,11 +71,13 @@
     // Navbar state
     nav.classList.toggle('scrolled', scrollY > 20);
 
+    const isIntroActive = document.body.classList.contains('is-loading') || document.body.classList.contains('is-revealing');
+
     // One camera push (supports window.SUNBLIX_STATIC_CAMERA)
     if (heroBg) {
       if (window.SUNBLIX_STATIC_CAMERA) {
         heroBg.style.transform = 'none';
-      } else {
+      } else if (!isIntroActive) {
         const cameraT = ease(clamp(progress / 0.55));
         const scale = 1.015 + cameraT * 0.20;
         heroBg.style.transform = `scale(${scale})`;
@@ -91,14 +93,14 @@
     const heroExitT = ease(clamp(progress / 0.08));
     const heroVisible = heroExitT < 0.99;
 
-    if (heroContent) {
+    if (heroContent && !isIntroActive) {
       heroContent.style.opacity = String(1 - heroExitT);
       heroContent.style.transform = `translateY(-50%) translate3d(0,${-28 * heroExitT}px,0)`;
       heroContent.style.visibility = heroVisible ? 'visible' : 'hidden';
       heroContent.style.pointerEvents = heroVisible ? 'auto' : 'none';
     }
 
-    if (heroBottom) {
+    if (heroBottom && !isIntroActive) {
       heroBottom.style.opacity = String(1 - heroExitT);
       heroBottom.style.transform = `translate3d(0,${20 * heroExitT}px,0)`;
       heroBottom.style.visibility = heroVisible ? 'visible' : 'hidden';
@@ -412,6 +414,7 @@
     setTimeout(() => {
       if (!navLogo || !loaderLogoWrap || !pageLoader) {
         document.body.classList.remove('is-loading');
+        document.body.classList.remove('is-revealing');
         return;
       }
 
@@ -424,14 +427,16 @@
       loaderLogoWrap.style.top = `${targetCenterY}px`;
       loaderLogoWrap.style.width = `${targetRect.width}px`;
 
+      document.body.classList.remove('is-loading');
+      document.body.classList.add('is-revealing');
       pageLoader.classList.add('fade-out');
 
       setTimeout(() => {
-        document.body.classList.remove('is-loading');
+        document.body.classList.remove('is-revealing');
         if (loaderLogoWrap) loaderLogoWrap.style.display = 'none';
         if (pageLoader) pageLoader.style.display = 'none';
         requestRender();
-      }, 1450);
+      }, 1550);
     }, 1500);
   }
 
@@ -482,6 +487,7 @@
 
     // 2. Reactivate preloader overlay and logo
     document.body.classList.add('is-loading');
+    document.body.classList.remove('is-revealing');
     pageLoader.style.display = 'block';
     pageLoader.classList.remove('fade-out');
     pageLoader.style.opacity = '1';
@@ -505,14 +511,16 @@
       loaderLogoWrap.style.top = `${targetCenterY}px`;
       loaderLogoWrap.style.width = `${targetRect.width}px`;
 
+      document.body.classList.remove('is-loading');
+      document.body.classList.add('is-revealing');
       pageLoader.classList.add('fade-out');
 
       setTimeout(() => {
-        document.body.classList.remove('is-loading');
+        document.body.classList.remove('is-revealing');
         loaderLogoWrap.style.display = 'none';
         pageLoader.style.display = 'none';
         requestRender();
-      }, 1450);
+      }, 1550);
     }, 850);
   }
 
@@ -781,7 +789,7 @@
 
     // Dynamic WhatsApp consultation link with pre-filled calculated system
     const waCalcMsg = `Halo Tim Ahli SUNBLIX, saya telah menghitung kebutuhan di website dan ingin konsultasi resmi untuk paket rekomendasi: *${sysName}* (${kwp} kWp, ${panels} Panel, inverter ${inverter}, estimasi rooftop ${area}) dengan tagihan listrik saat ini: *${formatRupiah(rawBill)}/bln*. Estimasi hemat: *${formatRupiah(estSavings)}/bln* (${savingsPct}%). Mohon info jadwal survei atap dan rincian penawaran resminya.`;
-    const calcWaUrl = `https://wa.me/6281112345678?text=${encodeURIComponent(waCalcMsg)}`;
+    const calcWaUrl = `https://wa.me/6285288581027?text=${encodeURIComponent(waCalcMsg)}`;
     const calcWaActionBtn = document.getElementById('calcWaActionBtn');
     const resArrowBtn = document.getElementById('resArrowBtn');
     if (calcWaActionBtn) calcWaActionBtn.href = calcWaUrl;
@@ -1012,7 +1020,7 @@
 
           document.getElementById('waDirectBtn').onclick = () => {
             const waText = `Halo Tim Ahli SUNBLIX, saya telah mengisi formulir penawaran resmi di website dengan No. Ref: *${quoteCode}*.\n\n*Nama:* ${nameVal}\n*Lokasi:* ${cityVal}\n*Daya PLN:* ${powerVal}\n*Tagihan Listrik:* ${billVal}\n*Paket Terpilih:* ${sysTitle}\n\nMohon info ketersediaan jadwal survei lokasi dan estimasi proposalnya.`;
-            window.open('https://wa.me/6281112345678?text=' + encodeURIComponent(waText), '_blank');
+            window.open('https://wa.me/6285288581027?text=' + encodeURIComponent(waText), '_blank');
           };
 
           document.getElementById('printQuoteBtn').onclick = () => {
@@ -1072,7 +1080,7 @@
     <div>
       <h1 class="brand-title">SUNBLIX</h1>
       <div class="brand-tag">PT SUNBLIX ENERGI INDONESIA</div>
-      <div class="brand-address">Architectural Solar Engineering & Smart Rooftop Solutions<br>Web: sunblix.com | WhatsApp: +62 811-1234-5678</div>
+      <div class="brand-address">Architectural Solar Engineering & Smart Rooftop Solutions<br>Web: sunblix.com | WhatsApp: +62 852-8858-1027</div>
     </div>
     <div class="doc-meta">
       <div class="doc-title">Estimasi Penawaran Resmi</div>

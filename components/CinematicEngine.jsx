@@ -177,11 +177,15 @@ export default function CinematicEngine({ staticCamera = false }) {
         nav.classList.toggle('scrolled', scrollY > 20);
       }
 
+      const isIntroActive =
+        document.body.classList.contains('is-loading') ||
+        document.body.classList.contains('is-revealing');
+
       // One camera push (or locked-off static camera)
       if (heroBg) {
         if (staticCameraRef.current) {
           heroBg.style.transform = 'none';
-        } else {
+        } else if (!isIntroActive) {
           const cameraT = ease(clamp(progress / 0.55));
           const scale = 1.015 + cameraT * 0.2;
           heroBg.style.transform = `scale(${scale})`;
@@ -199,14 +203,14 @@ export default function CinematicEngine({ staticCamera = false }) {
       const heroExitT = ease(clamp(progress / 0.08));
       const heroVisible = heroExitT < 0.99;
 
-      if (heroContent) {
+      if (heroContent && !isIntroActive) {
         heroContent.style.opacity = String(1 - heroExitT);
         heroContent.style.transform = `translateY(-50%) translate3d(0,${-28 * heroExitT}px,0)`;
         heroContent.style.visibility = heroVisible ? 'visible' : 'hidden';
         heroContent.style.pointerEvents = heroVisible ? 'auto' : 'none';
       }
 
-      if (heroBottom) {
+      if (heroBottom && !isIntroActive) {
         heroBottom.style.opacity = String(1 - heroExitT);
         heroBottom.style.transform = `translate3d(0,${20 * heroExitT}px,0)`;
         heroBottom.style.visibility = heroVisible ? 'visible' : 'hidden';
@@ -468,6 +472,7 @@ export default function CinematicEngine({ staticCamera = false }) {
     const timer = setTimeout(() => {
       if (!navLogo || !loaderLogoWrap || !pageLoader) {
         document.body.classList.remove('is-loading');
+        document.body.classList.remove('is-revealing');
         return;
       }
 
@@ -480,14 +485,16 @@ export default function CinematicEngine({ staticCamera = false }) {
       loaderLogoWrap.style.top = `${targetCenterY}px`;
       loaderLogoWrap.style.width = `${targetRect.width}px`;
 
+      document.body.classList.remove('is-loading');
+      document.body.classList.add('is-revealing');
       pageLoader.classList.add('fade-out');
 
       setTimeout(() => {
-        document.body.classList.remove('is-loading');
+        document.body.classList.remove('is-revealing');
         if (loaderLogoWrap) loaderLogoWrap.style.display = 'none';
         if (pageLoader) pageLoader.style.display = 'none';
         requestRender();
-      }, 1450);
+      }, 1550);
     }, 1500);
 
     // Trigger preloader refresh animation (e.g. when Sunblix menu logo is clicked)
@@ -500,6 +507,7 @@ export default function CinematicEngine({ staticCamera = false }) {
 
       // 2. Reactivate preloader overlay and logo
       document.body.classList.add('is-loading');
+      document.body.classList.remove('is-revealing');
       pageLoader.style.display = 'block';
       pageLoader.classList.remove('fade-out');
       pageLoader.style.opacity = '1';
@@ -523,14 +531,16 @@ export default function CinematicEngine({ staticCamera = false }) {
         loaderLogoWrap.style.top = `${targetCenterY}px`;
         loaderLogoWrap.style.width = `${targetRect.width}px`;
 
+        document.body.classList.remove('is-loading');
+        document.body.classList.add('is-revealing');
         pageLoader.classList.add('fade-out');
 
         setTimeout(() => {
-          document.body.classList.remove('is-loading');
+          document.body.classList.remove('is-revealing');
           loaderLogoWrap.style.display = 'none';
           pageLoader.style.display = 'none';
           requestRender();
-        }, 1450);
+        }, 1550);
       }, 850);
     }
 

@@ -52,7 +52,7 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
   const handleWaDirect = () => {
     const quoteCode = submittedData?.quoteId || 'SBX-INQUIRY';
     const waText = `Halo Tim Ahli SUNBLIX, saya telah mengisi formulir penawaran resmi di website dengan No. Ref: *${quoteCode}*.\n\n*Nama:* ${formData.name}\n*Lokasi:* ${formData.city}\n*Daya PLN:* ${formData.plnPower}\n*Tagihan Listrik:* ${formData.monthlyBill}\n*Paket Terpilih:* ${initialData?.sysName || 'Solar Rooftop'}\n\nMohon info ketersediaan jadwal survei lokasi dan estimasi proposalnya.`;
-    const url = `https://wa.me/6281112345678?text=${encodeURIComponent(waText)}`;
+    const url = `https://wa.me/6285288581027?text=${encodeURIComponent(waText)}`;
     window.open(url, '_blank');
   };
 
@@ -327,7 +327,7 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
       <div class="brand-tag">PT SUNBLIX ENERGI INDONESIA</div>
       <div class="brand-address">
         Architectural Solar Engineering & Smart Rooftop Solutions<br>
-        Web: sunblix.com | WhatsApp: +62 811-1234-5678 | Email: inquiry@sunblix.com
+        Web: sunblix.com | WhatsApp: +62 852-8858-1027 | Email: inquiry@sunblix.com
       </div>
     </div>
     <div class="doc-meta">

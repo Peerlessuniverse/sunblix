@@ -102,7 +102,7 @@ export default function SolarCalculator({ onOpenQuote }) {
 
     const waMsg = `Halo Tim Ahli SUNBLIX, saya telah menghitung kebutuhan di website dan ingin konsultasi resmi untuk paket rekomendasi: *${sysName}* (${kwp} kWp, ${panels} Panel, inverter ${inverter}, estimasi rooftop ${area}) dengan tagihan listrik saat ini: *${formatRupiah(bill)}/bln*. Estimasi hemat: *${formatRupiah(estSavings)}/bln* (${savingsPct}%). Mohon info jadwal survei atap dan rincian penawaran resminya.`;
 
-    const waUrl = `https://wa.me/6281112345678?text=${encodeURIComponent(waMsg)}`;
+    const waUrl = `https://wa.me/6285288581027?text=${encodeURIComponent(waMsg)}`;
 
     return {
       sysName,

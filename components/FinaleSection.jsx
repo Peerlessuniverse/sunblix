@@ -133,7 +133,7 @@ export default function FinaleSection({ onOpenQuote }) {
               </li>
               <li className="footer-contact-item">
                 <span className="f-contact-icon">📞</span>
-                <a href="tel:+6281112345678">+62 811-1234-5678</a>
+                <a href="tel:+6285288581027">+62 852-8858-1027</a>
               </li>
               <li className="footer-contact-item">
                 <span className="f-contact-icon">✉️</span>
@@ -142,7 +142,7 @@ export default function FinaleSection({ onOpenQuote }) {
               <li className="footer-contact-item">
                 <span className="f-contact-icon">💬</span>
                 <a
-                  href="https://wa.me/6281112345678?text=Halo%20SUNBLIX,%20saya%20ingin%20konsultasi%20pemasangan%20solar%20panel%20PLTS."
+                  href="https://wa.me/6285288581027?text=Halo%20SUNBLIX,%20saya%20ingin%20konsultasi%20pemasangan%20solar%20panel%20PLTS."
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -264,7 +264,7 @@ export default function FinaleSection({ onOpenQuote }) {
               </svg>
             </a>
             <a
-              href="https://wa.me/6281112345678?text=Halo%20SUNBLIX,%20saya%20ingin%20konsultasi%20pemasangan%20solar%20panel%20PLTS."
+              href="https://wa.me/6285288581027?text=Halo%20SUNBLIX,%20saya%20ingin%20konsultasi%20pemasangan%20solar%20panel%20PLTS."
               target="_blank"
               rel="noopener noreferrer"
               aria-label="WhatsApp Konsultasi SUNBLIX"

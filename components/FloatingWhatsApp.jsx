@@ -2,7 +2,7 @@
 
 export default function FloatingWhatsApp() {
   const waUrl =
-    'https://wa.me/6281112345678?text=Halo%20SUNBLIX,%20saya%20ingin%20konsultasi%20pemasangan%20solar%20panel%20PLTS.';
+    'https://wa.me/6285288581027?text=Halo%20SUNBLIX,%20saya%20ingin%20konsultasi%20pemasangan%20solar%20panel%20PLTS.';
 
   return (
     <aside className="mobile-floating-cta" id="mobileFloatingCta" aria-label="Konsultasi Cepat">

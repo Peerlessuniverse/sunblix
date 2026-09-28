@@ -154,7 +154,7 @@ export default function MobileDrawer({ isOpen, onClose, onOpenQuote }) {
             <span className="btn-icon">→</span>
           </button>
           <a
-            href="https://wa.me/6281112345678?text=Halo%20SUNBLIX,%20saya%20ingin%20konsultasi%20pemasangan%20solar%20panel%20PLTS."
+            href="https://wa.me/6285288581027?text=Halo%20SUNBLIX,%20saya%20ingin%20konsultasi%20pemasangan%20solar%20panel%20PLTS."
             target="_blank"
             rel="noopener noreferrer"
             className="drawer-btn-wa"

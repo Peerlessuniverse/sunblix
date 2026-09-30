@@ -542,10 +542,17 @@
     modal.classList.add('open');
     modal.setAttribute('aria-hidden', 'false');
     if (modalVideo) {
-      modalVideo.currentTime = 0;
-      modalVideo.play().catch(e => {
-        console.warn('Video auto-playback notice:', e);
-      });
+      if (modalVideo.tagName === 'IFRAME') {
+        const targetSrc = modalVideo.getAttribute('data-src') || 'https://www.youtube-nocookie.com/embed/iXp1qE8Plu0?autoplay=1&rel=0&modestbranding=1&playsinline=1';
+        if (modalVideo.src !== targetSrc) {
+          modalVideo.src = targetSrc;
+        }
+      } else if (typeof modalVideo.play === 'function') {
+        modalVideo.currentTime = 0;
+        modalVideo.play().catch(e => {
+          console.warn('Video auto-playback notice:', e);
+        });
+      }
     }
   }
 
@@ -553,7 +560,11 @@
     modal.classList.remove('open');
     modal.setAttribute('aria-hidden', 'true');
     if (modalVideo) {
-      modalVideo.pause();
+      if (modalVideo.tagName === 'IFRAME') {
+        modalVideo.src = '';
+      } else if (typeof modalVideo.pause === 'function') {
+        modalVideo.pause();
+      }
     }
   }
 

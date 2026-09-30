@@ -110,7 +110,7 @@ export default function PurposeScene({ onOpenVideo }) {
             style={{ background: 'none', border: 'none', cursor: 'pointer', font: 'inherit' }}
           >
             <span className="story-link-icon">▶</span>
-            <span>Tonton Video (5:24)</span>
+            <span>Tonton Video (2:53)</span>
           </button>
           <span className="story-pill-tag">⚡ 25-Year Warranty</span>
         </div>

@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
+
+const YOUTUBE_VIDEO_ID = 'iXp1qE8Plu0';
+const YOUTUBE_EMBED_URL = `https://www.youtube-nocookie.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
 
 export default function VideoModal({ isOpen, onClose }) {
-  const videoRef = useRef(null);
-
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && isOpen) {
@@ -14,17 +15,6 @@ export default function VideoModal({ isOpen, onClose }) {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
-
-  useEffect(() => {
-    if (isOpen && videoRef.current) {
-      videoRef.current.currentTime = 0;
-      videoRef.current.play().catch((err) => {
-        console.warn('Autoplay notice:', err);
-      });
-    } else if (!isOpen && videoRef.current) {
-      videoRef.current.pause();
-    }
-  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -52,8 +42,9 @@ export default function VideoModal({ isOpen, onClose }) {
         className="modal-box"
         style={{
           position: 'relative',
-          maxWidth: '860px',
+          maxWidth: '960px',
           width: '100%',
+          aspectRatio: '16 / 9',
           borderRadius: '16px',
           overflow: 'hidden',
           boxShadow: '0 25px 60px rgba(0, 0, 0, 0.5)',
@@ -87,17 +78,20 @@ export default function VideoModal({ isOpen, onClose }) {
         >
           ×
         </button>
-        <video
-          ref={videoRef}
-          id="modalVideo"
-          src="/asset/SUNBLIX_vid.mp4"
-          poster="/asset/SUNBLIX_thumbnail.png"
-          controls
-          playsInline
-          preload="none"
-          style={{ width: '100%', display: 'block', maxHeight: '80vh' }}
+        <iframe
+          src={YOUTUBE_EMBED_URL}
+          title="SUNBLIX Video"
+          style={{
+            width: '100%',
+            height: '100%',
+            border: 0,
+            display: 'block',
+          }}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowFullScreen
         />
       </div>
     </div>
   );
 }
+

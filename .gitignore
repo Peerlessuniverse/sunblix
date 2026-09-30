@@ -22,3 +22,7 @@ Thumbs.db
 
 # Scratch scripts
 scratch_*.js
+
+# Large media files (served via YouTube / external CDN)
+asset/*vid*.mp4
+public/asset/*vid*.mp4

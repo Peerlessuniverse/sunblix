@@ -858,8 +858,30 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
                   boxShadow: '0 8px 20px rgba(8, 123, 232, 0.35)',
                 }}
               >
-                <span>📥 Unduh / Simpan Penawaran Resmi (PDF)</span>
+                <span>📥 Unduh Ringkasan Penawaran (PDF)</span>
               </button>
+              <a
+                href={`/brosur?customer=${encodeURIComponent(formData.name || '')}&project=${encodeURIComponent(initialData?.sysName || '')}&docNo=${encodeURIComponent(submittedData.quoteId || '')}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  padding: '12px',
+                  borderRadius: '12px',
+                  background: 'rgba(22, 219, 224, 0.12)',
+                  border: '1px solid rgba(22, 219, 224, 0.4)',
+                  color: '#16dbe0',
+                  fontSize: '13px',
+                  fontWeight: 700,
+                  textAlign: 'center',
+                  textDecoration: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                }}
+              >
+                <span>✨ Buka di Generator Brosur Lengkap (3 Halaman) ↗</span>
+              </a>
               <button
                 type="button"
                 onClick={handleWaDirect}

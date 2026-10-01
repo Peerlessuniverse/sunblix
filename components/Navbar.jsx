@@ -25,6 +25,26 @@ export default function Navbar({ onOpenDrawer, onOpenQuote }) {
           <a href="#how-it-works">How It Works</a>
           <a href="#why-sunblix">Why SUNBLIX</a>
           <a href="#projects">Projects</a>
+          <a
+            href="/brosur"
+            style={{
+              color: '#38bdf8',
+              fontWeight: 700,
+              fontSize: '12px',
+              background: 'rgba(56, 189, 248, 0.1)',
+              padding: '4px 10px',
+              borderRadius: '6px',
+              border: '1px solid rgba(56, 189, 248, 0.25)',
+              textDecoration: 'none',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px',
+            }}
+            title="Portal Pembuatan SPH & Brosur Resmi (Khusus Tim Internal)"
+          >
+            <span>Staff SPH</span>
+            <span style={{ fontSize: '11px' }}>🔒</span>
+          </a>
         </nav>
         <div className="nav-actions">
           <button

@@ -141,6 +141,14 @@ export default function MobileDrawer({ isOpen, onClose, onOpenQuote }) {
             <span className="link-label">⚡ Kalkulator Hemat Listrik</span>
             <span className="link-arrow">→</span>
           </a>
+          <a
+            href="/brosur"
+            className="drawer-link"
+            style={{ color: '#38bdf8', fontWeight: 700 }}
+          >
+            <span className="link-label">🔒 Portal SPH Internal (Staff)</span>
+            <span className="link-arrow">→</span>
+          </a>
         </nav>
 
         <div className="drawer-actions">

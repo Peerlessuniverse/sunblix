@@ -268,6 +268,28 @@ function BrochureGeneratorInner() {
   const [pinLoading, setPinLoading] = useState(false);
   const [showPin, setShowPin] = useState(false);
 
+  // Theme State ('light' | 'dark') — Default is 'light' as requested
+  const [theme, setTheme] = useState('light');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedTheme = localStorage.getItem('sunblix_brosur_theme');
+      if (storedTheme === 'dark' || storedTheme === 'light') {
+        setTheme(storedTheme);
+      } else {
+        setTheme('light');
+      }
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(nextTheme);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('sunblix_brosur_theme', nextTheme);
+    }
+  };
+
   useEffect(() => {
     const verifySavedSession = async () => {
       if (typeof window !== 'undefined') {
@@ -565,8 +587,18 @@ function BrochureGeneratorInner() {
   // Lock Screen for Internal Staff Only
   if (authChecked && !isAuthenticated) {
     return (
-      <div className="internal-lock-overlay">
+      <div className={`internal-lock-overlay ${theme === 'light' ? 'light-mode' : ''}`}>
         <div className="internal-lock-card">
+          <div className="lock-theme-bar">
+            <button
+              type="button"
+              className="btn-theme-toggle"
+              onClick={toggleTheme}
+              title={`Beralih ke mode ${theme === 'light' ? 'gelap' : 'terang'}`}
+            >
+              <span>{theme === 'light' ? '☀️ Mode Terang' : '🌙 Mode Gelap'}</span>
+            </button>
+          </div>
           <div className="lock-icon-wrap">
             <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" strokeWidth="2">
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
@@ -631,11 +663,11 @@ function BrochureGeneratorInner() {
 
   // Pre-hydration placeholder to prevent flash
   if (!authChecked) {
-    return <div className="internal-lock-overlay" />;
+    return <div className={`internal-lock-overlay ${theme === 'light' ? 'light-mode' : ''}`} />;
   }
 
   return (
-    <div className="generator-root">
+    <div className={`generator-root ${theme === 'light' ? 'light-mode' : ''}`}>
       {/* TOPBAR */}
       <header className="generator-topbar print-hide">
         <div className="topbar-left">
@@ -649,6 +681,16 @@ function BrochureGeneratorInner() {
         </div>
 
         <div className="topbar-right">
+          {/* Theme Switcher Toggle (Default Terang) */}
+          <button
+            type="button"
+            className="btn-theme-toggle"
+            onClick={toggleTheme}
+            title={`Beralih ke mode ${theme === 'light' ? 'gelap' : 'terang'}`}
+          >
+            <span>{theme === 'light' ? '☀️ Terang' : '🌙 Gelap'}</span>
+          </button>
+
           <button
             type="button"
             className="btn-secondary-action"

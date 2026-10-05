@@ -1126,11 +1126,11 @@
       <div class="highlight-val">${savingsVal} / Bulan</div>
     </div>
   </div>
-  <div class="section-title">3. Jaminan & Garansi Resmi Siap Pakai</div>
+  <div class="section-title">3. Jaminan & Layanan Purna Jual</div>
   <div class="guarantees">
-    <div class="guarantee-card"><span class="guarantee-val">25 Tahun</span><span class="guarantee-desc">Garansi Performa Panel</span></div>
-    <div class="guarantee-card"><span class="guarantee-val">5 - 10 Tahun</span><span class="guarantee-desc">Garansi Inverter</span></div>
-    <div class="guarantee-card"><span class="guarantee-val">Full Support</span><span class="guarantee-desc">Gratis Maintenance & Sertifikasi SLO</span></div>
+    <div class="guarantee-card"><span class="guarantee-val">Resmi Pabrik</span><span class="guarantee-desc">Garansi Modul Surya Sesuai Manufaktur</span></div>
+    <div class="guarantee-card"><span class="guarantee-val">5 - 10 Tahun</span><span class="guarantee-desc">Garansi Resmi Inverter & Komponen</span></div>
+    <div class="guarantee-card"><span class="guarantee-val">Full Support</span><span class="guarantee-desc">Dukungan Teknis & Monitoring Sistem</span></div>
   </div>
   ${notesVal ? `<div class="section-title" style="margin-top:14px;">4. Catatan Khusus</div><div style="font-size:12px;background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:8px 12px;color:#92400e;">${notesVal}</div>` : ''}
   <div class="footer">

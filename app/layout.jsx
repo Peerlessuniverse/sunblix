@@ -4,7 +4,7 @@ export const metadata = {
   metadataBase: new URL('https://sunblix.id'),
   title: 'SUNBLIX — Power Your World | Solusi Solar Panel PLTS Indonesia',
   description:
-    'SUNBLIX adalah penyedia solusi terpercaya PLTS Rooftop residensial dan komersial di Indonesia. Hemat tagihan listrik hingga 80% dengan garansi performa 25 tahun, komponen Tier-1, dan izin resmi PLN & SLO ESDM.',
+    'SUNBLIX adalah penyedia solusi terpercaya PLTS Rooftop residensial dan komersial di Indonesia. Hemat tagihan listrik hingga 80% dengan sistem berkualitas, instalasi profesional, dan monitoring pintar 24/7.',
   keywords: [
     'SUNBLIX',
     'PLTS Rooftop',
@@ -12,9 +12,8 @@ export const metadata = {
     'Panel Surya Rumah',
     'Tenaga Surya',
     'Pasang PLTS',
-    'Garansi 25 Tahun',
+    'Hemat Listrik',
     'Net Metering PLN',
-    'SLO ESDM',
     'EPC Solar',
   ],
   authors: [{ name: 'PT SUNBLIX ENERGI INDONESIA' }],
@@ -30,7 +29,7 @@ export const metadata = {
     url: 'https://sunblix.id/',
     title: 'SUNBLIX — Power Your World | Solusi Solar Panel PLTS Indonesia',
     description:
-      'Spesialis PLTS Rooftop Terpercaya di 19+ Kota Indonesia. Hemat biaya listrik hingga 80% dengan garansi performa 25 tahun dan izin resmi PLN & SLO.',
+      'Spesialis PLTS Rooftop Terpercaya di 19+ Kota Indonesia. Hemat biaya listrik hingga 80% dengan instalasi terstandar dan teknologi cerdas.',
     images: [
       {
         url: '/asset/herobg.png',
@@ -45,7 +44,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'SUNBLIX — Power Your World | Solusi Solar Panel PLTS Indonesia',
     description:
-      'Spesialis PLTS Rooftop Terpercaya di 19+ Kota Indonesia. Garansi performa 25 tahun dan perizinan resmi PLN.',
+      'Spesialis PLTS Rooftop Terpercaya di 19+ Kota Indonesia. Solusi hemat listrik energi surya dengan sistem berkualitas.',
     images: ['/asset/herobg.png'],
   },
   icons: {

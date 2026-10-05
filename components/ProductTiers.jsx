@@ -34,7 +34,7 @@ export default function ProductTiers({ onOpenQuote }) {
             <div className="product-highlights">
               <div className="highlight-item">
                 <span className="highlight-check">✓</span>
-                <span>Garansi Performa Panel <strong>25 Tahun</strong></span>
+                <span>Desain Teroptimasi <strong>Sesuai Daya Rumah</strong></span>
               </div>
               <div className="highlight-item">
                 <span className="highlight-check">✓</span>
@@ -42,7 +42,7 @@ export default function ProductTiers({ onOpenQuote }) {
               </div>
               <div className="highlight-item">
                 <span className="highlight-check">✓</span>
-                <span>Komponen Tier-1 SNI &amp; Bebas Biaya Survei</span>
+                <span>Material Mounting <strong>Tahan Cuaca &amp; Korosi</strong></span>
               </div>
             </div>
 
@@ -123,7 +123,7 @@ export default function ProductTiers({ onOpenQuote }) {
             <div className="product-highlights">
               <div className="highlight-item">
                 <span className="highlight-check">✓</span>
-                <span>Garansi Performa <strong>25 Tahun</strong> + On-Grid PRO</span>
+                <span>Proteksi Kelistrikan <strong>Lengkap &amp; Andal</strong></span>
               </div>
               <div className="highlight-item">
                 <span className="highlight-check">✓</span>
@@ -177,7 +177,7 @@ export default function ProductTiers({ onOpenQuote }) {
                 onOpenQuote({
                   sysName: 'SUNBLIX PRO',
                   kwp: '8.19 – 14.04 kWp',
-                  inverter: '1 Phase On-Grid PRO',
+                  inverter: '1 Phase On-Grid',
                   area: '45 – 80 m²',
                 })
               }
@@ -220,7 +220,7 @@ export default function ProductTiers({ onOpenQuote }) {
               </div>
               <div className="highlight-item">
                 <span className="highlight-check">✓</span>
-                <span>Pendampingan Sertifikasi <strong>SLO PLN Resmi</strong></span>
+                <span>Monitoring Beban Terintegrasi <strong>Skala Bisnis</strong></span>
               </div>
             </div>
 

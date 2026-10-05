@@ -421,11 +421,11 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
     </div>
   </div>
 
-  <div class="section-title">3. Jaminan & Garansi Resmi Siap Pakai</div>
+  <div class="section-title">3. Jaminan & Layanan Purna Jual</div>
   <div class="guarantees">
     <div class="guarantee-card">
-      <span class="guarantee-val">25 Tahun</span>
-      <span class="guarantee-desc">Garansi Performa Output Modul Surya</span>
+      <span class="guarantee-val">Resmi Pabrik</span>
+      <span class="guarantee-desc">Garansi Modul Surya Sesuai Manufaktur</span>
     </div>
     <div class="guarantee-card">
       <span class="guarantee-val">5 - 10 Tahun</span>
@@ -433,7 +433,7 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
     </div>
     <div class="guarantee-card">
       <span class="guarantee-val">Full Support</span>
-      <span class="guarantee-desc">Gratis Maintenance & Sertifikasi SLO/PLN</span>
+      <span class="guarantee-desc">Dukungan Teknis & Monitoring Sistem</span>
     </div>
   </div>
 

@@ -76,8 +76,8 @@ export default function FinaleSection({ onOpenQuote }) {
             <span className="footer-tagline">POWER YOUR WORLD.</span>
             <div className="footer-legal-title">PT SUNBLIX ENERGI INDONESIA</div>
             <p className="footer-brand-desc">
-              Mitra Resmi Spesialis Solusi PLTS Rooftop Terpercaya di Indonesia. Berstandar internasional dengan
-              garansi performa 25 tahun.
+              Mitra Spesialis Solusi PLTS Rooftop Terpercaya di Indonesia. Berstandar internasional dengan
+              instalasi berkualitas dan teknologi monitoring pintar.
             </p>
           </div>
 

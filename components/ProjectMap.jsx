@@ -141,29 +141,29 @@ export default function ProjectMap({ activeTab = 'map' }) {
               <div className="inclusion-item">
                 <span className="inclusion-icon">⚙️</span>
                 <div className="inclusion-text-wrap">
-                  <strong>Material Tier-1</strong>
-                  <span>Tier-1 PV modules, inverter & mounting anti-korosi</span>
+                  <strong>Material Berkualitas</strong>
+                  <span>Modul PV berefisiensi tinggi, inverter & mounting anti-korosi</span>
                 </div>
               </div>
               <div className="inclusion-item">
                 <span className="inclusion-icon">📄</span>
                 <div className="inclusion-text-wrap">
-                  <strong>Pengajuan Perizinan PLN</strong>
-                  <span>Pengurusan SLO & instalasi kWh Net-Metering Exim</span>
+                  <strong>Dokumentasi & Desain Teknis</strong>
+                  <span>Gambar skematik sistem & kalkulasi teknis profesional</span>
                 </div>
               </div>
               <div className="inclusion-item">
                 <span className="inclusion-icon">⚡</span>
                 <div className="inclusion-text-wrap">
-                  <strong>Sertifikasi Laik Operasi (SLO)</strong>
-                  <span>Uji kelayakan keselamatan resmi ESDM</span>
+                  <strong>Commissioning & Testing Sistem</strong>
+                  <span>Uji kelayakan performa & standar keselamatan kelistrikan</span>
                 </div>
               </div>
               <div className="inclusion-item">
                 <span className="inclusion-icon">🛡️</span>
                 <div className="inclusion-text-wrap">
-                  <strong>Garansi Performa 25 Tahun</strong>
-                  <span>Pendampingan operasional & monitoring IoT gratis</span>
+                  <strong>Garansi Instalasi & Support</strong>
+                  <span>Dukungan teknis purna jual & monitoring aplikasi pintar</span>
                 </div>
               </div>
             </div>

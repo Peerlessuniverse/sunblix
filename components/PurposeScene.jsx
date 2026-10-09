@@ -91,7 +91,7 @@ export default function PurposeScene({ onOpenVideo }) {
           style={{ cursor: 'pointer' }}
         >
           <img
-            src="https://i.ytimg.com/vi/iXp1qE8Plu0/maxresdefault.jpg"
+            src="/asset/SUNBLIX_thumbnail.png?v=2"
             alt="Thumbnail Video SUNBLIX"
             className="story-thumb-img"
             loading="lazy"

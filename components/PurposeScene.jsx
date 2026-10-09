@@ -90,16 +90,17 @@ export default function PurposeScene({ onOpenVideo }) {
           aria-label="Tonton video SUNBLIX"
           style={{ cursor: 'pointer' }}
         >
+          <img
+            src="https://i.ytimg.com/vi/iXp1qE8Plu0/maxresdefault.jpg"
+            alt="Thumbnail Video SUNBLIX"
+            className="story-thumb-img"
+            loading="lazy"
+          />
           <div className="story-live-badge">
             <span className="live-dot" />
             <span>VIDEO SUNBLIX</span>
           </div>
           <div className="story-play" aria-hidden="true" />
-          <div className="story-thumb-copy">
-            <span className="story-badge-brand">SUNBLIX STORY</span>
-            <strong className="story-title">A CLEANER INDONESIA STARTS TODAY</strong>
-            <p className="story-sub">Sekilas tentang Sunblix dan energi surya mandiri.</p>
-          </div>
         </div>
         <div className="story-meta-bar">
           <button

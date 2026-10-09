@@ -5,6 +5,19 @@ import Link from 'next/link';
 import './dashboard.css';
 import './os.css';
 
+// Dedicated Menu Views
+import MyWorkView from './views/MyWorkView';
+import CrmView from './views/CrmView';
+import ProjectsView from './views/ProjectsView';
+import ProcurementView from './views/ProcurementView';
+import VendorsView from './views/VendorsView';
+import ProductionView from './views/ProductionView';
+import QualityView from './views/QualityView';
+import DeliveryView from './views/DeliveryView';
+import FinanceView from './views/FinanceView';
+import PerformanceView from './views/PerformanceView';
+import SettingsView from './views/SettingsView';
+
 // Application Dynamic Version
 const APP_VERSION = 'v.1.0.0';
 
@@ -668,11 +681,53 @@ export default function SunblixDashboardOS() {
         </header>
 
         {/* ===================================================================
-            VIEW CONDITIONING:
-            - If activeNav === 'ai-fleet' -> Dedicated AI Fleet Command Center
-            - If activeNav === 'dashboard' (Default Landing) -> Executive Dashboard
+            VIEW CONDITIONING FOR ALL SUNBLIX OS MENUS
            =================================================================== */}
-        {activeNav === 'ai-fleet' ? (
+        {activeNav === 'my-work' && (
+          <MyWorkView onBackToDashboard={() => setActiveNav('dashboard')} />
+        )}
+
+        {activeNav === 'crm' && (
+          <CrmView onBackToDashboard={() => setActiveNav('dashboard')} />
+        )}
+
+        {activeNav === 'projects' && (
+          <ProjectsView onBackToDashboard={() => setActiveNav('dashboard')} />
+        )}
+
+        {activeNav === 'procurement' && (
+          <ProcurementView onBackToDashboard={() => setActiveNav('dashboard')} />
+        )}
+
+        {activeNav === 'vendors' && (
+          <VendorsView onBackToDashboard={() => setActiveNav('dashboard')} />
+        )}
+
+        {activeNav === 'production' && (
+          <ProductionView onBackToDashboard={() => setActiveNav('dashboard')} />
+        )}
+
+        {activeNav === 'quality' && (
+          <QualityView onBackToDashboard={() => setActiveNav('dashboard')} />
+        )}
+
+        {activeNav === 'delivery' && (
+          <DeliveryView onBackToDashboard={() => setActiveNav('dashboard')} />
+        )}
+
+        {activeNav === 'finance' && (
+          <FinanceView onBackToDashboard={() => setActiveNav('dashboard')} />
+        )}
+
+        {activeNav === 'performance' && (
+          <PerformanceView onBackToDashboard={() => setActiveNav('dashboard')} />
+        )}
+
+        {activeNav === 'settings' && (
+          <SettingsView currentUser={currentUser} onBackToDashboard={() => setActiveNav('dashboard')} />
+        )}
+
+        {activeNav === 'ai-fleet' && (
           <div className="sbx-ai-fleet-dedicated-view">
             {/* View Header */}
             <div className="sbx-view-header">
@@ -1008,7 +1063,9 @@ export default function SunblixDashboardOS() {
               </div>
             </div>
           </div>
-        ) : (
+        )}
+
+        {activeNav === 'dashboard' && (
           <>
             {/* Quick Access AI Strip on Default Dashboard Landing */}
             <div className="sbx-ai-status-strip">

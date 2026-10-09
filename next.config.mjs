@@ -5,6 +5,9 @@ const nextConfig = {
     return [
       { source: '/cinematic', destination: '/' },
       { source: '/sunblix_cinematic.html', destination: '/' },
+      { source: '/dashboard', destination: '/DashboardOs' },
+      { source: '/dashboardos', destination: '/DashboardOs' },
+      { source: '/os', destination: '/DashboardOs' },
     ];
   },
 };

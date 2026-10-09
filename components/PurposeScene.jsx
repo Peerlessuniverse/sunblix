@@ -113,7 +113,6 @@ export default function PurposeScene({ onOpenVideo }) {
             <span className="story-link-icon">▶</span>
             <span>Tonton Video (2:53)</span>
           </button>
-          <span className="story-pill-tag">⚡ 25-Year Warranty</span>
         </div>
       </div>
 

@@ -123,17 +123,15 @@ export default function FinaleSection({ onOpenQuote }) {
               <li className="footer-contact-item">
                 <span className="f-contact-icon">📍</span>
                 <span>
-                  Kawasan Rasuna Epicentrum<br />
-                  Epiwalk Office Suite Lt. 5 Unit A501<br />
-                  Jl. HR Rasuna Said, RT 02/RW 05<br />
-                  Kel. Karet Kuningan, Kec. Setiabudi<br />
-                  Jakarta Selatan, DKI Jakarta 12940<br />
-                  Indonesia.
+                  Bintaro Business Centre.<br />
+                  Jl RC. Veteran No. 1-I, Bintaro,<br />
+                  Jakarta Selatan 12330<br />
+                  Indonesia
                 </span>
               </li>
               <li className="footer-contact-item">
                 <span className="f-contact-icon">📞</span>
-                <a href="tel:+6285288581027">+62 852-8858-1027</a>
+                <a href="tel:+62217362639">+6221 7362 639</a>
               </li>
               <li className="footer-contact-item">
                 <span className="f-contact-icon">✉️</span>

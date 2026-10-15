@@ -288,33 +288,104 @@ button {
 }
 
 /* ============================================================
-   CINEMATIC STORY WRAPPER & PINNED STAGE
+   RESPONSIVE SECTIONAL FLOW & STORY WRAPPER (APPLE / STRIPE STYLE)
    ============================================================ */
+html {
+  scroll-behavior: smooth;
+}
+
+[id] {
+  scroll-margin-top: 76px;
+}
+
 .story {
-  height: 1750vh;
+  width: 100%;
+  height: auto;
+  min-height: 100vh;
   position: relative;
+  overflow: visible;
+  background: #ffffff;
 }
 
 .stage {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  min-height: 620px;
-  overflow: hidden;
-  background: #dceaf3;
+  position: relative;
+  width: 100%;
+  height: auto;
+  min-height: 100vh;
+  overflow: visible;
+  background: transparent;
 }
 
 /* ============================================================
-   SCENE 1: HERO
+   DUAL-SCENE PINNED HERO BACKDROP (SCENE 1 + SCENE 2)
+   House background stays locked in place for Hero & Purpose,
+   then seamlessly ascends together with Purpose into Scene 3.
    ============================================================ */
+.hero-purpose-wrapper {
+  position: relative;
+  width: 100%;
+  background: #dceaf3;
+  overflow: visible;
+}
+
+.hero-sticky-backdrop {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.hero-sticky-backdrop .hero-bg,
 .hero-bg {
   position: absolute;
-  inset: -3%;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   background-image: url("asset/herobg.png");
   background-size: cover;
   background-position: center center;
   transform-origin: 78% 48%;
+  z-index: 1;
   will-change: transform;
+}
+
+.hero-backdrop-wash {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 75% 45%, rgba(255, 255, 255, 0.05) 0%, rgba(220, 234, 243, 0.25) 60%, rgba(220, 234, 243, 0.6) 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.hero-purpose-content {
+  position: relative;
+  z-index: 2;
+  margin-top: -100vh;
+  margin-top: -100svh;
+}
+
+/* ============================================================
+   SCENE 1: HERO SECTION
+   ============================================================ */
+.hero-section {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  background: transparent;
+  padding-top: 72px;
+  box-sizing: border-box;
 }
 
 .hero-bg-video {
@@ -331,13 +402,14 @@ button {
 }
 
 .hero-content {
-  position: absolute;
+  position: relative;
   z-index: 10;
-  left: 5%;
-  top: 50%;
-  transform: translateY(-50%);
+  margin: auto clamp(24px, 5vw, 80px);
+  padding: 40px 0 20px;
   width: min(720px, 90vw);
-  padding-top: 20px;
+  opacity: 1;
+  visibility: visible;
+  transform: none;
   will-change: opacity, transform;
 }
 
@@ -451,18 +523,19 @@ button {
 
 /* Hero Bottom UI */
 .hero-bottom {
-  position: absolute;
-  z-index: 50;
-  left: 4.5%;
-  right: 4.5%;
-  bottom: 26px;
+  position: relative;
+  z-index: 12;
+  width: 100%;
+  max-width: 1380px;
+  margin: 0 auto 24px;
+  padding: 0 clamp(24px, 5vw, 80px);
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   color: #fff;
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
-  transition: opacity 0.35s ease;
-  pointer-events: none;
+  pointer-events: auto;
+  box-sizing: border-box;
 }
 
 .hero-categories {
@@ -525,7 +598,7 @@ button {
 }
 
 .scroll-line {
-  position: absolute;
+  position: fixed;
   z-index: 55;
   right: 24px;
   top: 50%;
@@ -535,6 +608,7 @@ button {
   background: rgba(8, 47, 103, 0.15);
   border-radius: 2px;
   overflow: hidden;
+  pointer-events: none;
 }
 
 .scroll-line i {
@@ -556,42 +630,43 @@ button {
   font-weight: 600;
   color: rgba(8, 47, 103, 0.70);
   pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.scroll-hint.is-hidden {
+  opacity: 0;
 }
 
 /* ============================================================
    ATMOSPHERIC CURTAIN (SCENE 1 -> SCENE 2 TRANSITION)
    ============================================================ */
 .text-curtain {
-  position: absolute;
-  z-index: 20;
-  inset: 0 auto 0 0;
-  width: 68%;
-  height: 100%;
-  pointer-events: none;
-  opacity: 0;
-  transform: translate3d(-4%, 0, 0) scaleX(0.96);
-  transform-origin: left center;
-  will-change: opacity, transform;
-  background:
-    radial-gradient(ellipse 65% 92% at 18% 50%, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.95) 44%, rgba(255, 255, 255, 0.72) 66%, rgba(255, 255, 255, 0.22) 84%, rgba(255, 255, 255, 0) 100%),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.84) 44%, rgba(255, 255, 255, 0) 100%);
-  filter: blur(8px);
-  -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,0) 0%, #000 10%, #000 90%, rgba(0,0,0,0) 100%);
-  mask-image: linear-gradient(180deg, rgba(0,0,0,0) 0%, #000 10%, #000 90%, rgba(0,0,0,0) 100%);
+  display: none;
 }
 
 /* ============================================================
    SCENE 2: OUR PURPOSE & ENERGY SYSTEM PULSE
    ============================================================ */
 .scene-two {
-  position: absolute;
-  inset: 0;
-  z-index: 30;
-  opacity: 0;
-  pointer-events: none;
-  visibility: hidden;
-  will-change: opacity;
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(90px, 12vh, 130px) clamp(24px, 5vw, 80px) clamp(60px, 8vh, 90px);
+  box-sizing: border-box;
+  /* +30% more transparent to let the pinned solar roof background shine through */
+  background: linear-gradient(180deg, rgba(220, 234, 243, 0.46) 0%, rgba(235, 244, 251, 0.58) 50%, rgba(255, 255, 255, 0.72) 100%);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  overflow: hidden;
   color: var(--navy);
+  scroll-margin-top: 72px;
 }
 
 .scene-two.is-active {
@@ -601,32 +676,163 @@ button {
 .purpose-wash {
   position: absolute;
   z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.38;
+  pointer-events: none;
+  background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.15) 70%, transparent 100%);
+}
+
+/* ============================================================
+   LIGHTNING ENERGY SURGE (KILATAN PETIR SOLAR ROOF -> TEXT -> VIDEO)
+   Originates from solar panels on the roof of herobg,
+   arcs down, encircles the Purpose headline text,
+   and strikes the video card, powering it from dark to light.
+   ============================================================ */
+.lightning-energy-wrap {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 4;
+  overflow: visible;
+}
+
+.lightning-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Outer Electric Atmospheric Glow */
+.lightning-path-glow {
+  fill: none;
+  stroke: url(#lightningGlowGrad);
+  stroke-width: 16;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+  filter: drop-shadow(0 0 10px #00f0ff) drop-shadow(0 0 25px #ffe600);
+  transition: opacity 0.3s ease;
+}
+
+/* High Voltage Core Lightning Bolt (Electric Cyan -> Gold -> White) */
+.lightning-path-core {
+  fill: none;
+  stroke: url(#lightningGrad);
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 4px #ffffff) drop-shadow(0 0 12px #00f0ff);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+/* High-Frequency Crackle/Spark Line */
+.lightning-path-crackle {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 2;
+  stroke-dasharray: 8 16;
+  opacity: 0;
+  filter: drop-shadow(0 0 8px #ffe600);
+  animation: lightningCrackle 0.3s linear infinite;
+}
+
+@keyframes lightningCrackle {
+  0% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 48; }
+}
+
+/* Traveling Lightning Spark / Leading Plasma Head */
+.lightning-spark {
+  position: absolute;
+  width: 34px;
+  height: 34px;
   left: 0;
   top: 0;
-  width: 60%;
-  height: 100%;
-  opacity: 0;
-  transform: translateX(-2%);
-  will-change: opacity, transform;
+  transform: translate(-50%, -50%);
   pointer-events: none;
-  background:
-    radial-gradient(ellipse 70% 80% at 14% 50%, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.94) 46%, rgba(255, 255, 255, 0.75) 66%, rgba(255, 255, 255, 0.20) 84%, rgba(255, 255, 255, 0) 100%),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.82) 44%, rgba(255, 255, 255, 0) 100%);
-  filter: blur(6px);
-  -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,0) 0%, #000 9%, #000 91%, rgba(0,0,0,0) 100%);
-  mask-image: linear-gradient(180deg, rgba(0,0,0,0) 0%, #000 9%, #000 91%, rgba(0,0,0,0) 100%);
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.lightning-spark.is-active {
+  opacity: 1;
+}
+
+.lightning-spark-core {
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 12px #ffffff, 0 0 22px #00f0ff, 0 0 40px #ffe600;
+  animation: sparkCoreJitter 0.15s infinite alternate;
+}
+
+@keyframes sparkCoreJitter {
+  0% { transform: scale(0.9) rotate(0deg); opacity: 0.9; }
+  100% { transform: scale(1.15) rotate(15deg); opacity: 1; }
+}
+
+.lightning-spark-burst {
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 240, 255, 0.85);
+  box-shadow: 0 0 18px rgba(0, 240, 255, 0.7);
+  animation: sparkRings 0.7s ease-out infinite;
+}
+
+@keyframes sparkRings {
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* Electric Field around Purpose Titles when lightning surrounds it */
+.purpose-content.is-electrified .purpose-title {
+  text-shadow: 0 0 22px rgba(0, 240, 255, 0.75), 0 0 44px rgba(255, 230, 0, 0.5), 0 2px 14px rgba(255, 255, 255, 0.95);
+  transition: text-shadow 0.4s ease;
+}
+
+.purpose-content.is-electrified .purpose-eyebrow {
+  color: #00b4d8;
+  text-shadow: 0 0 14px rgba(0, 240, 255, 0.85);
+  transition: all 0.4s ease;
+}
+
+.purpose-inner-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: clamp(32px, 5vw, 64px);
+  align-items: center;
+  width: 100%;
+  max-width: 1380px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 5;
+}
+
+@media (max-width: 1024px) {
+  .purpose-inner-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
 }
 
 .purpose-content {
-  position: absolute;
+  position: relative;
   z-index: 5;
-  left: 4.8%;
-  top: 11vh;
-  width: min(580px, 42vw);
-  opacity: 0;
-  transform: translate3d(0, 24px, 0);
-  filter: blur(6px);
-  will-change: opacity, transform, filter;
+  width: 100%;
+  max-width: 600px;
+  opacity: 1;
+  transform: none;
+  filter: none;
   pointer-events: auto;
 }
 
@@ -758,15 +964,14 @@ button {
 
 /* Story Card (Watch Our Story) — Enlarged Cinematic Card & Connected to Energy Flow */
 .story-card {
-  position: absolute;
+  position: relative;
   z-index: 6;
-  left: 4.8%;
-  bottom: clamp(22px, 4.2vh, 46px);
-  width: clamp(340px, 25vw, 440px);
-  opacity: 0;
-  transform: translate3d(0, 24px, 0);
-  filter: blur(6px);
-  will-change: opacity, transform, filter;
+  width: 100%;
+  max-width: 580px;
+  margin: 0 auto;
+  opacity: 1;
+  transform: none;
+  filter: none;
   pointer-events: auto;
   transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
@@ -780,10 +985,13 @@ button {
   background-image: url("asset/SUNBLIX_thumbnail.png?v=2");
   background-size: cover;
   background-position: center center;
-  box-shadow: 0 16px 40px rgba(7, 37, 70, 0.22);
-  border: 1.5px solid rgba(255, 255, 255, 0.75);
+  box-shadow: 0 14px 34px rgba(7, 37, 70, 0.18);
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
   cursor: pointer;
-  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+  /* DORMANT / DARK STATE before lightning arrives */
+  filter: brightness(0.65) saturate(0.8) contrast(0.96);
+  opacity: 0.88;
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.6s ease, border-color 0.6s ease, filter 0.6s ease, opacity 0.6s ease;
 }
 
 .story-thumb-img {
@@ -793,7 +1001,8 @@ button {
   height: 100%;
   object-fit: cover;
   z-index: 1;
-  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  filter: brightness(0.7) contrast(1.05);
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.6s ease;
 }
 
 .story-thumb:hover .story-thumb-img {
@@ -806,11 +1015,37 @@ button {
   border-color: rgba(34, 216, 216, 0.9);
 }
 
-/* Energy Reception Glow (When the animated pulse strikes the card) */
+/* Flash shockwave on activation when lightning strikes */
+@keyframes storyShockwave {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.95), 0 0 35px rgba(0, 240, 255, 0.9);
+    filter: brightness(1.65) contrast(1.15);
+  }
+  40% {
+    box-shadow: 0 0 0 20px rgba(0, 240, 255, 0.35), 0 0 60px rgba(255, 210, 0, 0.65);
+    filter: brightness(1.22) contrast(1.1);
+  }
+  100% {
+    box-shadow: 0 16px 40px rgba(7, 37, 70, 0.24), 0 0 28px rgba(34, 216, 216, 0.55), 0 0 54px rgba(255, 210, 0, 0.28);
+    filter: brightness(1.08) saturate(1.18) contrast(1.04);
+  }
+}
+
+.story-card.just-ignited .story-thumb {
+  animation: storyShockwave 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Energy Reception Glow (When the animated lightning bolt strikes the card) */
 .story-card.has-energy .story-thumb {
+  filter: brightness(1.08) saturate(1.18) contrast(1.04);
+  opacity: 1;
   border-color: rgba(34, 216, 216, 0.95);
   box-shadow: 0 16px 40px rgba(7, 37, 70, 0.24), 0 0 28px rgba(34, 216, 216, 0.55), 0 0 54px rgba(255, 210, 0, 0.28);
   animation: energyAbsorb 1.8s ease-in-out infinite alternate;
+}
+
+.story-card.has-energy .story-thumb-img {
+  filter: brightness(1) contrast(1);
 }
 
 @keyframes energyAbsorb {
@@ -825,8 +1060,10 @@ button {
 }
 
 .story-card.has-energy .story-play {
-  box-shadow: 0 0 22px rgba(34, 216, 216, 0.85), 0 0 38px rgba(255, 210, 0, 0.55);
+  box-shadow: 0 0 24px rgba(34, 216, 216, 0.9), 0 0 40px rgba(255, 210, 0, 0.65);
   border-color: #22d8d8;
+  background: #0077b6;
+  transform: translate(-50%, -50%) scale(1.08);
 }
 
 /* LIVE BADGE */
@@ -1014,19 +1251,15 @@ button {
    SCENE 3: FIND YOUR SUNBLIX (PRODUCT TIERS)
    ============================================================ */
 .scene-three {
-  position: absolute;
-  inset: 0;
-  z-index: 40;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  will-change: opacity, transform;
-  color: var(--navy);
-  padding: clamp(96px, 12.5vh, 120px) clamp(28px, 5.5vw, 80px) clamp(14px, 2.5vh, 22px);
-  background: linear-gradient(180deg, #ffffff 0%, #f4f8fc 100%);
+  position: relative;
+  width: 100%;
+  height: auto;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  padding: 0;
+  background: transparent;
+  display: block;
 }
 
 .scene-three.is-active {
@@ -1035,18 +1268,25 @@ button {
 }
 
 .product-shell {
+  position: relative;
   width: 100%;
-  height: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: clamp(8px, 1.4vh, 14px);
-  background: transparent;
-  border-radius: 0;
-  border: none;
-  box-shadow: none;
-  overflow: hidden;
-  will-change: opacity, transform;
+  justify-content: center;
+  gap: clamp(14px, 2vh, 24px);
+  padding: clamp(90px, 12vh, 130px) clamp(24px, 5vw, 80px) clamp(40px, 5vh, 60px);
+  box-sizing: border-box;
+  background: linear-gradient(180deg, #ffffff 0%, #f6faff 100%);
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: none;
+  max-width: 1380px;
+  margin: 0 auto;
+  overflow: visible;
+  scroll-margin-top: 72px;
 }
 
 .product-head {
@@ -1080,11 +1320,16 @@ button {
 .product-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: clamp(14px, 1.8vw, 24px);
-  flex: 1;
-  min-height: 0;
+  gap: clamp(16px, 2vw, 28px);
+  width: 100%;
   border: none;
   background: transparent;
+}
+
+@media (max-width: 992px) {
+  .product-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .product-card {
@@ -1098,14 +1343,14 @@ button {
   position: relative;
   z-index: 1;
   overflow: hidden;
-  transform: translate3d(0, calc(24px * (1 - var(--reveal, 0))), 0);
+  transform: none;
   transition: background 0.35s ease, box-shadow 0.4s ease, border-color 0.3s ease, transform 0.35s ease;
 }
 
 .product-card:hover {
   background: #fafcff;
   border-color: rgba(8, 123, 232, 0.3);
-  transform: translate3d(0, calc(24px * (1 - var(--reveal, 0)) - 6px), 0);
+  transform: translateY(-6px);
   box-shadow: 0 20px 44px rgba(8, 123, 232, 0.12);
   z-index: 3;
 }
@@ -1174,15 +1419,15 @@ button {
   box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);
 }
 
-/* Photo Container with Scroll Expansion ("Memanjang ke atas menyingkap rumah-rumah") */
+/* Photo Container: Generous display height so full building & solar panels are visible */
 .product-photo {
   position: relative;
   width: 100%;
-  height: calc(clamp(155px, 20vh, 180px) + (clamp(120px, 16vh, 160px) * var(--reveal, 0)));
+  height: clamp(260px, 32vh, 330px);
   overflow: hidden;
   background: #eef5fa;
   flex-shrink: 0;
-  transition: height 0.06s linear;
+  border-bottom: 1px solid rgba(6, 43, 99, 0.06);
 }
 
 .product-photo img {
@@ -1190,12 +1435,25 @@ button {
   height: 100%;
   display: block;
   object-fit: cover;
-  object-position: center calc(4% + 24% * var(--reveal, 0));
-  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  object-position: center 26%;
+  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), object-position 0.65s ease;
+}
+
+/* Specific framing to maximize architectural context for each tier */
+#cardStandard .product-photo img {
+  object-position: center 26%;
+}
+
+#cardPro .product-photo img {
+  object-position: center 36%;
+}
+
+#cardProPlus .product-photo img {
+  object-position: center 22%;
 }
 
 .product-card:hover .product-photo img {
-  transform: scale(1.035);
+  transform: scale(1.045);
 }
 
 .product-details {
@@ -1433,34 +1691,39 @@ button {
    SCENE 3B / HOW IT WORKS: FROM SUNLIGHT TO YOUR HOME
    ============================================================ */
 .system-shell {
-  position: absolute;
-  inset: 0;
-  z-index: 45;
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: clamp(68px, 9.5vh, 84px) clamp(28px, 5.5vw, 80px) clamp(14px, 2.5vh, 22px);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transform: translate3d(0, 32px, 0) scale(0.98);
-  will-change: opacity, transform;
+  justify-content: center;
+  padding: clamp(90px, 12vh, 130px) clamp(24px, 5vw, 80px) clamp(40px, 5vh, 60px);
+  box-sizing: border-box;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: none;
   background: linear-gradient(180deg, #f8fbfd 0%, #edf4fb 100%);
+  max-width: 1380px;
+  margin: 0 auto;
+  overflow: visible;
+  scroll-margin-top: 72px;
 }
 
 .sunlight-container {
   width: 100%;
-  height: 100%;
+  height: auto;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: clamp(8px, 1.4vh, 14px);
+  gap: clamp(14px, 2vh, 24px);
   background: transparent;
   border-radius: 0;
   border: none;
   box-shadow: none;
   padding: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* Top Bar */
@@ -1852,40 +2115,45 @@ button {
    SCENE 4: HOW IT WORKS / WHY GO WITH SUNBLIX
    ============================================================ */
 .how-shell {
-  position: absolute;
-  inset: 0;
-  z-index: 50;
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: clamp(68px, 9.5vh, 84px) clamp(28px, 5.5vw, 80px) clamp(14px, 2.5vh, 22px);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transform: translate3d(0, 36px, 0) scale(0.98);
-  will-change: opacity, transform;
+  justify-content: center;
+  padding: clamp(90px, 12vh, 130px) clamp(24px, 5vw, 80px) clamp(40px, 5vh, 60px);
+  box-sizing: border-box;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: none;
   background: linear-gradient(180deg, #f7fafe 0%, #edf4fa 100%);
+  max-width: 1380px;
+  margin: 0 auto;
+  overflow: visible;
+  scroll-margin-top: 72px;
 }
 
 .how-main-container {
   width: 100%;
-  height: 100%;
+  height: auto;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: clamp(8px, 1.4vh, 14px);
+  gap: clamp(14px, 2vh, 24px);
   background: transparent;
   border-radius: 0;
   border: none;
   box-shadow: none;
   padding: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .how-card-wrapper {
   width: 100%;
-  flex: 1;
-  min-height: 0;
+  min-height: 520px;
+  height: auto;
   display: grid;
   grid-template-columns: clamp(340px, 38vw, 480px) 1fr;
   background: #ffffff;
@@ -2402,30 +2670,35 @@ button {
    BABAK 6: PROJECTS & HORIZONTAL SOLAR CALCULATOR
    ============================================================ */
 .project-shell {
-  position: absolute;
-  inset: 0;
-  z-index: 55;
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: clamp(68px, 9.5vh, 84px) clamp(28px, 5.5vw, 80px) clamp(14px, 2.5vh, 22px);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transform: translate3d(0, 36px, 0) scale(0.98);
-  will-change: opacity, transform;
+  justify-content: center;
+  padding: clamp(90px, 12vh, 130px) clamp(24px, 5vw, 80px) clamp(40px, 5vh, 60px);
+  box-sizing: border-box;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: none;
   background: linear-gradient(180deg, #f7fafe 0%, #eef5fb 100%);
+  max-width: 1380px;
+  margin: 0 auto;
+  overflow: visible;
+  scroll-margin-top: 72px;
 }
 
 .project-container {
   width: 100%;
-  height: 100%;
+  height: auto;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: clamp(10px, 1.5vh, 16px);
+  gap: clamp(14px, 2vh, 24px);
   background: transparent;
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* Top Row: Map & Project Terms */
@@ -3324,30 +3597,29 @@ button {
    BABAK 7: THE EPIC FINALE (PANORAMA HORIZON & SUNBLIX FOOTER)
    ============================================================ */
 .finale-shell {
-  position: absolute;
-  inset: 0;
-  z-index: 70;
+  position: relative;
+  width: 100%;
+  height: auto;
+  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 100%;
-  height: 100vh;
-  min-height: 620px;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
   background: #031c3f;
   box-shadow: 0 -25px 70px rgba(0, 0, 0, 0.45);
-  transform: translate3d(0, 100%, 0);
-  visibility: hidden;
-  pointer-events: none;
-  will-change: transform;
+  transform: none;
+  visibility: visible;
+  pointer-events: auto;
+  overflow: visible;
+  scroll-margin-top: 72px;
 }
 
 /* TOP PANORAMA BANNER (HORIZON & BRIGHTER TOMORROW) */
 .finale-panorama {
   position: relative;
-  flex: 1;
-  min-height: 0;
+  min-height: 480px;
+  height: auto;
+  padding: 60px 0;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -3356,7 +3628,7 @@ button {
 .finale-panorama-bg {
   position: absolute;
   inset: 0;
-  background-image: url('asset/herobg.png');
+  background-image: url('/asset/herobg.png');
   background-size: cover;
   background-repeat: no-repeat;
   /* 8% 44% positions the expansive sunrise horizon and city skyline as the vast majority of the frame, showing only a subtle touch of the rooftop solar panel on the far right */
@@ -3397,7 +3669,7 @@ button {
   align-items: center;
   gap: 10px;
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 850;
   letter-spacing: 2.2px;
   color: #ffd21a;
   text-transform: uppercase;
@@ -4396,7 +4668,7 @@ button {
     overflow: hidden;
   }
   .product-photo {
-    height: 145px;
+    height: clamp(230px, 52vw, 300px);
     flex-shrink: 0;
   }
   .product-details {
@@ -5212,6 +5484,78 @@ button {
     gap: 10px;
     align-items: center;
     text-align: center;
+  }
+}
+
+/* ============================================================
+   SCROLL-TRIGGERED REVEAL ANIMATIONS (APPLE / STRIPE STYLE)
+   ============================================================ */
+.section-reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  filter: blur(4px);
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform, filter;
+}
+
+.section-reveal.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+.reveal-stagger {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.section-reveal.is-revealed .reveal-stagger {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section-reveal.is-revealed .reveal-stagger:nth-child(1) { transition-delay: 0.08s; }
+.section-reveal.is-revealed .reveal-stagger:nth-child(2) { transition-delay: 0.16s; }
+.section-reveal.is-revealed .reveal-stagger:nth-child(3) { transition-delay: 0.24s; }
+.section-reveal.is-revealed .reveal-stagger:nth-child(4) { transition-delay: 0.32s; }
+.section-reveal.is-revealed .reveal-stagger:nth-child(5) { transition-delay: 0.40s; }
+
+/* Active Navbar Links Indicator */
+.nav-menu a {
+  position: relative;
+  transition: color 0.25s ease;
+}
+
+.nav-menu a.is-active {
+  color: var(--blue) !important;
+}
+
+.nav-menu a.is-active::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  right: 0;
+  height: 2.5px;
+  background: var(--blue);
+  border-radius: 999px;
+  box-shadow: 0 0 10px rgba(8, 123, 232, 0.6);
+  animation: navUnderlineIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes navUnderlineIn {
+  from {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
   }
 }
 

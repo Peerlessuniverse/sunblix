@@ -7,7 +7,7 @@ export default function WhySunblix() {
   const [mobileTab, setMobileTab] = useState('team');
 
   return (
-    <div className="how-shell" id="howShell" aria-label="Why Go With SUNBLIX - How It Works">
+    <section className="how-shell section-reveal" id="why-sunblix" aria-label="Why Go With SUNBLIX - How It Works">
       <div className="how-main-container">
         {/* MOBILE TOGGLE TABS */}
         <div className="how-mobile-tabs" id="howMobileTabs">
@@ -300,6 +300,6 @@ export default function WhySunblix() {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

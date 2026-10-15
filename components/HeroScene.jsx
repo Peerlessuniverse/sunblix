@@ -2,10 +2,7 @@
 
 export default function HeroScene({ onOpenQuote }) {
   return (
-    <>
-      {/* HERO BACKGROUND (Single continuous camera push) */}
-      <div className="hero-bg" id="heroBg" />
-
+    <section className="hero-section section-reveal is-revealed" id="home">
       {/* HERO COPY */}
       <div className="hero-content" id="heroContent">
         <div className="hero-copy">
@@ -57,9 +54,6 @@ export default function HeroScene({ onOpenQuote }) {
           <span className="scroll-arrow">↓</span>
         </div>
       </div>
-
-      {/* TRANSITION CURTAIN */}
-      <div className="text-curtain" id="textCurtain" />
-    </>
+    </section>
   );
 }

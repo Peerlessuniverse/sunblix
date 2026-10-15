@@ -6,7 +6,7 @@ export default function SunlightDiagram() {
   const [activeComponent, setActiveComponent] = useState('solar');
 
   return (
-    <div className="system-shell" id="systemShell" aria-label="How It Works - From Sunlight to Your Home">
+    <section className="system-shell section-reveal" id="how-it-works" aria-label="How It Works - From Sunlight to Your Home">
       <div className="sunlight-container">
         <div className="sunlight-diagram-stage">
           {/* LEFT TEXT PANEL */}
@@ -218,6 +218,6 @@ export default function SunlightDiagram() {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

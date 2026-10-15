@@ -56,11 +56,21 @@ export default function HomePage() {
       {/* CINEMATIC SCROLL EXPERIENCE */}
       <main className="story" id="story">
         <section className="stage" id="stage">
-          {/* SCENE 1: HERO */}
-          <HeroScene onOpenQuote={() => handleOpenQuote(null)} />
+          {/* DUAL-SCENE PINNED HERO BACKDROP (SCENE 1 + SCENE 2) */}
+          <div className="hero-purpose-wrapper" id="heroPurposeWrapper">
+            <div className="hero-sticky-backdrop" id="heroStickyBackdrop" aria-hidden="true">
+              <div className="hero-bg" id="heroBg" />
+              <div className="hero-backdrop-wash" />
+            </div>
 
-          {/* SCENE 2: PURPOSE */}
-          <PurposeScene onOpenVideo={() => setVideoModalOpen(true)} />
+            <div className="hero-purpose-content">
+              {/* SCENE 1: HERO */}
+              <HeroScene onOpenQuote={() => handleOpenQuote(null)} />
+
+              {/* SCENE 2: PURPOSE */}
+              <PurposeScene onOpenVideo={() => setVideoModalOpen(true)} />
+            </div>
+          </div>
 
           {/* SCENE 3: PRODUCTS */}
           <div className="scene-three" id="sceneThree" aria-label="Find Your SUNBLIX">
@@ -69,7 +79,7 @@ export default function HomePage() {
             <WhySunblix />
 
             {/* BABAK 6: PROJECTS & SOLAR CALCULATOR */}
-            <div className="project-shell" id="projectShell" aria-label="Projects & Solar Calculator">
+            <section className="project-shell section-reveal" id="projects" aria-label="Projects & Solar Calculator">
               <div className="project-container" data-active-tab={projectTab}>
                 {/* MOBILE VIEW TOGGLE TABS (CALC VS MAP VS TERMS) */}
                 <div className="project-mobile-tabs" id="projectMobileTabs">
@@ -102,7 +112,7 @@ export default function HomePage() {
                 <ProjectMap activeTab={projectTab} />
                 <SolarCalculator onOpenQuote={handleOpenQuote} />
               </div>
-            </div>
+            </section>
 
             {/* BABAK 7: FINALE & FOOTER */}
             <FinaleSection onOpenQuote={() => handleOpenQuote(null)} />

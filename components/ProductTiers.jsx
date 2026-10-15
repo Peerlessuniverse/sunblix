@@ -2,7 +2,7 @@
 
 export default function ProductTiers({ onOpenQuote }) {
   return (
-    <div className="product-shell">
+    <section className="product-shell section-reveal" id="products" aria-label="Find Your SUNBLIX">
       <div className="product-head">
         <h2>
           FIND YOUR SUNBLIX<span className="product-dot">.</span>
@@ -317,6 +317,6 @@ export default function ProductTiers({ onOpenQuote }) {
           <span>BRIGHTER TOMORROW</span>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

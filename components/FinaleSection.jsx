@@ -18,7 +18,7 @@ export default function FinaleSection({ onOpenQuote }) {
   };
 
   return (
-    <div className="finale-shell" id="finaleShell" aria-label="Brighter Tomorrow & Sunblix Footer">
+    <section className="finale-shell section-reveal" id="quote" aria-label="Brighter Tomorrow & Sunblix Footer">
       {/* TOP PANORAMA BANNER */}
       <div className="finale-panorama">
         <div className="finale-panorama-bg" />
@@ -344,6 +344,6 @@ export default function FinaleSection({ onOpenQuote }) {
           </div>
         </div>
       </footer>
-    </div>
+    </section>
   );
 }

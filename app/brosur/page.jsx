@@ -249,6 +249,68 @@ function formatRupiah(num) {
 }
 
 // -----------------------------------------------------------------------------
+// OFFICIAL SUNBLIX KOP SURAT (LETTERHEAD) COMPONENT
+// Identik seragam dengan kop surat resmi PT Sunblix Energi Indonesia
+// -----------------------------------------------------------------------------
+function SunblixKopSurat({ docNo }) {
+  return (
+    <div className="sunblix-kop-surat">
+      <div className="kop-main-row">
+        {/* Left: Official Sunblix Brand Logo & Tagline */}
+        <div className="kop-logo-col">
+          <img
+            src="/asset/logo.png"
+            alt="SUNBLIX - Power Your World"
+            className="kop-logo-img"
+          />
+        </div>
+
+        {/* Right: Corporate Contact Details with Blue Circular Icons */}
+        <div className="kop-contact-col">
+          <div className="kop-contact-item">
+            <span className="kop-icon-badge" aria-hidden="true">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24c1.12.37 2.33.57 3.57.57a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z" />
+              </svg>
+            </span>
+            <span className="kop-contact-text">+62 852 8858 1027</span>
+          </div>
+
+          <div className="kop-contact-item">
+            <span className="kop-icon-badge" aria-hidden="true">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+              </svg>
+            </span>
+            <span className="kop-contact-text">hello@sunblix.id</span>
+          </div>
+
+          <div className="kop-contact-item kop-address-item">
+            <span className="kop-icon-badge" aria-hidden="true">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z" />
+              </svg>
+            </span>
+            <div className="kop-contact-text kop-address-lines">
+              <div>Bintaro Business Centre, Jl RC. Veteran No. 1-I,</div>
+              <div>Bintaro, Jakarta Selatan 12330</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Full-width Solid Green Dividing Bar */}
+      <div className="kop-green-bar" />
+
+      {/* Centered Bold Underlined Reference Document Number */}
+      <div className="kop-doc-number">
+        <u>{docNo || 'XXX.XXXX.XXX.XXX.XXX'}</u>
+      </div>
+    </div>
+  );
+}
+
+// -----------------------------------------------------------------------------
 // MAIN GENERATOR COMPONENT (WRAPPED IN SUSPENSE FOR SEARCH PARAMS)
 // -----------------------------------------------------------------------------
 function BrochureGeneratorInner() {
@@ -1915,41 +1977,6 @@ function BrochureGeneratorInner() {
                       </ol>
                     </div>
                   </div>
-
-                  {/* Corporate Footer with Authentic Sunblix Logo & Clean Contact Row */}
-                  <div className="p2-footer-row">
-                    <div className="p2-footer-left">
-                      <img src="/asset/logo.png" alt="SUNBLIX" className="p2-footer-logo" />
-                    </div>
-                    <div className="p2-footer-divider" />
-                    <div className="p2-footer-center">
-                      <div className="p2-footer-company">PT. SUNBLIX ENERGI INDONESIA</div>
-                      <div className="p2-footer-addr">
-                        Bintaro Business Centre.<br />
-                        Jl RC. Veteran No. 1-I, Bintaro, Jakarta Selatan 12330 Indonesia
-                      </div>
-                    </div>
-                    <div className="p2-footer-divider" />
-                    <div className="p2-footer-right">
-                      <div className="p2-footer-contact-item">
-                        <span className="p2-contact-icon-bubble">
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.2">
-                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                            <polyline points="22,6 12,13 2,6" />
-                          </svg>
-                        </span>
-                        <span>hello@sunblix.id</span>
-                      </div>
-                      <div className="p2-footer-contact-item">
-                        <span className="p2-contact-icon-bubble">
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.2">
-                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                          </svg>
-                        </span>
-                        <span>+6221 7362 639</span>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </section>
             );
@@ -1959,25 +1986,22 @@ function BrochureGeneratorInner() {
                     return (
                       <section key="page3" className="a4-sheet" id="brosurPage3">
                 <div className="p3-quote-content-pdf">
-                  {/* Kop Surat & Judul SPH */}
-                  <div className="p3-pdf-header">
-                    <div className="p3-pdf-logo-wrap">
-                      <img src="/asset/sublixlogo.svg" alt="SUNBLIX" className="p3-pdf-logo" />
-                      <div className="p3-pdf-tagline">POWER YOUR WORLD.</div>
-                    </div>
-                    <div className="p3-pdf-title-block">
-                      <h2 className="p3-pdf-main-title">{quoteData.sphCode || 'SPH 001'} — PRICE & PACKAGE</h2>
-                      <div className="p3-pdf-meta-line">
-                        {quoteData.project} • {quoteData.docNo} • {quoteData.date}
-                      </div>
-                    </div>
-                  </div>
+                  {/* Kop Surat Resmi SUNBLIX Identik Format Cetak/PDF */}
+                  <SunblixKopSurat docNo={quoteData.docNo} />
 
-                  {/* Project & Delivery Info Bar */}
+                  {/* Project, Client, Date & Delivery Info Bar */}
                   <div className="p3-pdf-meta-box">
                     <div className="p3-pdf-meta-field">
                       <span className="p3-pdf-meta-lbl">PROJECT</span>
                       <span className="p3-pdf-meta-val">{quoteData.project}</span>
+                    </div>
+                    <div className="p3-pdf-meta-field">
+                      <span className="p3-pdf-meta-lbl">CLIENT</span>
+                      <span className="p3-pdf-meta-val">{quoteData.customer}</span>
+                    </div>
+                    <div className="p3-pdf-meta-field">
+                      <span className="p3-pdf-meta-lbl">DATE</span>
+                      <span className="p3-pdf-meta-val">{quoteData.date}</span>
                     </div>
                     <div className="p3-pdf-meta-field">
                       <span className="p3-pdf-meta-lbl">DELIVERY</span>
@@ -2080,24 +2104,17 @@ function BrochureGeneratorInner() {
                         {quoteData.signatory?.company || 'PT. SUNBLIX ENERGI INDONESIA'}
                       </div>
                       <div className="p3-sign-space">
-                        <div className="p3-stamp-badge">
-                          <span className="p3-stamp-top">PT. SUNBLIX ENERGI INDONESIA</span>
-                          <span className="p3-stamp-seal">OFFICIAL SEAL</span>
-                          <span className="p3-stamp-date">{quoteData.date || '30 September 2026'}</span>
-                        </div>
+                        <img
+                          src="/asset/sunblix_emblem_hq.png"
+                          alt="SUNBLIX Stamp"
+                          className="p3-sign-stamp-img"
+                        />
                       </div>
                       <div className="p3-sign-person">
                         <div className="p3-sign-name">{quoteData.signatory?.name || 'Warsa'}</div>
                         <div className="p3-sign-title">{quoteData.signatory?.title || 'Authorized Representative'}</div>
                       </div>
                     </div>
-                  </div>
-
-                  {/* Footer Bar Identik PDF */}
-                  <div className="p3-pdf-footer">
-                    <div>PT. SUNBLIX ENERGI INDONESIA</div>
-                    <div className="p3-pdf-footer-contact">hello@sunblix.id • 085288581027</div>
-                    <div>POWER YOUR WORLD.</div>
                   </div>
                 </div>
               </section>

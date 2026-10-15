@@ -137,127 +137,159 @@
   <main class="story" id="story">
     <section class="stage" id="stage">
 
-      <!-- HERO BACKGROUND (Single continuous camera push) -->
-      <div class="hero-bg" id="heroBg"></div>
-
-      <!-- HERO COPY -->
-      <div class="hero-content" id="heroContent">
-        <div class="hero-copy">
-          <div class="hero-eyebrow">
-            <span>Clean Energy.<br>Brighter Tomorrow.</span>
-          </div>
-          <h1 class="hero-title">POWER<br><span class="title-light">YOUR WORLD<span class="dot"></span></span></h1>
-          <div class="hero-subtitle">Solar Energy Specialist</div>
-          <p class="hero-description">We design, build and power the future.</p>
-          <div class="hero-buttons">
-            <a href="#solutions" class="hero-button primary">Explore SUNBLIX</a>
-            <a href="#quote" class="hero-button secondary">Get a Quote <span style="margin-left:6px">→</span></a>
-          </div>
-
+      <!-- DUAL-SCENE PINNED HERO BACKDROP (SCENE 1 + SCENE 2) -->
+      <div class="hero-purpose-wrapper" id="heroPurposeWrapper">
+        <div class="hero-sticky-backdrop" id="heroStickyBackdrop" aria-hidden="true">
+          <div class="hero-bg" id="heroBg"></div>
+          <div class="hero-backdrop-wash"></div>
         </div>
-      </div>
 
-      <!-- HERO BOTTOM CONTROLS -->
-      <div class="hero-bottom" id="heroBottom">
-        <div class="hero-categories">
-          <a href="#residential">RESIDENTIAL</a><span>|</span>
-          <a href="#commercial">COMMERCIAL</a><span>|</span>
-          <a href="#energy-storage">ENERGY STORAGE</a>
-        </div>
-        <div class="scroll-indicator">
-          <span>SCROLL</span><span class="scroll-icon"></span><span class="scroll-arrow">↓</span>
-        </div>
-      </div>
+        <div class="hero-purpose-content">
+          <!-- HERO SECTION -->
+          <section class="hero-section section-reveal is-revealed" id="home">
+            <!-- HERO COPY -->
+            <div class="hero-content" id="heroContent">
+              <div class="hero-copy">
+                <div class="hero-eyebrow">
+                  <span>Clean Energy.<br>Brighter Tomorrow.</span>
+                </div>
+                <h1 class="hero-title">POWER<br><span class="title-light">YOUR WORLD<span class="dot"></span></span></h1>
+                <div class="hero-subtitle">Solar Energy Specialist</div>
+                <p class="hero-description">We design, build and power the future.</p>
+                <div class="hero-buttons">
+                  <a href="#solutions" class="hero-button primary">Explore SUNBLIX</a>
+                  <a href="#quote" class="hero-button secondary">Get a Quote <span style="margin-left:6px">→</span></a>
+                </div>
+              </div>
+            </div>
 
-      <!-- TRANSITION CURTAIN -->
-      <div class="text-curtain" id="textCurtain"></div>
+            <!-- HERO BOTTOM CONTROLS -->
+            <div class="hero-bottom" id="heroBottom">
+              <div class="hero-categories">
+                <a href="#residential">RESIDENTIAL</a><span>|</span>
+                <a href="#commercial">COMMERCIAL</a><span>|</span>
+                <a href="#energy-storage">ENERGY STORAGE</a>
+              </div>
+              <div class="scroll-indicator">
+                <span>SCROLL</span><span class="scroll-icon"></span><span class="scroll-arrow">↓</span>
+              </div>
+            </div>
+          </section>
 
-      <!-- SCENE 2: OUR PURPOSE & ENERGY ROUTE -->
-      <div class="scene-two" id="sceneTwo" aria-label="Our Purpose">
-        <div class="purpose-wash" id="purposeWash" aria-hidden="true"></div>
+          <!-- SCENE 2: OUR PURPOSE & ENERGY ROUTE -->
+          <section class="scene-two section-reveal" id="solutions" aria-label="Our Purpose">
+            <div class="purpose-wash" id="purposeWash" aria-hidden="true"></div>
 
-        <div class="purpose-content" id="purposeContent">
-          <div class="purpose-eyebrow">OUR PURPOSE</div>
-          <h2 class="purpose-title">
-            <span>ENERGY</span>
-            <span>SHOULD WORK</span>
-            <span>FOR YOU</span>
-          </h2>
-          <p class="purpose-description">
-            Kami percaya energi bersih dapat menciptakan masa depan yang lebih baik untuk keluarga, bisnis, dan
-            Indonesia.
-          </p>
-
-          <div class="purpose-features" aria-label="SUNBLIX benefits">
-            <div class="purpose-feature">
-              <svg viewBox="0 0 48 48" aria-hidden="true">
-                <path d="M38 9C22 10 11 17 10 31c0 5 2 8 2 8s7-1 12-5c7-6 9-14 8-21-1-2-1-3 6-4Z" />
-                <path d="M10 39c5-9 12-14 21-18" />
+            <!-- LIGHTNING ENERGY SURGE (Solar Roof -> Loop Headline Text -> Ignite Video Thumbnail) -->
+            <div class="lightning-energy-wrap" id="lightningEnergyWrap" aria-hidden="true">
+              <svg class="lightning-svg" id="lightningSvg" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="lightningGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#ffe600" stop-opacity="1" />
+                    <stop offset="30%" stop-color="#00f0ff" stop-opacity="1" />
+                    <stop offset="70%" stop-color="#38bdf8" stop-opacity="1" />
+                    <stop offset="100%" stop-color="#ffffff" stop-opacity="1" />
+                  </linearGradient>
+                  <linearGradient id="lightningGlowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#ffe600" stop-opacity="0.8" />
+                    <stop offset="50%" stop-color="#00f0ff" stop-opacity="0.9" />
+                    <stop offset="100%" stop-color="#00a8ff" stop-opacity="0.7" />
+                  </linearGradient>
+                </defs>
+                <!-- Atmospheric Electric Glow Arc -->
+                <path
+                  class="lightning-path-glow"
+                  id="lightningPathGlow"
+                  d="M 765 145 C 620 130 380 160 220 210 C 90 250 50 330 65 430 C 80 520 180 570 360 540 C 480 515 620 470 735 500"
+                />
+                <!-- High Voltage Core Lightning Bolt -->
+                <path
+                  class="lightning-path-core"
+                  id="lightningPathCore"
+                  d="M 765 145 C 620 130 380 160 220 210 C 90 250 50 330 65 430 C 80 520 180 570 360 540 C 480 515 620 470 735 500"
+                />
+                <!-- Crackling High Frequency Spark Trail -->
+                <path
+                  class="lightning-path-crackle"
+                  id="lightningPathCrackle"
+                  d="M 765 145 C 620 130 380 160 220 210 C 90 250 50 330 65 430 C 80 520 180 570 360 540 C 480 515 620 470 735 500"
+                />
               </svg>
-              <strong>CLEANER<br>ENVIRONMENT</strong>
+
+              <!-- Traveling Plasma Spark Head -->
+              <div class="lightning-spark" id="lightningSpark">
+                <div class="lightning-spark-core"></div>
+                <div class="lightning-spark-burst"></div>
+              </div>
             </div>
-            <div class="purpose-feature">
-              <svg viewBox="0 0 48 48" aria-hidden="true">
-                <path d="M9 37V27h8v10H9Z" />
-                <path d="M20 37V19h8v18h-8Z" />
-                <path d="M31 37V10h8v27h-8Z" />
-              </svg>
-              <strong>LOWER<br>ENERGY COST</strong>
+
+        <div class="purpose-inner-grid">
+          <div class="purpose-content" id="purposeContent">
+            <div class="purpose-eyebrow">OUR PURPOSE</div>
+            <h2 class="purpose-title">
+              <span>ENERGY</span>
+              <span>SHOULD WORK</span>
+              <span>FOR YOU</span>
+            </h2>
+            <p class="purpose-description">
+              Kami percaya energi bersih dapat menciptakan masa depan yang lebih baik untuk keluarga, bisnis, dan
+              Indonesia.
+            </p>
+
+            <div class="purpose-features" aria-label="SUNBLIX benefits">
+              <div class="purpose-feature">
+                <svg viewBox="0 0 48 48" aria-hidden="true">
+                  <path d="M38 9C22 10 11 17 10 31c0 5 2 8 2 8s7-1 12-5c7-6 9-14 8-21-1-2-1-3 6-4Z" />
+                  <path d="M10 39c5-9 12-14 21-18" />
+                </svg>
+                <strong>CLEANER<br>ENVIRONMENT</strong>
+              </div>
+              <div class="purpose-feature">
+                <svg viewBox="0 0 48 48" aria-hidden="true">
+                  <path d="M9 37V27h8v10H9Z" />
+                  <path d="M20 37V19h8v18h-8Z" />
+                  <path d="M31 37V10h8v27h-8Z" />
+                </svg>
+                <strong>LOWER<br>ENERGY COST</strong>
+              </div>
+              <div class="purpose-feature">
+                <svg viewBox="0 0 48 48" aria-hidden="true">
+                  <circle cx="24" cy="16" r="6" />
+                  <path d="M13 35c0-6 5-10 11-10s11 4 11 10" />
+                  <path d="M8 35c0-4 3-7 7-7" />
+                  <path d="M40 35c0-4-3-7-7-7" />
+                </svg>
+                <strong>BRIGHTER<br>TOMORROW</strong>
+              </div>
             </div>
-            <div class="purpose-feature">
-              <svg viewBox="0 0 48 48" aria-hidden="true">
-                <circle cx="24" cy="16" r="6" />
-                <path d="M13 35c0-6 5-10 11-10s11 4 11 10" />
-                <path d="M8 35c0-4 3-7 7-7" />
-                <path d="M40 35c0-4-3-7-7-7" />
-              </svg>
-              <strong>BRIGHTER<br>TOMORROW</strong>
+          </div>
+
+          <!-- Watch Our Story Video Card -->
+          <div class="story-card" id="storyCard">
+            <div class="story-thumb" id="storyThumb">
+              <img class="story-thumb-img" src="asset/SUNBLIX_thumbnail.png?v=2" alt="Thumbnail Video SUNBLIX"
+                loading="lazy">
+              <div class="story-live-badge">
+                <span class="live-dot"></span>
+                <span>VIDEO SUNBLIX</span>
+              </div>
+              <div class="story-play" aria-hidden="true"></div>
+            </div>
+            <div class="story-meta-bar">
+              <a class="story-link" href="#" id="storyLink">
+                <span class="story-link-icon">▶</span>
+                <span>Tonton Video (2:53)</span>
+              </a>
             </div>
           </div>
         </div>
-
-        <!-- Energy Route SVG Line (Reaches directly into the Video Thumbnail Card) -->
-        <svg class="energy-system" id="energySystem" viewBox="0 0 100 100" preserveAspectRatio="none"
-          aria-hidden="true">
-          <defs>
-            <linearGradient id="energyGradient" x1="100%" y1="0%" x2="0%" y2="0%">
-              <stop offset="0%" stop-color="#168cff" />
-              <stop offset="35%" stop-color="#22d8d8" />
-              <stop offset="67%" stop-color="#31e86c" />
-              <stop offset="100%" stop-color="#ffd200" />
-            </linearGradient>
-          </defs>
-          <path class="energy-route" d="M 75.6 41.5 C 65 46, 52 57, 40 68.5 C 28 77, 20 80, 12 82" />
-        </svg>
-
-        <!-- Energy Pulse glowing dot -->
-        <div class="energy-pulse" id="energyPulse" aria-hidden="true"></div>
-
-        <!-- Watch Our Story Video Card (Enlarged & Connected to Energy Flow) -->
-        <div class="story-card" id="storyCard">
-          <div class="story-thumb" id="storyThumb">
-            <img class="story-thumb-img" src="asset/SUNBLIX_thumbnail.png?v=2" alt="Thumbnail Video SUNBLIX"
-              loading="lazy">
-            <div class="story-live-badge">
-              <span class="live-dot"></span>
-              <span>VIDEO SUNBLIX</span>
-            </div>
-            <div class="story-play" aria-hidden="true"></div>
-          </div>
-          <div class="story-meta-bar">
-            <a class="story-link" href="#" id="storyLink">
-              <span class="story-link-icon">▶</span>
-              <span>Tonton Video (2:53)</span>
-            </a>
-          </div>
+      </section>
         </div>
-
-        <button class="video-hit" id="videoHit" aria-label="Watch Our Story"></button>
       </div>
 
       <!-- SCENE 3: FIND YOUR SUNBLIX (PRODUCT DISCOVERY) -->
       <div class="scene-three" id="sceneThree" aria-label="Find Your SUNBLIX">
-        <div class="product-shell">
+        <section class="product-shell section-reveal" id="products">
           <div class="product-head">
             <h2>FIND YOUR SUNBLIX<span class="product-dot">.</span></h2>
             <p>Different needs. A brighter tomorrow.</p>
@@ -451,10 +483,10 @@
               <span>BRIGHTER TOMORROW</span>
             </div>
           </div>
-        </div>
+        </section>
 
         <!-- BABAK 3B / HOW IT WORKS: FROM SUNLIGHT TO YOUR HOME -->
-        <div class="system-shell" id="systemShell" aria-label="How It Works - From Sunlight to Your Home">
+        <section class="system-shell section-reveal" id="how-it-works" aria-label="How It Works - From Sunlight to Your Home">
           <div class="sunlight-container">
 
             <!-- MAIN INFOGRAPHIC DIAGRAM (HOUSE WITH ANIMATED FLOW) -->
@@ -617,10 +649,10 @@
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
         <!-- BABAK 4: HOW IT WORKS / WHY GO WITH SUNBLIX -->
-        <div class="how-shell" id="howShell" aria-label="Why Go With SUNBLIX - How It Works">
+        <section class="how-shell section-reveal" id="why-sunblix" aria-label="Why Go With SUNBLIX - How It Works">
           <div class="how-main-container">
             <!-- MOBILE TOGGLE TABS (TEAM VS ADVANTAGES) -->
             <div class="how-mobile-tabs" id="howMobileTabs">
@@ -866,10 +898,10 @@
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
         <!-- BABAK 6: PROJECTS & HORIZONTAL SOLAR CALCULATOR -->
-        <div class="project-shell" id="projectShell" aria-label="Projects & Solar Calculator">
+        <section class="project-shell section-reveal" id="projects" aria-label="Projects & Solar Calculator">
           <div class="project-container">
 
             <!-- MOBILE VIEW TOGGLE TABS (CALC VS MAP VS TERMS) -->
@@ -1264,10 +1296,10 @@
           </div>
 
         </div>
-      </div>
+      </section>
 
       <!-- BABAK 7: THE EPIC FINALE (PANORAMA HORIZON & SUNBLIX FOOTER) -->
-      <div class="finale-shell" id="finaleShell" aria-label="Brighter Tomorrow & Sunblix Footer">
+      <section class="finale-shell section-reveal" id="quote" aria-label="Brighter Tomorrow & Sunblix Footer">
         <!-- TOP PANORAMA BANNER -->
         <div class="finale-panorama">
           <div class="finale-panorama-bg"></div>
@@ -1464,7 +1496,7 @@
             </div>
           </div>
         </footer>
-      </div>
+      </section>
 
       <!-- SCROLL INDICATORS -->
       <div class="scroll-hint" id="scrollHint">SCROLL TO EXPLORE</div>

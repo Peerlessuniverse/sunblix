@@ -114,6 +114,12 @@ export default function FinaleSection({ onOpenQuote }) {
               <li>
                 <a href="#projects">Jaminan Paket Siap Pakai</a>
               </li>
+              <li>
+                <a href="/career">Karir &amp; Rekrutmen</a>
+              </li>
+              <li>
+                <a href="/partnership">Kemitraan Vendor</a>
+              </li>
             </ul>
           </div>
 

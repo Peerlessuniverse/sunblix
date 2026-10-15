@@ -1262,7 +1262,7 @@
    PAGE 1: DYNAMIC BROCHURE (IDENTICAL TO PDF SPECIFICATION & DESIGN)
    ========================================================================== */
 .p1-dynamic-page {
-  padding: 26px 36px 20px;
+  padding: 28px 36px 24px;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -1278,8 +1278,8 @@
 .p1-topbar {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 6px;
+  align-items: center;
+  margin-bottom: 8px;
 }
 
 .p1-brand {
@@ -1289,12 +1289,12 @@
 }
 
 .p1-logo {
-  height: 42px;
+  height: 46px;
   width: auto;
 }
 
 .p1-tagline {
-  font-size: 10px;
+  font-size: 10.5px;
   font-weight: 900;
   letter-spacing: 2.2px;
   color: #031f45;
@@ -1305,18 +1305,18 @@
 .p1-top-tag {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .p1-top-tag-bar {
-  width: 3.5px;
-  height: 52px;
+  width: 4px;
+  height: 56px;
   background: #0284c7;
   border-radius: 2px;
 }
 
 .p1-top-tag-lines {
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: 700;
   color: #031f45;
   line-height: 1.35;
@@ -1324,11 +1324,11 @@
 
 /* Hero Section */
 .p1-hero-content {
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .p1-hero-title-prefix {
-  font-size: 38px;
+  font-size: 40px;
   font-weight: 900;
   line-height: 0.95;
   color: #031f45;
@@ -1337,7 +1337,7 @@
 }
 
 .p1-hero-title-kw {
-  font-size: 48px;
+  font-size: 52px;
   font-weight: 900;
   line-height: 1.0;
   color: #034870;
@@ -1346,23 +1346,23 @@
 }
 
 .p1-hero-subtitle {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 800;
   color: #031f45;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
 }
 
 .p1-hero-desc {
-  font-size: 11px;
+  font-size: 11.5px;
   color: #334155;
-  line-height: 1.45;
-  max-width: 520px;
+  line-height: 1.5;
+  max-width: 540px;
   margin: 0;
 }
 
 /* Hero Product Visual Frame */
 .p1-showcase-container {
-  margin: 6px 0 8px;
+  margin: 8px 0;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 4px 14px rgba(3, 31, 69, 0.08);
@@ -1370,7 +1370,7 @@
 
 .p1-showcase-img {
   width: 100%;
-  max-height: 310px;
+  max-height: 335px;
   object-fit: cover;
   display: block;
 }
@@ -1439,10 +1439,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 6px;
+  padding: 10px 8px;
   border-top: 1px solid #e2e8f0;
   border-bottom: 1px solid #e2e8f0;
-  margin: 6px 0;
+  margin: 8px 0;
 }
 
 .p1-feat-col {
@@ -1455,28 +1455,28 @@
 }
 
 .p1-feat-circle {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   border: 1.5px solid #0284c7;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 4px;
+  margin-bottom: 5px;
   background: #f0f9ff;
 }
 
 .p1-feat-text {
-  font-size: 8.5px;
+  font-size: 9.5px;
   font-weight: 700;
   color: #031f45;
-  line-height: 1.25;
-  max-width: 120px;
+  line-height: 1.3;
+  max-width: 130px;
 }
 
 .p1-feat-divider {
   width: 1px;
-  height: 36px;
+  height: 40px;
   background: #cbd5e1;
 }
 
@@ -1485,22 +1485,23 @@
   background: #f0f7ff;
   border: 1px solid #bae6fd;
   border-radius: 8px;
-  padding: 9px 14px 8px;
-  margin: 6px 0;
+  padding: 11px 16px 10px;
+  margin: 8px 0;
 }
 
 .p1-flow-title {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 800;
   color: #031f45;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
+  letter-spacing: 0.3px;
 }
 
 .p1-flow-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 2px;
+  gap: 4px;
 }
 
 .p1-flow-item {
@@ -1511,45 +1512,45 @@
 }
 
 .p1-flow-icon-circle {
-  width: 38px;
-  height: 38px;
+  width: 42px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 3px;
+  margin-bottom: 4px;
 }
 
 .p1-flow-lbl {
-  font-size: 8px;
+  font-size: 8.8px;
   font-weight: 700;
   color: #031f45;
-  line-height: 1.2;
+  line-height: 1.25;
 }
 
 .p1-flow-arr {
   color: #0284c7;
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 900;
   margin-top: -10px;
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
 /* Page 1: 4 Badges Grid (Native Vector) */
 .p1-badges-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  margin-top: 6px;
+  gap: 10px;
+  margin-top: 8px;
 }
 
 .p1-badge-card {
   background: #ffffff;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
-  padding: 7px 10px;
+  padding: 9px 12px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 9px;
 }
 
 .p1-badge-icon-box {
@@ -1565,23 +1566,23 @@
 }
 
 .p1-badge-lbl {
-  font-size: 7px;
+  font-size: 7.8px;
   color: #475569;
-  line-height: 1.15;
+  line-height: 1.2;
 }
 
 .p1-badge-strong {
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 800;
   color: #031f45;
-  line-height: 1.2;
+  line-height: 1.25;
 }
 
 /* ==========================================================================
    PAGE 2: DYNAMIC SPECIFICATIONS (IDENTICAL TO PDF SPECIFICATION & DESIGN)
    ========================================================================== */
 .p2-dynamic-page {
-  padding: 22px 30px 16px;
+  padding: 24px 30px 20px;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -1597,11 +1598,11 @@
 .p2-topbar {
   background: linear-gradient(135deg, #031f45 0%, #082d62 55%, #031f45 100%);
   border-radius: 6px;
-  padding: 6px 14px;
+  padding: 8px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 48px;
+  height: 52px;
   box-sizing: border-box;
 }
 
@@ -1611,7 +1612,7 @@
 }
 
 .p2-topbar-logo {
-  height: 34px;
+  height: 38px;
   width: auto;
   display: block;
 }
@@ -1624,13 +1625,13 @@
 .p2-topbar-badge {
   border: 1.5px solid rgba(255, 255, 255, 0.7);
   border-radius: 6px;
-  padding: 3px 12px;
+  padding: 4px 14px;
   text-align: right;
   background: rgba(255, 255, 255, 0.05);
 }
 
 .p2-topbar-title {
-  font-size: 13.5px;
+  font-size: 14.5px;
   font-weight: 900;
   color: #ffffff;
   margin: 0;
@@ -1639,7 +1640,7 @@
 }
 
 .p2-topbar-sub {
-  font-size: 8.5px;
+  font-size: 9.5px;
   font-weight: 600;
   color: #7dd3fc;
   margin-top: 1px;
@@ -1647,35 +1648,37 @@
 
 /* Rincian Paket Intro */
 .p2-intro-section {
-  margin: 6px 0 4px;
+  margin: 8px 0 6px;
 }
 
 .p2-intro-title {
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 900;
   color: #0284c7;
   text-transform: uppercase;
   margin: 0 0 2px;
+  letter-spacing: 0.3px;
 }
 
 .p2-intro-desc {
-  font-size: 9px;
+  font-size: 9.8px;
   color: #475569;
   margin: 0;
+  line-height: 1.35;
 }
 
 /* 4 Numbered Component Cards */
 .p2-cards-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  margin-bottom: 6px;
+  gap: 10px;
+  margin-bottom: 8px;
 }
 
 .p2-card {
   border: 1px solid #cbd5e1;
   border-radius: 8px;
-  padding: 8px 9px;
+  padding: 10px 10px;
   background: #ffffff;
   display: flex;
   flex-direction: column;
@@ -1692,30 +1695,30 @@
 .p2-card-num {
   background: #0284c7;
   color: #ffffff;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 800;
   flex-shrink: 0;
 }
 
 .p2-card-title {
-  font-size: 9px;
+  font-size: 9.5px;
   font-weight: 800;
   color: #031f45;
   line-height: 1.25;
 }
 
 .p2-card-img-wrap {
-  height: 62px;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 6px;
+  margin: 4px 0 6px;
 }
 
 .p2-card-img {
@@ -1725,8 +1728,8 @@
 }
 
 .p2-card-specs {
-  font-size: 8px;
-  line-height: 1.35;
+  font-size: 8.8px;
+  line-height: 1.4;
   color: #334155;
   margin-bottom: 6px;
 }
@@ -1742,9 +1745,9 @@
 .p2-btn-ready {
   background: #0284c7;
   color: #ffffff;
-  padding: 2px 8px;
+  padding: 3px 10px;
   border-radius: 4px;
-  font-size: 7.5px;
+  font-size: 8.5px;
   font-weight: 700;
   display: inline-flex;
   align-items: center;
@@ -1755,44 +1758,44 @@
 .p2-spec-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 6px;
+  gap: 12px;
+  margin-bottom: 8px;
 }
 
 .p2-spec-box {
   border: 1px solid #cbd5e1;
   border-radius: 8px;
-  padding: 7px 9px;
+  padding: 9px 12px;
   background: #ffffff;
 }
 
 .p2-spec-box-header {
-  font-size: 9px;
+  font-size: 9.8px;
   font-weight: 900;
   color: #0284c7;
   text-transform: uppercase;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
   border-bottom: 1.5px solid #0284c7;
-  padding-bottom: 3px;
+  padding-bottom: 4px;
   letter-spacing: 0.2px;
 }
 
 .p2-spec-box-body {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   align-items: flex-start;
 }
 
 .p2-spec-img-pv {
-  width: 55px;
-  height: 84px;
+  width: 65px;
+  height: 98px;
   object-fit: contain;
   flex-shrink: 0;
 }
 
 .p2-spec-img-inv {
-  width: 45px;
-  height: 84px;
+  width: 55px;
+  height: 98px;
   object-fit: contain;
   flex-shrink: 0;
 }
@@ -1800,14 +1803,14 @@
 .p2-spec-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 8px;
+  font-size: 8.5px;
 }
 
 .p2-spec-table td {
-  padding: 1.5px 3px;
+  padding: 2px 3.5px;
   vertical-align: top;
   border-bottom: 1px solid #f1f5f9;
-  line-height: 1.25;
+  line-height: 1.3;
 }
 
 .p2-tbl-key {
@@ -1824,10 +1827,10 @@
 .p2-spec-pills-row {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 3px;
-  margin-top: 5px;
+  gap: 4px;
+  margin-top: 6px;
   border-top: 1px solid #e2e8f0;
-  padding-top: 4px;
+  padding-top: 5px;
 }
 
 .p2-pill-item {
@@ -1835,15 +1838,15 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  font-size: 7px;
+  font-size: 7.5px;
   font-weight: 700;
   color: #031f45;
   line-height: 1.15;
 }
 
 .p2-pill-circle {
-  font-size: 13px;
-  margin-bottom: 1px;
+  font-size: 14px;
+  margin-bottom: 2px;
   color: #0284c7;
 }
 
@@ -1851,25 +1854,25 @@
 .p2-bottom-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 6px;
+  gap: 12px;
+  margin-bottom: 8px;
 }
 
 .p2-bottom-box {
   border: 1px solid #cbd5e1;
   border-radius: 8px;
-  padding: 6px 10px;
+  padding: 8px 12px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
 .p2-bottom-box-title {
-  font-size: 8.5px;
+  font-size: 9.2px;
   font-weight: 900;
   color: #0284c7;
   text-transform: uppercase;
-  margin-bottom: 4px;
+  margin-bottom: 5px;
   letter-spacing: 0.2px;
 }
 
@@ -1877,7 +1880,7 @@
 .p2-skema-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 4px;
+  gap: 6px;
   padding: 4px 0 2px;
 }
 
@@ -1889,14 +1892,14 @@
 }
 
 .p2-skema-icon {
-  margin-bottom: 3px;
+  margin-bottom: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .p2-skema-lbl {
-  font-size: 7.5px;
+  font-size: 8px;
   font-weight: 700;
   color: #031f45;
   line-height: 1.2;
@@ -1906,7 +1909,7 @@
 .p2-mat-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 4px;
+  gap: 6px;
   align-items: flex-start;
   padding: 2px 0;
 }
@@ -1919,15 +1922,15 @@
 }
 
 .p2-mat-pic {
-  height: 34px;
+  height: 42px;
   width: auto;
   max-width: 100%;
   object-fit: contain;
-  margin-bottom: 3px;
+  margin-bottom: 4px;
 }
 
 .p2-mat-lbl {
-  font-size: 6.8px;
+  font-size: 7.2px;
   font-weight: 700;
   color: #031f45;
   line-height: 1.2;
@@ -1938,16 +1941,16 @@
   border: 1px solid #e2e8f0;
   background: #f8fafc;
   border-radius: 8px;
-  padding: 6px 10px;
-  margin-bottom: 5px;
+  padding: 8px 14px;
+  margin-bottom: 2px;
   display: flex;
-  gap: 10px;
+  gap: 12px;
   align-items: center;
 }
 
 .p2-notes-left-icon {
   flex-shrink: 0;
-  width: 24px;
+  width: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1958,18 +1961,18 @@
 }
 
 .p2-notes-title {
-  font-size: 8.5px;
+  font-size: 9.5px;
   font-weight: 900;
   color: #031f45;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
 
 .p2-notes-list {
   margin: 0;
   padding-left: 14px;
-  font-size: 7px;
+  font-size: 8px;
   color: #475569;
-  line-height: 1.35;
+  line-height: 1.4;
 }
 
 /* Corporate Footer with Authentic Sunblix Logo & Clean Contact Row */
@@ -2366,16 +2369,22 @@
   text-decoration-thickness: 1.5px;
 }
 
+.p3-body-flow {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
 .p3-pdf-meta-box {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px 16px;
   align-items: center;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   border-radius: 6px;
-  padding: 6px 12px;
-  margin: 4px 0 10px;
+  padding: 8px 14px;
+  margin: 4px 0 8px;
   font-size: 11px;
 }
 
@@ -2402,19 +2411,24 @@
   text-overflow: ellipsis;
 }
 
+.p3-pdf-meta-val.highlight-battery {
+  color: #0284c7;
+  font-weight: 800;
+}
+
 /* SPH BOQ Table matching PDF */
 .p3-pdf-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
   border-top: 2.5px solid #087be8;
 }
 
 .p3-pdf-table th {
   background: #ffffff;
   color: #031f45;
-  padding: 7px 6px;
+  padding: 6px 6px;
   font-size: 9.5px;
   font-weight: 800;
   text-align: left;
@@ -2423,11 +2437,11 @@
 }
 
 .p3-pdf-table td {
-  padding: 7px 6px;
+  padding: 6px 6px;
   border-bottom: 1px solid #e2e8f0;
   vertical-align: top;
   font-size: 9.5px;
-  line-height: 1.4;
+  line-height: 1.35;
   color: #1e293b;
 }
 
@@ -2435,18 +2449,29 @@
   background: #f8fafc;
 }
 
-/* Page 3: Dedicated Summary Box (Aligned in 1 Right Column Matching PDF) */
-.p3-pdf-summary-box {
+/* Page 3: Dedicated Summary Box (Aligned to Right Column Beneath Table) */
+.p3-summary-container {
+  display: flex;
+  justify-content: flex-end;
   width: 100%;
-  border-top: 1px solid #cbd5e1;
-  margin-bottom: 10px;
+  margin: 2px 0 8px auto;
+}
+
+.p3-pdf-summary-box {
+  width: 360px;
+  max-width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #f8fafc;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .p3-summary-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 12px;
+  padding: 5px 12px;
   border-bottom: 1px solid #e2e8f0;
   background: #f8fafc;
 }
@@ -2462,7 +2487,7 @@
   font-weight: 700;
   color: #031f45;
   text-align: right;
-  min-width: 140px;
+  min-width: 130px;
 }
 
 .p3-summary-total-bar {
@@ -2471,23 +2496,22 @@
   align-items: center;
   background: #031f45 !important;
   color: #ffffff !important;
-  padding: 8px 12px;
-  border-radius: 0 0 3px 3px;
+  padding: 7px 12px;
 }
 
 .p3-total-lbl {
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 900;
   letter-spacing: 0.5px;
   color: #ffffff;
 }
 
 .p3-total-val {
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 900;
   color: #ffffff;
   text-align: right;
-  min-width: 140px;
+  min-width: 130px;
 }
 
 /* Page 3: Bottom Section (Notes & Terms + Official Authorized Signatory) */
@@ -2495,8 +2519,9 @@
   display: grid;
   grid-template-columns: 1.45fr 1fr;
   gap: 16px;
-  align-items: flex-start;
-  margin-top: 10px;
+  align-items: stretch;
+  margin-top: auto;
+  padding-top: 4px;
 }
 
 .p3-pdf-notes-section {

@@ -1,11 +1,22 @@
 'use client';
 
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+
 export default function MobileDrawer({ isOpen, onClose, onOpenQuote }) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const isHome = pathname === '/';
+
   const handleNavClick = (milestone) => {
     onClose();
-    if (typeof window !== 'undefined') {
-      const event = new CustomEvent('sunblix:scrollto', { detail: { target: milestone } });
-      window.dispatchEvent(event);
+    if (isHome) {
+      if (typeof window !== 'undefined') {
+        const event = new CustomEvent('sunblix:scrollto', { detail: { target: milestone } });
+        window.dispatchEvent(event);
+      }
+    } else {
+      router.push(`/${milestone}`);
     }
   };
 
@@ -40,19 +51,19 @@ export default function MobileDrawer({ isOpen, onClose, onOpenQuote }) {
         }}
       >
         <div className="drawer-header">
-          <a
-            href="#home"
+          <Link
+            href="/"
             className="drawer-logo-link"
             onClick={(e) => {
-              e.preventDefault();
               onClose();
-              if (typeof window !== 'undefined') {
+              if (isHome && typeof window !== 'undefined') {
+                e.preventDefault();
                 window.dispatchEvent(new CustomEvent('sunblix:refresh'));
               }
             }}
           >
             <img src="/asset/sublixlogo.svg" alt="SUNBLIX" className="drawer-logo" />
-          </a>
+          </Link>
           <button
             type="button"
             className="drawer-close-btn"
@@ -116,7 +127,7 @@ export default function MobileDrawer({ isOpen, onClose, onOpenQuote }) {
               handleNavClick('#why-sunblix');
             }}
           >
-            <span className="link-label">Keunggulan & Tim Teknisi</span>
+            <span className="link-label">Keunggulan &amp; Tim Teknisi</span>
             <span className="link-arrow">→</span>
           </a>
           <a
@@ -127,7 +138,7 @@ export default function MobileDrawer({ isOpen, onClose, onOpenQuote }) {
               handleNavClick('#projects');
             }}
           >
-            <span className="link-label">Proyek & Peta 19+ Kota</span>
+            <span className="link-label">Proyek &amp; Peta 19+ Kota</span>
             <span className="link-arrow">→</span>
           </a>
           <a
@@ -141,6 +152,22 @@ export default function MobileDrawer({ isOpen, onClose, onOpenQuote }) {
             <span className="link-label">⚡ Kalkulator Hemat Listrik</span>
             <span className="link-arrow">→</span>
           </a>
+          <Link
+            href="/career"
+            className={`drawer-link ${pathname === '/career' ? 'is-active' : ''}`}
+            onClick={onClose}
+          >
+            <span className="link-label">💼 Karir &amp; Rekrutmen</span>
+            <span className="link-arrow">→</span>
+          </Link>
+          <Link
+            href="/partnership"
+            className={`drawer-link ${pathname === '/partnership' ? 'is-active' : ''}`}
+            onClick={onClose}
+          >
+            <span className="link-label">🤝 Kemitraan Vendor</span>
+            <span className="link-arrow">→</span>
+          </Link>
         </nav>
 
         <div className="drawer-actions">

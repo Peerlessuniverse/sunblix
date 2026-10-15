@@ -1,30 +1,54 @@
 'use client';
 
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+
 export default function Navbar({ onOpenDrawer, onOpenQuote }) {
+  const pathname = usePathname();
+  const isHome = pathname === '/';
+
   const handleLogoClick = (e) => {
-    e.preventDefault();
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('sunblix:refresh'));
+    if (isHome) {
+      e.preventDefault();
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('sunblix:refresh'));
+      }
     }
+  };
+
+  const getHref = (hash) => {
+    return isHome ? hash : `/${hash}`;
   };
 
   return (
     <header className="nav" id="nav">
       <div className="nav-inner">
-        <a
-          href="#home"
+        <Link
+          href="/"
           className="nav-logo-link"
           aria-label="SUNBLIX Home"
           onClick={handleLogoClick}
         >
           <img className="nav-logo" src="/asset/sublixlogo.svg" alt="SUNBLIX" />
-        </a>
+        </Link>
         <nav className="nav-menu">
-          <a href="#solutions">Solutions</a>
-          <a href="#products">Products</a>
-          <a href="#how-it-works">How It Works</a>
-          <a href="#why-sunblix">Why SUNBLIX</a>
-          <a href="#projects">Projects</a>
+          <a href={getHref('#solutions')}>Solutions</a>
+          <a href={getHref('#products')}>Products</a>
+          <a href={getHref('#how-it-works')}>How It Works</a>
+          <a href={getHref('#why-sunblix')}>Why SUNBLIX</a>
+          <a href={getHref('#projects')}>Projects</a>
+          <Link
+            href="/career"
+            className={pathname === '/career' ? 'is-active' : ''}
+          >
+            Career
+          </Link>
+          <Link
+            href="/partnership"
+            className={pathname === '/partnership' ? 'is-active' : ''}
+          >
+            Partnership
+          </Link>
         </nav>
         <div className="nav-actions">
           <button
@@ -53,3 +77,4 @@ export default function Navbar({ onOpenDrawer, onOpenQuote }) {
     </header>
   );
 }
+

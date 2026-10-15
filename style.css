@@ -1981,25 +1981,26 @@ html {
 .hotspot-card {
   background: rgba(255, 255, 255, 0.94);
   border-radius: 8px;
-  border: 1px solid rgba(6, 43, 99, 0.12);
-  padding: 5px 9px;
-  box-shadow: 0 6px 18px rgba(6, 43, 99, 0.15);
+  border: 1px solid rgba(8, 123, 232, 0.22);
+  padding: 4px 8px;
+  box-shadow: 0 4px 16px rgba(6, 43, 99, 0.12);
   backdrop-filter: blur(8px);
-  max-width: 165px;
+  -webkit-backdrop-filter: blur(8px);
+  max-width: 140px;
   pointer-events: none;
-  transition: all 0.3s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .hotspot-title {
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 850;
   color: var(--navy);
   display: block;
-  line-height: 1.1;
+  line-height: 1.15;
 }
 
 .hotspot-text {
-  font-size: 8.5px;
+  font-size: 8px;
   color: #385985;
   margin: 2px 0 0;
   line-height: 1.25;

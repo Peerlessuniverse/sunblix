@@ -76,7 +76,7 @@ export default function SunlightDiagram() {
             <div
               className={`sunlight-hotspot hotspot-1 ${activeComponent === 'solar' ? 'is-highlighted' : ''}`}
               data-target="solar"
-              style={{ left: '48%', top: '20%' }}
+              style={{ left: '48%', top: '18%' }}
               onMouseEnter={() => setActiveComponent('solar')}
               onClick={() => setActiveComponent('solar')}
             >
@@ -91,7 +91,7 @@ export default function SunlightDiagram() {
             <div
               className={`sunlight-hotspot hotspot-2 ${activeComponent === 'inverter' ? 'is-highlighted' : ''}`}
               data-target="inverter"
-              style={{ left: '17%', top: '66%' }}
+              style={{ left: '11%', top: '34%' }}
               onMouseEnter={() => setActiveComponent('inverter')}
               onClick={() => setActiveComponent('inverter')}
             >
@@ -106,7 +106,7 @@ export default function SunlightDiagram() {
             <div
               className={`sunlight-hotspot hotspot-3 ${activeComponent === 'interior' ? 'is-highlighted' : ''}`}
               data-target="interior"
-              style={{ left: '56%', top: '68%' }}
+              style={{ left: '52%', top: '34%' }}
               onMouseEnter={() => setActiveComponent('interior')}
               onClick={() => setActiveComponent('interior')}
             >
@@ -121,7 +121,7 @@ export default function SunlightDiagram() {
             <div
               className={`sunlight-hotspot hotspot-4 ${activeComponent === 'battery' ? 'is-highlighted' : ''}`}
               data-target="battery"
-              style={{ left: '25%', top: '82%' }}
+              style={{ left: '12%', top: '85%' }}
               onMouseEnter={() => setActiveComponent('battery')}
               onClick={() => setActiveComponent('battery')}
             >

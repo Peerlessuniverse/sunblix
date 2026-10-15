@@ -1029,16 +1029,6 @@ function BrochureGeneratorInner() {
               />
             </div>
 
-            <div className="form-group">
-              <label className="form-label">Tujuan Pengiriman (Delivery)</label>
-              <input
-                type="text"
-                className="form-input"
-                value={quoteData.delivery}
-                onChange={(e) => setQuoteData({ ...quoteData, delivery: e.target.value })}
-              />
-            </div>
-
             <div className="form-row-2">
               <div className="form-group">
                 <label className="form-label">Kapasitas Sistem (kWp)</label>
@@ -1986,102 +1976,117 @@ function BrochureGeneratorInner() {
                     return (
                       <section key="page3" className="a4-sheet" id="brosurPage3">
                 <div className="p3-quote-content-pdf">
-                  {/* Kop Surat Resmi SUNBLIX Identik Format Cetak/PDF */}
-                  <SunblixKopSurat docNo={quoteData.docNo} />
+                  {/* Unified Top Flow Container to Eliminate Unwanted Vertical Gaps */}
+                  <div className="p3-body-flow">
+                    {/* Kop Surat Resmi SUNBLIX Identik Format Cetak/PDF */}
+                    <SunblixKopSurat docNo={quoteData.docNo} />
 
-                  {/* Project, Client, Date & Delivery Info Bar */}
-                  <div className="p3-pdf-meta-box">
-                    <div className="p3-pdf-meta-field">
-                      <span className="p3-pdf-meta-lbl">PROJECT</span>
-                      <span className="p3-pdf-meta-val">{quoteData.project}</span>
-                    </div>
-                    <div className="p3-pdf-meta-field">
-                      <span className="p3-pdf-meta-lbl">CLIENT</span>
-                      <span className="p3-pdf-meta-val">{quoteData.customer}</span>
-                    </div>
-                    <div className="p3-pdf-meta-field">
-                      <span className="p3-pdf-meta-lbl">DATE</span>
-                      <span className="p3-pdf-meta-val">{quoteData.date}</span>
-                    </div>
-                    <div className="p3-pdf-meta-field">
-                      <span className="p3-pdf-meta-lbl">DELIVERY</span>
-                      <span className="p3-pdf-meta-val">{quoteData.delivery}</span>
-                    </div>
-                  </div>
-
-                  {/* Tabel BOQ SPH 001 Identik PDF */}
-                  <table className="p3-pdf-table">
-                    <thead>
-                      <tr>
-                        <th style={{ width: '4%', textAlign: 'center' }}>No.</th>
-                        <th style={{ width: '22%' }}>Material / Jasa</th>
-                        <th style={{ width: '34%' }}>Deskripsi / Spesifikasi</th>
-                        <th style={{ width: '7%', textAlign: 'center' }}>Qty</th>
-                        <th style={{ width: '13%', textAlign: 'right' }}>Harga Satuan</th>
-                        <th style={{ width: '13%', textAlign: 'right' }}>Total</th>
-                        <th style={{ width: '7%', textAlign: 'left', paddingLeft: '6px' }}>Catatan</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {quoteData.items.map((item, i) => (
-                        <tr key={item.id || i}>
-                          <td style={{ textAlign: 'center', fontWeight: 600 }}>{i + 1}</td>
-                          <td>
-                            <strong style={{ display: 'block', color: '#031f45', fontSize: '9.5px', marginBottom: '2px' }}>
-                              {item.code}
-                            </strong>
-                          </td>
-                          <td style={{ whiteSpace: 'pre-line', fontSize: '9px', color: '#334155' }}>
-                            {item.desc}
-                          </td>
-                          <td style={{ textAlign: 'center', fontWeight: 600 }}>
-                            {item.qty} {item.unit}
-                          </td>
-                          <td style={{ textAlign: 'right' }}>
-                            {item.unitPrice === 0 ? 'Rp —' : formatRupiah(item.unitPrice)}
-                          </td>
-                          <td style={{ textAlign: 'right', fontWeight: 600 }}>
-                            {item.unitPrice === 0 ? 'Rp —' : formatRupiah(item.qty * item.unitPrice)}
-                          </td>
-                          <td style={{ fontSize: '8.5px', color: '#475569', paddingLeft: '6px' }}>
-                            {item.notes}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-
-                  {/* Summary Block - Exactly Aligned in 1 Right Column Matching PDF */}
-                  <div className="p3-pdf-summary-box">
-                    <div className="p3-summary-row">
-                      <span className="p3-summary-lbl">Subtotal</span>
-                      <span className="p3-summary-val">{formatRupiah(subtotal)}</span>
-                    </div>
-                    {discountRate > 0 && (
-                      <>
-                        <div className="p3-summary-row is-discount">
-                          <span className="p3-summary-lbl" style={{ color: '#b91c1c' }}>
-                            Diskon Khusus ({discountRate}%)
-                          </span>
-                          <span className="p3-summary-val" style={{ color: '#b91c1c' }}>
-                            - {formatRupiah(discountAmount)}
-                          </span>
-                        </div>
-                        <div className="p3-summary-row">
-                          <span className="p3-summary-lbl">Dasar Pengenaan Pajak (DPP)</span>
-                          <span className="p3-summary-val">{formatRupiah(subtotalAfterDiscount)}</span>
-                        </div>
-                      </>
-                    )}
-                    {includePpn && (
-                      <div className="p3-summary-row">
-                        <span className="p3-summary-lbl">Pajak Pertambahan Nilai (PPN 11%)</span>
-                        <span className="p3-summary-val">{formatRupiah(ppn)}</span>
+                    {/* Project, Client, Technical Specs (Battery & Power) & Delivery Meta Box */}
+                    <div className="p3-pdf-meta-box">
+                      <div className="p3-pdf-meta-field">
+                        <span className="p3-pdf-meta-lbl">PROJECT</span>
+                        <span className="p3-pdf-meta-val">{quoteData.project}</span>
                       </div>
-                    )}
-                    <div className="p3-summary-total-bar">
-                      <span className="p3-total-lbl">TOTAL</span>
-                      <span className="p3-total-val">{formatRupiah(grandTotal)}</span>
+                      <div className="p3-pdf-meta-field">
+                        <span className="p3-pdf-meta-lbl">CLIENT</span>
+                        <span className="p3-pdf-meta-val">{quoteData.customer}</span>
+                      </div>
+                      <div className="p3-pdf-meta-field">
+                        <span className="p3-pdf-meta-lbl">TANGGAL</span>
+                        <span className="p3-pdf-meta-val">{quoteData.date}</span>
+                      </div>
+                      <div className="p3-pdf-meta-field">
+                        <span className="p3-pdf-meta-lbl">DAYA SISTEM</span>
+                        <span className="p3-pdf-meta-val">{quoteData.powerKwp ? `${quoteData.powerKwp} kWp` : '—'}</span>
+                      </div>
+                      <div className="p3-pdf-meta-field">
+                        <span className="p3-pdf-meta-lbl">KAPASITAS BATERAI</span>
+                        <span className="p3-pdf-meta-val highlight-battery">
+                          {quoteData.batteryKwh ? `${quoteData.batteryKwh} kWh` : '—'}
+                        </span>
+                      </div>
+                      <div className="p3-pdf-meta-field">
+                        <span className="p3-pdf-meta-lbl">DELIVERY</span>
+                        <span className="p3-pdf-meta-val">{quoteData.delivery}</span>
+                      </div>
+                    </div>
+
+                    {/* Tabel BOQ SPH 001 Identik PDF */}
+                    <table className="p3-pdf-table">
+                      <thead>
+                        <tr>
+                          <th style={{ width: '4%', textAlign: 'center' }}>No.</th>
+                          <th style={{ width: '22%' }}>Material / Jasa</th>
+                          <th style={{ width: '34%' }}>Deskripsi / Spesifikasi</th>
+                          <th style={{ width: '7%', textAlign: 'center' }}>Qty</th>
+                          <th style={{ width: '13%', textAlign: 'right' }}>Harga Satuan</th>
+                          <th style={{ width: '13%', textAlign: 'right' }}>Total</th>
+                          <th style={{ width: '7%', textAlign: 'left', paddingLeft: '6px' }}>Catatan</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {quoteData.items.map((item, i) => (
+                          <tr key={item.id || i}>
+                            <td style={{ textAlign: 'center', fontWeight: 600 }}>{i + 1}</td>
+                            <td>
+                              <strong style={{ display: 'block', color: '#031f45', fontSize: '9.5px', marginBottom: '2px' }}>
+                                {item.code}
+                              </strong>
+                            </td>
+                            <td style={{ whiteSpace: 'pre-line', fontSize: '9px', color: '#334155' }}>
+                              {item.desc}
+                            </td>
+                            <td style={{ textAlign: 'center', fontWeight: 600 }}>
+                              {item.qty} {item.unit}
+                            </td>
+                            <td style={{ textAlign: 'right' }}>
+                              {item.unitPrice === 0 ? 'Rp —' : formatRupiah(item.unitPrice)}
+                            </td>
+                            <td style={{ textAlign: 'right', fontWeight: 600 }}>
+                              {item.unitPrice === 0 ? 'Rp —' : formatRupiah(item.qty * item.unitPrice)}
+                            </td>
+                            <td style={{ fontSize: '8.5px', color: '#475569', paddingLeft: '6px' }}>
+                              {item.notes}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+
+                    {/* Summary Block - Compact & Right-Aligned Beneath Table */}
+                    <div className="p3-summary-container">
+                      <div className="p3-pdf-summary-box">
+                        <div className="p3-summary-row">
+                          <span className="p3-summary-lbl">Subtotal</span>
+                          <span className="p3-summary-val">{formatRupiah(subtotal)}</span>
+                        </div>
+                        {discountRate > 0 && (
+                          <>
+                            <div className="p3-summary-row is-discount">
+                              <span className="p3-summary-lbl" style={{ color: '#b91c1c' }}>
+                                Diskon Khusus ({discountRate}%)
+                              </span>
+                              <span className="p3-summary-val" style={{ color: '#b91c1c' }}>
+                                - {formatRupiah(discountAmount)}
+                              </span>
+                            </div>
+                            <div className="p3-summary-row">
+                              <span className="p3-summary-lbl">Dasar Pengenaan Pajak (DPP)</span>
+                              <span className="p3-summary-val">{formatRupiah(subtotalAfterDiscount)}</span>
+                            </div>
+                          </>
+                        )}
+                        {includePpn && (
+                          <div className="p3-summary-row">
+                            <span className="p3-summary-lbl">Pajak Pertambahan Nilai (PPN 11%)</span>
+                            <span className="p3-summary-val">{formatRupiah(ppn)}</span>
+                          </div>
+                        )}
+                        <div className="p3-summary-total-bar">
+                          <span className="p3-total-lbl">TOTAL</span>
+                          <span className="p3-total-val">{formatRupiah(grandTotal)}</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
 

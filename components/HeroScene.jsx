@@ -34,6 +34,9 @@ export default function HeroScene({ onOpenQuote }) {
             >
               Get a Quote <span style={{ marginLeft: '6px' }}>→</span>
             </button>
+            <a href="/brosur" className="hero-button yellow catalogue">
+              Catalogue
+            </a>
           </div>
 
         </div>

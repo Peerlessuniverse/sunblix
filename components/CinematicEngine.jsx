@@ -43,7 +43,7 @@ export default function CinematicEngine({ staticCamera = false }) {
     }
 
     // 2. ACTIVE NAVBAR SECTION TRACKING
-    const sectionIds = ['home', 'solutions', 'products', 'how-it-works', 'why-sunblix', 'projects', 'quote'];
+    const sectionIds = ['home', 'solutions', 'about', 'products', 'how-it-works', 'why-sunblix', 'projects', 'quote'];
     const navLinks = document.querySelectorAll('.nav-menu a, .drawer-nav a');
 
     function updateActiveNav() {

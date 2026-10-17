@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 
 export default function FinaleSection({ onOpenQuote }) {
   const [email, setEmail] = useState('');
@@ -103,7 +104,7 @@ export default function FinaleSection({ onOpenQuote }) {
             <h4 className="footer-heading">Company</h4>
             <ul className="footer-nav-list">
               <li>
-                <a href="#solutions">Tentang SUNBLIX</a>
+                <Link href="/about">Tentang SUNBLIX (About Us)</Link>
               </li>
               <li>
                 <a href="#projects">Peta Proyek 19+ Kota</a>
@@ -115,10 +116,13 @@ export default function FinaleSection({ onOpenQuote }) {
                 <a href="#projects">Jaminan Paket Siap Pakai</a>
               </li>
               <li>
-                <a href="/career">Karir &amp; Rekrutmen</a>
+                <Link href="/career">Karir &amp; Rekrutmen</Link>
               </li>
               <li>
-                <a href="/partnership">Kemitraan Vendor</a>
+                <Link href="/partnership">Kemitraan Vendor</Link>
+              </li>
+              <li>
+                <Link href="/faq">Pertanyaan Umum (F.A.Q)</Link>
               </li>
             </ul>
           </div>
@@ -137,7 +141,7 @@ export default function FinaleSection({ onOpenQuote }) {
               </li>
               <li className="footer-contact-item">
                 <span className="f-contact-icon">📞</span>
-                <a href="tel:+62217362639">+6221 7362 639</a>
+                <a href="tel:+62217362630">021 7362 630</a>
               </li>
               <li className="footer-contact-item">
                 <span className="f-contact-icon">✉️</span>

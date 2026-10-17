@@ -84,7 +84,107 @@
     // Lightning energy surge animation in Section 2
     updateLightningSurge();
 
+    // About Us Horizontal Scrollytelling
+    updateAboutScrollytelling();
+
     updateActiveNav();
+  }
+
+  function updateAboutScrollytelling() {
+    const shell = document.getElementById('about');
+    const track = document.getElementById('aboutTrack');
+    const viewport = document.getElementById('aboutTrackViewport');
+    const progressFill = document.getElementById('aboutProgressFill');
+    const dots = document.querySelectorAll('.about-step-dot');
+    const cards = document.querySelectorAll('.about-card');
+
+    if (!shell || !track || !viewport) return;
+
+    if (window.innerWidth <= 900) return; // handled via scroll-snap on mobile
+
+    const rect = shell.getBoundingClientRect();
+    const winHeight = window.innerHeight;
+    const scrollDistance = shell.offsetHeight - winHeight;
+
+    if (scrollDistance <= 0) return;
+
+    const scrolled = -rect.top;
+    const rawProgress = scrolled / scrollDistance;
+    const progress = Math.min(1, Math.max(0, rawProgress));
+
+    const maxTranslate = Math.max(0, track.scrollWidth - viewport.clientWidth);
+    track.style.transform = `translateX(-${progress * maxTranslate}px)`;
+
+    if (progressFill) {
+      progressFill.style.width = `${progress * 100}%`;
+    }
+
+    const step = Math.min(3, Math.max(0, Math.round(progress * 3)));
+    dots.forEach((dot, idx) => {
+      dot.classList.toggle('is-active', idx === step);
+    });
+    cards.forEach((card, idx) => {
+      card.classList.toggle('is-focused', idx === step);
+    });
+  }
+
+  // Setup About Us buttons and dots
+  const aboutPrevBtn = document.getElementById('aboutPrevBtn');
+  const aboutNextBtn = document.getElementById('aboutNextBtn');
+  const aboutDots = document.querySelectorAll('.about-step-dot');
+  const aboutViewport = document.getElementById('aboutTrackViewport');
+
+  function goToAboutStep(idx) {
+    const shell = document.getElementById('about');
+    const viewport = document.getElementById('aboutTrackViewport');
+    if (!shell) return;
+
+    if (window.innerWidth <= 900 && viewport) {
+      const cardWidth = viewport.clientWidth * 0.86;
+      viewport.scrollTo({ left: idx * cardWidth, behavior: 'smooth' });
+    } else {
+      const rect = shell.getBoundingClientRect();
+      const currentScrollY = window.scrollY;
+      const shellTop = currentScrollY + rect.top;
+      const scrollDistance = shell.offsetHeight - window.innerHeight;
+      const targetScrollY = shellTop + (idx / 3) * scrollDistance;
+      window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
+    }
+  }
+
+  aboutDots.forEach((dot, idx) => {
+    dot.addEventListener('click', () => goToAboutStep(idx));
+  });
+
+  if (aboutPrevBtn) {
+    aboutPrevBtn.addEventListener('click', () => {
+      const activeDot = document.querySelector('.about-step-dot.is-active');
+      const cur = activeDot ? parseInt(activeDot.getAttribute('data-step') || '0', 10) : 0;
+      if (cur > 0) goToAboutStep(cur - 1);
+    });
+  }
+
+  if (aboutNextBtn) {
+    aboutNextBtn.addEventListener('click', () => {
+      const activeDot = document.querySelector('.about-step-dot.is-active');
+      const cur = activeDot ? parseInt(activeDot.getAttribute('data-step') || '0', 10) : 0;
+      if (cur < 3) goToAboutStep(cur + 1);
+    });
+  }
+
+  if (aboutViewport) {
+    aboutViewport.addEventListener('scroll', () => {
+      if (window.innerWidth > 900) return;
+      const cardWidth = aboutViewport.clientWidth * 0.86;
+      const step = Math.min(3, Math.max(0, Math.round(aboutViewport.scrollLeft / cardWidth)));
+      aboutDots.forEach((dot, idx) => {
+        dot.classList.toggle('is-active', idx === step);
+      });
+      const progressFill = document.getElementById('aboutProgressFill');
+      if (progressFill) {
+        progressFill.style.width = `${((step + 1) / 4) * 100}%`;
+      }
+    }, { passive: true });
   }
 
   function updateLightningSurge() {
@@ -206,7 +306,7 @@
   }
 
   // 2. ACTIVE NAVBAR SECTION TRACKING
-  const sectionIds = ['home', 'solutions', 'products', 'how-it-works', 'why-sunblix', 'projects', 'quote'];
+  const sectionIds = ['home', 'solutions', 'about', 'products', 'how-it-works', 'why-sunblix', 'projects', 'quote'];
   const navLinks = document.querySelectorAll('.nav-menu a, .drawer-nav a');
 
   function updateActiveNav() {
@@ -719,40 +819,40 @@
     const modalBackdrop = document.createElement('div');
     modalBackdrop.id = 'staticQuoteModal';
     modalBackdrop.className = 'quote-modal-backdrop';
-    modalBackdrop.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(3,28,63,0.85);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto;';
+    modalBackdrop.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(15,23,42,0.65);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto;';
 
     modalBackdrop.innerHTML = `
-      <div class="quote-modal-card" style="background:#041c3e;border:1px solid rgba(22,219,224,0.3);border-radius:24px;max-width:560px;width:100%;padding:32px 28px;color:#fff;box-shadow:0 25px 60px rgba(0,0,0,0.6);position:relative;max-height:92vh;overflow-y:auto;">
-        <button type="button" id="closeStaticModalBtn" aria-label="Tutup" style="position:absolute;top:20px;right:20px;background:rgba(255,255,255,0.08);border:none;color:#fff;width:36px;height:36px;borderRadius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;">✕</button>
+      <div class="quote-modal-card" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:24px;max-width:560px;width:100%;padding:32px 28px;color:#0f172a;box-shadow:0 25px 60px rgba(0,0,0,0.18),0 4px 16px rgba(8,123,232,0.08);position:relative;max-height:92vh;overflow-y:auto;font-family:inherit;">
+        <button type="button" id="closeStaticModalBtn" aria-label="Tutup" style="position:absolute;top:20px;right:20px;background:#f1f5f9;border:1px solid #e2e8f0;color:#475569;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all 0.2s ease;">✕</button>
         <div id="staticModalBody">
           <div style="margin-bottom:22px;">
-            <span style="font-size:11px;font-weight:800;letter-spacing:2px;color:#16dbe0;text-transform:uppercase;">PT SUNBLIX ENERGI INDONESIA</span>
-            <h3 style="margin:6px 0 8px;font-size:22px;font-weight:800;color:#fff;">Permintaan Penawaran Resmi (PDF)</h3>
-            <p style="margin:0;font-size:13px;color:rgba(255,255,255,0.7);line-height:1.5;">Dapatkan estimasi teknis, analisis ROI, dan proposal resmi Siap Pakai langsung ke email dan WhatsApp Anda.</p>
+            <span style="font-size:11px;font-weight:800;letter-spacing:2px;color:#0284c7;text-transform:uppercase;">PT SUNBLIX ENERGI INDONESIA</span>
+            <h3 style="margin:6px 0 8px;font-size:22px;font-weight:800;color:#031f45;letter-spacing:-0.3px;">Permintaan Penawaran Resmi (PDF)</h3>
+            <p style="margin:0;font-size:13.5px;color:#64748b;line-height:1.5;">Dapatkan estimasi teknis, analisis ROI, dan proposal resmi Siap Pakai langsung ke email dan WhatsApp Anda.</p>
           </div>
           <form id="staticQuoteForm" style="display:grid;gap:14px;">
             <div>
-              <label style="display:block;font-size:12px;font-weight:700;margin-bottom:6px;color:#cfe4fc;">Nama Lengkap *</label>
-              <input type="text" id="sqName" required placeholder="Contoh: Bpk. Haris Setiawan" style="width:100%;padding:12px 14px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.18);color:#fff;font-size:14px;outline:none;box-sizing:border-box;" />
+              <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#1e293b;">Nama Lengkap *</label>
+              <input type="text" id="sqName" required placeholder="Contoh: Bpk. Haris Setiawan" style="width:100%;padding:12px 14px;border-radius:10px;background:#f8fafc;border:1.5px solid #cbd5e1;color:#0f172a;font-size:14px;outline:none;box-sizing:border-box;" />
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
               <div>
-                <label style="display:block;font-size:12px;font-weight:700;margin-bottom:6px;color:#cfe4fc;">Nomor WhatsApp *</label>
-                <input type="tel" id="sqWa" required placeholder="081234567890" style="width:100%;padding:12px 14px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.18);color:#fff;font-size:14px;outline:none;box-sizing:border-box;" />
+                <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#1e293b;">Nomor WhatsApp *</label>
+                <input type="tel" id="sqWa" required placeholder="081234567890" style="width:100%;padding:12px 14px;border-radius:10px;background:#f8fafc;border:1.5px solid #cbd5e1;color:#0f172a;font-size:14px;outline:none;box-sizing:border-box;" />
               </div>
               <div>
-                <label style="display:block;font-size:12px;font-weight:700;margin-bottom:6px;color:#cfe4fc;">Alamat Email *</label>
-                <input type="email" id="sqEmail" required placeholder="email@anda.com" style="width:100%;padding:12px 14px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.18);color:#fff;font-size:14px;outline:none;box-sizing:border-box;" />
+                <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#1e293b;">Alamat Email *</label>
+                <input type="email" id="sqEmail" required placeholder="email@anda.com" style="width:100%;padding:12px 14px;border-radius:10px;background:#f8fafc;border:1.5px solid #cbd5e1;color:#0f172a;font-size:14px;outline:none;box-sizing:border-box;" />
               </div>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
               <div>
-                <label style="display:block;font-size:12px;font-weight:700;margin-bottom:6px;color:#cfe4fc;">Kota / Kabupaten *</label>
-                <input type="text" id="sqCity" required placeholder="Contoh: Jakarta Selatan" style="width:100%;padding:12px 14px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.18);color:#fff;font-size:14px;outline:none;box-sizing:border-box;" />
+                <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#1e293b;">Kota / Kabupaten *</label>
+                <input type="text" id="sqCity" required placeholder="Contoh: Jakarta Selatan" style="width:100%;padding:12px 14px;border-radius:10px;background:#f8fafc;border:1.5px solid #cbd5e1;color:#0f172a;font-size:14px;outline:none;box-sizing:border-box;" />
               </div>
               <div>
-                <label style="display:block;font-size:12px;font-weight:700;margin-bottom:6px;color:#cfe4fc;">Daya Listrik PLN</label>
-                <select id="sqPower" style="width:100%;padding:12px 14px;border-radius:10px;background:#09254c;border:1px solid rgba(255,255,255,0.18);color:#fff;font-size:14px;outline:none;box-sizing:border-box;">
+                <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#1e293b;">Daya Listrik PLN</label>
+                <select id="sqPower" style="width:100%;padding:12px 14px;border-radius:10px;background:#f8fafc;border:1.5px solid #cbd5e1;color:#0f172a;font-size:14px;outline:none;box-sizing:border-box;">
                   <option value="1.300 VA">1.300 VA</option>
                   <option value="2.200 VA" selected>2.200 VA</option>
                   <option value="3.500 - 5.500 VA">3.500 – 5.500 VA</option>
@@ -762,13 +862,13 @@
               </div>
             </div>
             <div>
-              <label style="display:block;font-size:12px;font-weight:700;margin-bottom:6px;color:#cfe4fc;">Catatan Kebutuhan / Tipe Atap (Opsional)</label>
-              <textarea id="sqNotes" rows="2" placeholder="Misal: Atap genteng bitumen, ingin konsultasi baterai..." style="width:100%;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.18);color:#fff;font-size:13px;outline:none;resize:none;box-sizing:border-box;"></textarea>
+              <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#1e293b;">Catatan Kebutuhan / Tipe Atap (Opsional)</label>
+              <textarea id="sqNotes" rows="2" placeholder="Misal: Atap genteng bitumen, ingin konsultasi opsi baterai cadangan..." style="width:100%;padding:10px 14px;border-radius:10px;background:#f8fafc;border:1.5px solid #cbd5e1;color:#0f172a;font-size:13px;outline:none;resize:none;box-sizing:border-box;"></textarea>
             </div>
-            <button type="submit" style="margin-top:10px;padding:14px 20px;border-radius:12px;background:linear-gradient(135deg, #087be8 0%, #16dbe0 100%);color:#fff;border:none;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 10px 25px rgba(8, 123, 232, 0.4);display:flex;align-items:center;justify-content:center;gap:8px;">
+            <button type="submit" style="margin-top:10px;padding:14px 20px;border-radius:12px;background:linear-gradient(135deg, #0284c7 0%, #0369a1 100%);color:#fff;border:none;font-size:14px;font-weight:800;letter-spacing:0.3px;cursor:pointer;box-shadow:0 8px 20px rgba(2, 132, 199, 0.3);display:flex;align-items:center;justify-content:center;gap:8px;transition:transform 0.2s ease;">
               Kirim Permintaan Penawaran Resmi →
             </button>
-            <div style="font-size:11px;color:rgba(255,255,255,0.5);text-align:center;margin-top:4px;">
+            <div style="font-size:11.5px;color:#64748b;text-align:center;margin-top:6px;">
               🛡️ Privasi data Anda terjamin. Tim engineer SUNBLIX akan menghubungi dalam 1x24 jam.
             </div>
           </form>
@@ -800,23 +900,26 @@
         if (modalBody) {
           modalBody.innerHTML = `
             <div style="text-align:center;padding:16px 8px;">
-              <div style="width:64px;height:64px;border-radius:50%;background:rgba(67, 217, 90, 0.15);border:2px solid #43d95a;display:inline-flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:16px;">✓</div>
-              <h3 style="font-size:22px;font-weight:800;margin:0 0 10px;color:#fff;">Permintaan Penawaran Berhasil!</h3>
-              <p style="font-size:14px;color:rgba(255,255,255,0.8);line-height:1.6;margin:0 0 20px;">
+              <div style="width:64px;height:64px;border-radius:50%;background:#ecfdf5;border:2px solid #10b981;color:#10b981;display:inline-flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:16px;">✓</div>
+              <h3 style="font-size:22px;font-weight:800;margin:0 0 10px;color:#031f45;">Permintaan Penawaran Berhasil!</h3>
+              <p style="font-size:14px;color:#475569;line-height:1.6;margin:0 0 20px;">
                 Terima kasih Bpk/Ibu <strong>${nameVal}</strong>. Tim spesialis teknis SUNBLIX sedang menyusun rincian proposal teknis untuk lokasi <strong>${cityVal}</strong>.
               </p>
-              <div style="background:rgba(255,255,255,0.06);border:1px dashed rgba(22, 219, 224, 0.4);border-radius:14px;padding:14px;margin-bottom:24px;">
-                <span style="font-size:11px;color:#cfe4fc;display:block;margin-bottom:4px;">NOMOR REFERENSI PENAWARAN:</span>
-                <strong style="font-size:18px;color:#16dbe0;letter-spacing:1px;">${quoteCode}</strong>
+              <div style="background:#f0f9ff;border:1.5px dashed #38bdf8;border-radius:14px;padding:14px;margin-bottom:24px;">
+                <span style="font-size:11px;color:#0369a1;display:block;margin-bottom:4px;font-weight:700;">NOMOR REFERENSI PENAWARAN:</span>
+                <strong style="font-size:19px;color:#0284c7;letter-spacing:1px;">${quoteCode}</strong>
               </div>
               <div style="display:grid;gap:10px;">
-                <button type="button" id="printQuoteBtn" style="padding:14px;border-radius:12px;background:linear-gradient(135deg, #087be8 0%, #16dbe0 100%);color:#fff;border:none;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 20px rgba(8, 123, 232, 0.35);">
+                <button type="button" id="printQuoteBtn" style="padding:14px;border-radius:12px;background:linear-gradient(135deg, #0284c7 0%, #0369a1 100%);color:#fff;border:none;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 20px rgba(2, 132, 199, 0.25);">
                   📥 Unduh / Simpan Penawaran Resmi (PDF)
                 </button>
-                <button type="button" id="waDirectBtn" style="padding:14px;border-radius:12px;background:#25D366;color:#fff;border:none;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+                <a href="/brosur?customer=${encodeURIComponent(nameVal || '')}&project=${encodeURIComponent(sysTitle || '')}&docNo=${encodeURIComponent(quoteCode)}" target="_blank" rel="noopener noreferrer" style="padding:12px;border-radius:12px;background:#f8fafc;border:1.5px solid #0284c7;color:#0284c7;font-size:13px;font-weight:700;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;">
+                  ✨ Buka di Generator Brosur Lengkap (3 Halaman) ↗
+                </a>
+                <button type="button" id="waDirectBtn" style="padding:14px;border-radius:12px;background:#25D366;color:#fff;border:none;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 20px rgba(37, 211, 102, 0.25);">
                   💬 Lanjut Hubungi via WhatsApp (Respon Cepat)
                 </button>
-                <button type="button" id="closeDoneBtn" style="padding:12px;border-radius:12px;background:transparent;color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.2);font-size:13px;cursor:pointer;">
+                <button type="button" id="closeDoneBtn" style="padding:12px;border-radius:12px;background:#f1f5f9;color:#475569;border:1px solid #cbd5e1;font-size:13px;font-weight:600;cursor:pointer;">
                   Tutup Jendela
                 </button>
               </div>
@@ -843,14 +946,28 @@
     @page { size: A4; margin: 15mm; }
     * { box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #0f172a; margin: 0; padding: 24px; font-size: 13px; line-height: 1.5; }
-    .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #087be8; padding-bottom: 16px; margin-bottom: 20px; }
-    .brand-title { font-size: 24px; font-weight: 900; letter-spacing: 2px; color: #041c3e; margin: 0; }
-    .brand-tag { font-size: 11px; font-weight: 700; color: #087be8; letter-spacing: 1px; text-transform: uppercase; margin-top: 3px; }
-    .brand-address { font-size: 11px; color: #64748b; margin-top: 6px; }
+    .sunblix-kop-surat { width: 100%; margin-bottom: 8px; background: #ffffff; }
+    .kop-main-row { display: flex; justify-content: space-between; align-items: center; padding-bottom: 2px; }
+    .kop-logo-col { display: flex; align-items: center; }
+    .kop-logo-img { height: 52px; width: auto; max-width: 250px; object-fit: contain; display: block; }
+    .kop-contact-col { border-left: 1.5px solid #0066cc; padding-left: 14px; display: flex; flex-direction: column; gap: 3px; align-items: flex-start; text-align: left; }
+    .kop-company-title { font-size: 13.5px; font-weight: 850; color: #0066cc; letter-spacing: 0.3px; line-height: 1.2; }
+    .kop-address-row { display: flex; align-items: center; gap: 5px; font-size: 10px; color: #334155; font-weight: 500; line-height: 1.3; }
+    .kop-pin-icon { flex-shrink: 0; stroke: #0066cc; }
+    .kop-contacts-row { display: flex; align-items: center; gap: 6px; font-size: 9.5px; color: #334155; font-weight: 500; flex-wrap: nowrap; }
+    .kop-contact-item { display: inline-flex; align-items: center; gap: 3px; white-space: nowrap; }
+    .kop-contact-item svg { stroke: #0066cc; flex-shrink: 0; }
+    .kop-sep { color: #94a3b8; font-size: 9px; }
+    .kop-tricolor-bar { display: flex; width: 100%; height: 2.5px; margin-top: 5px; margin-bottom: 12px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .kop-tricolor-bar .bar-blue { flex: 70; background: #0066cc; height: 100%; }
+    .kop-tricolor-bar .bar-gold { flex: 20; background: #f59e0b; height: 100%; }
+    .kop-tricolor-bar .bar-green { flex: 10; background: #10b981; height: 100%; }
+    .doc-header-row { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 16px; }
+    .doc-title { font-size: 16px; font-weight: 850; color: #041c3e; margin: 0; text-transform: uppercase; letter-spacing: 0.5px; }
+    .doc-sub { font-size: 11px; color: #64748b; margin-top: 2px; }
     .doc-meta { text-align: right; }
-    .doc-title { font-size: 16px; font-weight: 800; color: #041c3e; margin: 0 0 6px; text-transform: uppercase; }
-    .ref-badge { display: inline-block; background: #f0f9ff; border: 1px solid #bae6fd; color: #0284c7; padding: 4px 10px; border-radius: 6px; font-family: monospace; font-size: 13px; font-weight: 700; }
-    .date { font-size: 12px; color: #64748b; margin-top: 6px; }
+    .ref-badge { display: inline-block; background: #f0f9ff; border: 1px solid #bae6fd; color: #0284c7; padding: 3px 8px; border-radius: 5px; font-family: monospace; font-size: 12px; font-weight: 700; }
+    .date { font-size: 11px; color: #64748b; margin-top: 4px; }
     .section-title { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #041c3e; border-left: 4px solid #087be8; padding-left: 8px; margin: 18px 0 10px; }
     .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; }
     .info-item { font-size: 12px; }
@@ -869,10 +986,11 @@
     .guarantee-val { font-size: 14px; font-weight: 800; color: #087be8; display: block; }
     .guarantee-desc { font-size: 10.5px; color: #64748b; margin-top: 2px; }
     .footer { margin-top: 24px; padding-top: 14px; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: flex-end; font-size: 11px; color: #64748b; }
-    .signature { text-align: right; }
-    .signature-space { height: 45px; }
-    .signature-name { font-weight: 800; color: #041c3e; text-decoration: underline; }
-    .signature-title { font-size: 10px; color: #64748b; }
+    .signature { text-align: right; display: flex; flex-direction: column; align-items: flex-end; min-width: 200px; }
+    .signature-lead { font-size: 11px; color: #64748b; font-weight: 600; margin-bottom: 2px; }
+    .signature-space { height: 52px; width: 100%; margin: 3px 0; }
+    .signature-name { font-weight: 800; color: #041c3e; text-decoration: underline; font-size: 12.5px; }
+    .signature-title { font-size: 10.5px; color: #64748b; margin-top: 2px; }
     .print-bar { margin-bottom: 20px; padding: 12px; background: #041c3e; color: white; display: flex; justify-content: space-between; align-items: center; border-radius: 8px; }
     .btn-print { background: #16dbe0; color: #041c3e; font-weight: 800; padding: 8px 18px; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; }
     @media print { .print-bar { display: none !important; } body { padding: 0; } }
@@ -883,14 +1001,66 @@
     <span>📄 <strong>Dokumen Estimasi Penawaran Resmi SUNBLIX</strong> siap dicetak / disimpan sebagai PDF.</span>
     <button class="btn-print" onclick="window.print()">Simpan / Cetak PDF</button>
   </div>
-  <div class="header">
+  <div class="sunblix-kop-surat">
+    <div class="kop-main-row">
+      <div class="kop-logo-col">
+        <img src="/asset/logo.png" alt="SUNBLIX - Power Your World" class="kop-logo-img">
+      </div>
+      <div class="kop-contact-col">
+        <div class="kop-company-title">PT SUNBLIX ENERGI INDONESIA</div>
+        <div class="kop-address-row">
+          <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="#0066cc" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="kop-pin-icon">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          <span>Bintaro Business Centre, Jl. RC. Veteran No. 1-I, Bintaro, Jakarta Selatan 12330</span>
+        </div>
+        <div class="kop-contacts-row">
+          <span class="kop-contact-item">
+            <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="#0066cc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+            <span>sunblix.id</span>
+          </span>
+          <span class="kop-sep">|</span>
+          <span class="kop-contact-item">
+            <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="#0066cc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+            </svg>
+            <span>021 7362 639</span>
+          </span>
+          <span class="kop-sep">|</span>
+          <span class="kop-contact-item">
+            <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="#0066cc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+            </svg>
+            <span>085288581027</span>
+          </span>
+          <span class="kop-sep">|</span>
+          <span class="kop-contact-item">
+            <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="#0066cc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            <span>hello@sunblix.id</span>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="kop-tricolor-bar">
+      <div class="bar-blue"></div>
+      <div class="bar-gold"></div>
+      <div class="bar-green"></div>
+    </div>
+  </div>
+  <div class="doc-header-row">
     <div>
-      <h1 class="brand-title">SUNBLIX</h1>
-      <div class="brand-tag">PT SUNBLIX ENERGI INDONESIA</div>
-      <div class="brand-address">Architectural Solar Engineering & Smart Rooftop Solutions<br>Web: sunblix.com | WhatsApp: +62 852-8858-1027</div>
+      <div class="doc-title">ESTIMASI PENAWARAN RESMI</div>
+      <div class="doc-sub">Smart Rooftop & Solar Engineering Solutions</div>
     </div>
     <div class="doc-meta">
-      <div class="doc-title">Estimasi Penawaran Resmi</div>
       <div class="ref-badge">${quoteCode}</div>
       <div class="date">Tanggal: ${dateStr}</div>
     </div>
@@ -931,7 +1101,12 @@
   ${notesVal ? `<div class="section-title" style="margin-top:14px;">4. Catatan Khusus</div><div style="font-size:12px;background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:8px 12px;color:#92400e;">${notesVal}</div>` : ''}
   <div class="footer">
     <div><em>* Dokumen ini merupakan estimasi awal berbasis kalkulator surya SUNBLIX.<br>Proposal final dan gambar teknik CAD diterbitkan setelah survei lokasi.</em></div>
-    <div class="signature"><div class="signature-space"></div><div class="signature-name">Tim Engineering SUNBLIX</div><div class="signature-title">PT SUNBLIX ENERGI INDONESIA</div></div>
+    <div class="signature">
+      <div class="signature-lead">Tertanda Pemohon,</div>
+      <div class="signature-space"></div>
+      <div class="signature-name">${nameVal || 'Pemohon'}</div>
+      <div class="signature-title">${cityVal ? `Lokasi: ${cityVal}` : 'Calon Pelanggan'}</div>
+    </div>
   </div>
   <script>window.onload = function() { setTimeout(function() { window.print(); }, 500); };</script>
 </body>
@@ -945,6 +1120,23 @@
 
   if (btnCalculate) btnCalculate.addEventListener('click', openStaticQuoteModal);
   if (btnCalculateMobile) btnCalculateMobile.addEventListener('click', openStaticQuoteModal);
+
+  // Wire all 'Get a Quote' buttons and anchors
+  document.querySelectorAll('a[href="#quote"], .quote-button, .hero-button.secondary, .finale-btn-quote, #btnFinaleQuote, .btn-quote, [data-open-quote]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      openStaticQuoteModal();
+    });
+  });
+
+  // Global delegation for any quote button or link
+  document.addEventListener('click', (e) => {
+    const target = e.target.closest('a[href="#quote"], .quote-button, .finale-btn-quote, #btnFinaleQuote, [data-open-quote]');
+    if (target) {
+      e.preventDefault();
+      openStaticQuoteModal();
+    }
+  });
 
   // Initialize default calculation
   calculateSolar();

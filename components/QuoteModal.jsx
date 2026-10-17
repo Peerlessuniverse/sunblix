@@ -102,61 +102,143 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
       font-size: 13px;
       line-height: 1.5;
     }
-    .header {
+    .sunblix-kop-surat {
+      width: 100%;
+      margin-bottom: 8px;
+      background: #ffffff;
+    }
+    .kop-main-row {
       display: flex;
       justify-content: space-between;
+      align-items: center;
+      padding-bottom: 2px;
+    }
+    .kop-logo-col {
+      display: flex;
+      align-items: center;
+    }
+    .kop-logo-img {
+      height: 52px;
+      width: auto;
+      max-width: 250px;
+      object-fit: contain;
+      display: block;
+    }
+    .kop-contact-col {
+      border-left: 1.5px solid #0066cc;
+      padding-left: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
       align-items: flex-start;
-      border-bottom: 2px solid #087be8;
-      padding-bottom: 16px;
-      margin-bottom: 20px;
+      text-align: left;
     }
-    .brand-title {
-      font-size: 24px;
-      font-weight: 900;
-      letter-spacing: 2px;
-      color: #041c3e;
-      margin: 0;
+    .kop-company-title {
+      font-size: 13.5px;
+      font-weight: 850;
+      color: #0066cc;
+      letter-spacing: 0.3px;
+      line-height: 1.2;
     }
-    .brand-tag {
-      font-size: 11px;
-      font-weight: 700;
-      color: #087be8;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-top: 3px;
+    .kop-address-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      color: #334155;
+      font-weight: 500;
+      line-height: 1.3;
     }
-    .brand-address {
-      font-size: 11px;
-      color: #64748b;
-      margin-top: 6px;
-      line-height: 1.4;
+    .kop-pin-icon {
+      flex-shrink: 0;
+      stroke: #0066cc;
     }
-    .doc-meta {
-      text-align: right;
+    .kop-contacts-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 9.5px;
+      color: #334155;
+      font-weight: 500;
+      flex-wrap: nowrap;
+    }
+    .kop-contact-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      white-space: nowrap;
+    }
+    .kop-contact-item svg {
+      stroke: #0066cc;
+      flex-shrink: 0;
+    }
+    .kop-sep {
+      color: #94a3b8;
+      font-size: 9px;
+    }
+    .kop-tricolor-bar {
+      display: flex;
+      width: 100%;
+      height: 2.5px;
+      margin-top: 5px;
+      margin-bottom: 12px;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .kop-tricolor-bar .bar-blue {
+      flex: 70;
+      background: #0066cc;
+      height: 100%;
+    }
+    .kop-tricolor-bar .bar-gold {
+      flex: 20;
+      background: #f59e0b;
+      height: 100%;
+    }
+    .kop-tricolor-bar .bar-green {
+      flex: 10;
+      background: #10b981;
+      height: 100%;
+    }
+    .doc-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 10px;
+      margin-bottom: 16px;
     }
     .doc-title {
       font-size: 16px;
-      font-weight: 800;
+      font-weight: 850;
       color: #041c3e;
-      margin: 0 0 6px;
+      margin: 0;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+    }
+    .doc-sub {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 2px;
+    }
+    .doc-meta {
+      text-align: right;
     }
     .ref-badge {
       display: inline-block;
       background: #f0f9ff;
       border: 1px solid #bae6fd;
       color: #0284c7;
-      padding: 4px 10px;
-      border-radius: 6px;
+      padding: 3px 8px;
+      border-radius: 5px;
       font-family: monospace;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
     }
     .date {
-      font-size: 12px;
+      font-size: 11px;
       color: #64748b;
-      margin-top: 6px;
+      margin-top: 4px;
     }
     .section-title {
       font-size: 13px;
@@ -276,18 +358,32 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
     }
     .signature {
       text-align: right;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      min-width: 200px;
+    }
+    .signature-lead {
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 600;
+      margin-bottom: 2px;
     }
     .signature-space {
-      height: 45px;
+      height: 52px;
+      width: 100%;
+      margin: 3px 0;
     }
     .signature-name {
       font-weight: 800;
       color: #041c3e;
       text-decoration: underline;
+      font-size: 12.5px;
     }
     .signature-title {
-      font-size: 10px;
+      font-size: 10.5px;
       color: #64748b;
+      margin-top: 2px;
     }
     .print-bar {
       margin-bottom: 20px;
@@ -321,17 +417,68 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
     <button class="btn-print" onclick="window.print()">Simpan / Cetak PDF</button>
   </div>
 
-  <div class="header">
-    <div>
-      <h1 class="brand-title">SUNBLIX</h1>
-      <div class="brand-tag">PT SUNBLIX ENERGI INDONESIA</div>
-      <div class="brand-address">
-        Architectural Solar Engineering & Smart Rooftop Solutions<br>
-        Web: sunblix.com | WhatsApp: +62 852-8858-1027 | Email: inquiry@sunblix.com
+  <!-- KOP SURAT RESMI PT SUNBLIX ENERGI INDONESIA -->
+  <div class="sunblix-kop-surat">
+    <div class="kop-main-row">
+      <div class="kop-logo-col">
+        <img src="/asset/logo.png" alt="SUNBLIX - Power Your World" class="kop-logo-img">
+      </div>
+      <div class="kop-contact-col">
+        <div class="kop-company-title">PT SUNBLIX ENERGI INDONESIA</div>
+        <div class="kop-address-row">
+          <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="#0066cc" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="kop-pin-icon">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          <span>Bintaro Business Centre, Jl. RC. Veteran No. 1-I, Bintaro, Jakarta Selatan 12330</span>
+        </div>
+        <div class="kop-contacts-row">
+          <span class="kop-contact-item">
+            <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="#0066cc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+            <span>sunblix.id</span>
+          </span>
+          <span class="kop-sep">|</span>
+          <span class="kop-contact-item">
+            <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="#0066cc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+            </svg>
+            <span>021 7362 639</span>
+          </span>
+          <span class="kop-sep">|</span>
+          <span class="kop-contact-item">
+            <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="#0066cc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+            </svg>
+            <span>085288581027</span>
+          </span>
+          <span class="kop-sep">|</span>
+          <span class="kop-contact-item">
+            <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="#0066cc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            <span>hello@sunblix.id</span>
+          </span>
+        </div>
       </div>
     </div>
+    <div class="kop-tricolor-bar">
+      <div class="bar-blue"></div>
+      <div class="bar-gold"></div>
+      <div class="bar-green"></div>
+    </div>
+  </div>
+
+  <div class="doc-header-row">
+    <div>
+      <div class="doc-title">ESTIMASI PENAWARAN RESMI</div>
+      <div class="doc-sub">Smart Rooftop & Solar Engineering Solutions</div>
+    </div>
     <div class="doc-meta">
-      <div class="doc-title">Estimasi Penawaran Resmi</div>
       <div class="ref-badge">${quoteCode}</div>
       <div class="date">Tanggal: ${dateStr}</div>
     </div>
@@ -444,9 +591,10 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
       <em>* Dokumen ini merupakan estimasi awal berbasis data kalkulator surya SUNBLIX.<br>Proposal final dan layout CAD resmi akan diterbitkan setelah survei teknis lokasi.</em>
     </div>
     <div class="signature">
+      <div class="signature-lead">Tertanda Pemohon,</div>
       <div class="signature-space"></div>
-      <div class="signature-name">Tim Engineering SUNBLIX</div>
-      <div class="signature-title">PT SUNBLIX ENERGI INDONESIA</div>
+      <div class="signature-name">${formData.name || 'Pemohon'}</div>
+      <div class="signature-title">${formData.city ? `Lokasi: ${formData.city}` : 'Calon Pelanggan'}</div>
     </div>
   </div>
 
@@ -475,8 +623,8 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
         position: 'fixed',
         inset: 0,
         zIndex: 99999,
-        background: 'rgba(3, 28, 63, 0.85)',
-        backdropFilter: 'blur(12px)',
+        background: 'rgba(15, 23, 42, 0.65)',
+        backdropFilter: 'blur(10px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -487,17 +635,18 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
       <div
         className="quote-modal-card"
         style={{
-          background: '#041c3e',
-          border: '1px solid rgba(22, 219, 224, 0.3)',
+          background: '#ffffff',
+          border: '1px solid #e2e8f0',
           borderRadius: '24px',
           maxWidth: '560px',
           width: '100%',
           padding: '32px 28px',
-          color: '#fff',
-          boxShadow: '0 25px 60px rgba(0,0,0,0.6), 0 0 40px rgba(8, 123, 232, 0.2)',
+          color: '#0f172a',
+          boxShadow: '0 25px 60px rgba(0, 0, 0, 0.18), 0 4px 16px rgba(8, 123, 232, 0.08)',
           position: 'relative',
           maxHeight: '92vh',
           overflowY: 'auto',
+          fontFamily: 'inherit',
         }}
       >
         <button
@@ -508,17 +657,19 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
             position: 'absolute',
             top: '20px',
             right: '20px',
-            background: 'rgba(255,255,255,0.08)',
-            border: 'none',
-            color: '#fff',
+            background: '#f1f5f9',
+            border: '1px solid #e2e8f0',
+            color: '#475569',
             width: '36px',
             height: '36px',
             borderRadius: '50%',
             cursor: 'pointer',
-            fontSize: '18px',
+            fontSize: '16px',
+            fontWeight: '700',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            transition: 'all 0.2s ease',
           }}
         >
           ✕
@@ -532,7 +683,7 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
                   fontSize: '11px',
                   fontWeight: 800,
                   letterSpacing: '2px',
-                  color: '#16dbe0',
+                  color: '#0284c7',
                   textTransform: 'uppercase',
                 }}
               >
@@ -543,13 +694,14 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
                   margin: '6px 0 8px',
                   fontSize: '22px',
                   fontWeight: 800,
-                  color: '#fff',
+                  color: '#031f45',
                   fontFamily: 'inherit',
+                  letterSpacing: '-0.3px',
                 }}
               >
                 Permintaan Penawaran Resmi (PDF)
               </h3>
-              <p style={{ margin: 0, fontSize: '13px', color: 'rgba(255,255,255,0.7)', lineHeight: 1.5 }}>
+              <p style={{ margin: 0, fontSize: '13.5px', color: '#64748b', lineHeight: 1.5 }}>
                 Dapatkan estimasi teknis, analisis ROI, dan proposal resmi Siap Pakai langsung ke email dan WhatsApp Anda.
               </p>
             </div>
@@ -557,12 +709,12 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
             {errorMsg && (
               <div
                 style={{
-                  background: 'rgba(255, 60, 60, 0.15)',
-                  border: '1px solid rgba(255, 60, 60, 0.4)',
+                  background: '#fef2f2',
+                  border: '1px solid #fecaca',
                   padding: '10px 14px',
                   borderRadius: '10px',
                   fontSize: '13px',
-                  color: '#ff9090',
+                  color: '#b91c1c',
                   marginBottom: '16px',
                 }}
               >
@@ -573,7 +725,7 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
             <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '14px' }}>
               <div>
                 <label
-                  style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '6px', color: '#cfe4fc' }}
+                  style={{ display: 'block', fontSize: '12.5px', fontWeight: 700, marginBottom: '6px', color: '#1e293b' }}
                 >
                   Nama Lengkap *
                 </label>
@@ -587,9 +739,9 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
                     width: '100%',
                     padding: '12px 14px',
                     borderRadius: '10px',
-                    background: 'rgba(255,255,255,0.06)',
-                    border: '1px solid rgba(255,255,255,0.18)',
-                    color: '#fff',
+                    background: '#f8fafc',
+                    border: '1.5px solid #cbd5e1',
+                    color: '#0f172a',
                     fontSize: '14px',
                     outline: 'none',
                     boxSizing: 'border-box',
@@ -602,10 +754,10 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
                   <label
                     style={{
                       display: 'block',
-                      fontSize: '12px',
+                      fontSize: '12.5px',
                       fontWeight: 700,
                       marginBottom: '6px',
-                      color: '#cfe4fc',
+                      color: '#1e293b',
                     }}
                   >
                     Nomor WhatsApp *
@@ -620,9 +772,9 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
                       width: '100%',
                       padding: '12px 14px',
                       borderRadius: '10px',
-                      background: 'rgba(255,255,255,0.06)',
-                      border: '1px solid rgba(255,255,255,0.18)',
-                      color: '#fff',
+                      background: '#f8fafc',
+                      border: '1.5px solid #cbd5e1',
+                      color: '#0f172a',
                       fontSize: '14px',
                       outline: 'none',
                       boxSizing: 'border-box',
@@ -633,10 +785,10 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
                   <label
                     style={{
                       display: 'block',
-                      fontSize: '12px',
+                      fontSize: '12.5px',
                       fontWeight: 700,
                       marginBottom: '6px',
-                      color: '#cfe4fc',
+                      color: '#1e293b',
                     }}
                   >
                     Alamat Email *
@@ -651,9 +803,9 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
                       width: '100%',
                       padding: '12px 14px',
                       borderRadius: '10px',
-                      background: 'rgba(255,255,255,0.06)',
-                      border: '1px solid rgba(255,255,255,0.18)',
-                      color: '#fff',
+                      background: '#f8fafc',
+                      border: '1.5px solid #cbd5e1',
+                      color: '#0f172a',
                       fontSize: '14px',
                       outline: 'none',
                       boxSizing: 'border-box',
@@ -667,10 +819,10 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
                   <label
                     style={{
                       display: 'block',
-                      fontSize: '12px',
+                      fontSize: '12.5px',
                       fontWeight: 700,
                       marginBottom: '6px',
-                      color: '#cfe4fc',
+                      color: '#1e293b',
                     }}
                   >
                     Kota / Kabupaten *
@@ -685,9 +837,9 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
                       width: '100%',
                       padding: '12px 14px',
                       borderRadius: '10px',
-                      background: 'rgba(255,255,255,0.06)',
-                      border: '1px solid rgba(255,255,255,0.18)',
-                      color: '#fff',
+                      background: '#f8fafc',
+                      border: '1.5px solid #cbd5e1',
+                      color: '#0f172a',
                       fontSize: '14px',
                       outline: 'none',
                       boxSizing: 'border-box',
@@ -698,10 +850,10 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
                   <label
                     style={{
                       display: 'block',
-                      fontSize: '12px',
+                      fontSize: '12.5px',
                       fontWeight: 700,
                       marginBottom: '6px',
-                      color: '#cfe4fc',
+                      color: '#1e293b',
                     }}
                   >
                     Daya Listrik PLN
@@ -713,9 +865,9 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
                       width: '100%',
                       padding: '12px 14px',
                       borderRadius: '10px',
-                      background: '#09254c',
-                      border: '1px solid rgba(255,255,255,0.18)',
-                      color: '#fff',
+                      background: '#f8fafc',
+                      border: '1.5px solid #cbd5e1',
+                      color: '#0f172a',
                       fontSize: '14px',
                       outline: 'none',
                       boxSizing: 'border-box',
@@ -732,7 +884,7 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
 
               <div>
                 <label
-                  style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '6px', color: '#cfe4fc' }}
+                  style={{ display: 'block', fontSize: '12.5px', fontWeight: 700, marginBottom: '6px', color: '#1e293b' }}
                 >
                   Catatan Kebutuhan / Tipe Atap (Opsional)
                 </label>
@@ -745,9 +897,9 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
                     width: '100%',
                     padding: '10px 14px',
                     borderRadius: '10px',
-                    background: 'rgba(255,255,255,0.06)',
-                    border: '1px solid rgba(255,255,255,0.18)',
-                    color: '#fff',
+                    background: '#f8fafc',
+                    border: '1.5px solid #cbd5e1',
+                    color: '#0f172a',
                     fontSize: '13px',
                     outline: 'none',
                     resize: 'none',
@@ -764,20 +916,20 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
                   padding: '14px 20px',
                   borderRadius: '12px',
                   background: loading
-                    ? '#666'
-                    : 'linear-gradient(135deg, #087be8 0%, #16dbe0 100%)',
+                    ? '#94a3b8'
+                    : 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
                   color: '#fff',
                   border: 'none',
                   fontSize: '14px',
                   fontWeight: 800,
-                  letterSpacing: '0.5px',
+                  letterSpacing: '0.3px',
                   cursor: loading ? 'not-allowed' : 'pointer',
-                  boxShadow: '0 10px 25px rgba(8, 123, 232, 0.4)',
+                  boxShadow: '0 8px 20px rgba(2, 132, 199, 0.3)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: '8px',
-                  transition: 'transform 0.2s ease',
+                  transition: 'transform 0.2s ease, box-shadow 0.2s ease',
                 }}
               >
                 {loading ? 'Sedang Memproses...' : 'Kirim Permintaan Penawaran Resmi →'}
@@ -785,10 +937,10 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
 
               <div
                 style={{
-                  fontSize: '11px',
-                  color: 'rgba(255,255,255,0.5)',
+                  fontSize: '11.5px',
+                  color: '#64748b',
                   textAlign: 'center',
-                  marginTop: '4px',
+                  marginTop: '6px',
                 }}
               >
                 🛡️ Privasi data Anda terjamin. Tim engineer SUNBLIX akan menghubungi dalam 1x24 jam.
@@ -802,8 +954,9 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
                 width: '64px',
                 height: '64px',
                 borderRadius: '50%',
-                background: 'rgba(67, 217, 90, 0.15)',
-                border: '2px solid #43d95a',
+                background: '#ecfdf5',
+                border: '2px solid #10b981',
+                color: '#10b981',
                 display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -813,27 +966,27 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
             >
               ✓
             </div>
-            <h3 style={{ fontSize: '22px', fontWeight: 800, margin: '0 0 10px', color: '#fff' }}>
+            <h3 style={{ fontSize: '22px', fontWeight: 800, margin: '0 0 10px', color: '#031f45' }}>
               Permintaan Penawaran Berhasil!
             </h3>
-            <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.8)', lineHeight: 1.6, margin: '0 0 20px' }}>
+            <p style={{ fontSize: '14px', color: '#475569', lineHeight: 1.6, margin: '0 0 20px' }}>
               Terima kasih Bpk/Ibu <strong>{formData.name}</strong>. Tim spesialis teknis SUNBLIX sedang menyusun
               rincian proposal teknis untuk lokasi <strong>{formData.city}</strong>.
             </p>
 
             <div
               style={{
-                background: 'rgba(255,255,255,0.06)',
-                border: '1px dashed rgba(22, 219, 224, 0.4)',
+                background: '#f0f9ff',
+                border: '1.5px dashed #38bdf8',
                 borderRadius: '14px',
                 padding: '14px',
                 marginBottom: '24px',
               }}
             >
-              <span style={{ fontSize: '11px', color: '#cfe4fc', display: 'block', marginBottom: '4px' }}>
+              <span style={{ fontSize: '11px', color: '#0369a1', display: 'block', marginBottom: '4px', fontWeight: 700 }}>
                 NOMOR REFERENSI PENAWARAN:
               </span>
-              <strong style={{ fontSize: '18px', color: '#16dbe0', letterSpacing: '1px' }}>
+              <strong style={{ fontSize: '19px', color: '#0284c7', letterSpacing: '1px' }}>
                 {submittedData.quoteId || 'SBX-2026-CONFIRMED'}
               </strong>
             </div>
@@ -845,7 +998,7 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
                 style={{
                   padding: '14px',
                   borderRadius: '12px',
-                  background: 'linear-gradient(135deg, #087be8 0%, #16dbe0 100%)',
+                  background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
                   color: '#fff',
                   border: 'none',
                   fontSize: '14px',
@@ -855,7 +1008,7 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: '8px',
-                  boxShadow: '0 8px 20px rgba(8, 123, 232, 0.35)',
+                  boxShadow: '0 8px 20px rgba(2, 132, 199, 0.25)',
                 }}
               >
                 <span>📥 Unduh Ringkasan Penawaran (PDF)</span>
@@ -867,9 +1020,9 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
                 style={{
                   padding: '12px',
                   borderRadius: '12px',
-                  background: 'rgba(22, 219, 224, 0.12)',
-                  border: '1px solid rgba(22, 219, 224, 0.4)',
-                  color: '#16dbe0',
+                  background: '#f8fafc',
+                  border: '1.5px solid #0284c7',
+                  color: '#0284c7',
                   fontSize: '13px',
                   fontWeight: 700,
                   textAlign: 'center',
@@ -898,6 +1051,7 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: '8px',
+                  boxShadow: '0 8px 20px rgba(37, 211, 102, 0.25)',
                 }}
               >
                 <span>💬 Lanjut Hubungi via WhatsApp (Respon Cepat)</span>
@@ -908,10 +1062,11 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
                 style={{
                   padding: '12px',
                   borderRadius: '12px',
-                  background: 'transparent',
-                  color: 'rgba(255,255,255,0.7)',
-                  border: '1px solid rgba(255,255,255,0.2)',
+                  background: '#f1f5f9',
+                  color: '#475569',
+                  border: '1px solid #cbd5e1',
                   fontSize: '13px',
+                  fontWeight: 600,
                   cursor: 'pointer',
                 }}
               >

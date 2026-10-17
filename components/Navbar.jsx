@@ -33,6 +33,7 @@ export default function Navbar({ onOpenDrawer, onOpenQuote }) {
         </Link>
         <nav className="nav-menu">
           <a href={getHref('#solutions')}>Solutions</a>
+          <a href={getHref('#about')}>About Us</a>
           <a href={getHref('#products')}>Products</a>
           <a href={getHref('#how-it-works')}>How It Works</a>
           <a href={getHref('#why-sunblix')}>Why SUNBLIX</a>
@@ -48,6 +49,12 @@ export default function Navbar({ onOpenDrawer, onOpenQuote }) {
             className={pathname === '/partnership' ? 'is-active' : ''}
           >
             Partnership
+          </Link>
+          <Link
+            href="/faq"
+            className={pathname === '/faq' ? 'is-active' : ''}
+          >
+            F.A.Q
           </Link>
         </nav>
         <div className="nav-actions">

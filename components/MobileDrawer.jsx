@@ -98,6 +98,17 @@ export default function MobileDrawer({ isOpen, onClose, onOpenQuote }) {
             <span className="link-arrow">→</span>
           </a>
           <a
+            href="#about"
+            className="drawer-link"
+            onClick={(e) => {
+              e.preventDefault();
+              handleNavClick('#about');
+            }}
+          >
+            <span className="link-label">🏢 About Us</span>
+            <span className="link-arrow">→</span>
+          </a>
+          <a
             href="#products"
             className="drawer-link"
             onClick={(e) => {
@@ -166,6 +177,14 @@ export default function MobileDrawer({ isOpen, onClose, onOpenQuote }) {
             onClick={onClose}
           >
             <span className="link-label">🤝 Kemitraan Vendor</span>
+            <span className="link-arrow">→</span>
+          </Link>
+          <Link
+            href="/faq"
+            className={`drawer-link ${pathname === '/faq' ? 'is-active' : ''}`}
+            onClick={onClose}
+          >
+            <span className="link-label">❓ F.A.Q</span>
             <span className="link-arrow">→</span>
           </Link>
         </nav>

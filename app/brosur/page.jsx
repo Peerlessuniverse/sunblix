@@ -256,7 +256,7 @@ function SunblixKopSurat({ docNo }) {
   return (
     <div className="sunblix-kop-surat">
       <div className="kop-main-row">
-        {/* Left: Official Sunblix Brand Logo & Tagline */}
+        {/* Left: Official Sunblix Brand Logo */}
         <div className="kop-logo-col">
           <img
             src="/asset/logo.png"
@@ -265,46 +265,61 @@ function SunblixKopSurat({ docNo }) {
           />
         </div>
 
-        {/* Right: Corporate Contact Details with Blue Circular Icons */}
+        {/* Right: Corporate Contact Details matching uploaded official letterhead */}
         <div className="kop-contact-col">
-          <div className="kop-contact-item">
-            <span className="kop-icon-badge" aria-hidden="true">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24c1.12.37 2.33.57 3.57.57a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z" />
-              </svg>
-            </span>
-            <span className="kop-contact-text">+62 852 8858 1027</span>
+          <div className="kop-company-title">PT SUNBLIX ENERGI INDONESIA</div>
+          <div className="kop-address-row">
+            <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="#0066cc" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="kop-pin-icon">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            <span>Bintaro Business Centre, Jl. RC. Veteran No. 1-I, Bintaro, Jakarta Selatan 12330</span>
           </div>
-
-          <div className="kop-contact-item">
-            <span className="kop-icon-badge" aria-hidden="true">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+          <div className="kop-contacts-row">
+            <span className="kop-contact-item">
+              <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="#0066cc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="2" y1="12" x2="22" y2="12" />
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
               </svg>
+              <span>sunblix.id</span>
             </span>
-            <span className="kop-contact-text">hello@sunblix.id</span>
-          </div>
-
-          <div className="kop-contact-item kop-address-item">
-            <span className="kop-icon-badge" aria-hidden="true">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z" />
+            <span className="kop-sep">|</span>
+            <span className="kop-contact-item">
+              <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="#0066cc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
               </svg>
+              <span>021 7362 639</span>
             </span>
-            <div className="kop-contact-text kop-address-lines">
-              <div>Bintaro Business Centre, Jl RC. Veteran No. 1-I,</div>
-              <div>Bintaro, Jakarta Selatan 12330</div>
-            </div>
+            <span className="kop-sep">|</span>
+            <span className="kop-contact-item">
+              <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="#0066cc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+              </svg>
+              <span>085288581027</span>
+            </span>
+            <span className="kop-sep">|</span>
+            <span className="kop-contact-item">
+              <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="#0066cc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                <polyline points="22,6 12,13 2,6" />
+              </svg>
+              <span>hello@sunblix.id</span>
+            </span>
           </div>
         </div>
       </div>
 
-      {/* Full-width Solid Green Dividing Bar */}
-      <div className="kop-green-bar" />
+      {/* Tricolor Accent Bar (Blue 70%, Gold 20%, Green 10%) */}
+      <div className="kop-tricolor-bar">
+        <div className="bar-blue" />
+        <div className="bar-gold" />
+        <div className="bar-green" />
+      </div>
 
       {/* Centered Bold Underlined Reference Document Number */}
       <div className="kop-doc-number">
-        <u>{docNo || 'XXX.XXXX.XXX.XXX.XXX'}</u>
+        <u>{docNo || 'SBX/QTN/2026/001'}</u>
       </div>
     </div>
   );

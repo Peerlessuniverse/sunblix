@@ -5,6 +5,7 @@ import Navbar from '../components/Navbar';
 import MobileDrawer from '../components/MobileDrawer';
 import HeroScene from '../components/HeroScene';
 import PurposeScene from '../components/PurposeScene';
+import AboutHorizontalScrolly from '../components/AboutHorizontalScrolly';
 import ProductTiers from '../components/ProductTiers';
 import SunlightDiagram from '../components/SunlightDiagram';
 import WhySunblix from '../components/WhySunblix';
@@ -71,6 +72,9 @@ export default function HomePage() {
               <PurposeScene onOpenVideo={() => setVideoModalOpen(true)} />
             </div>
           </div>
+
+          {/* ABOUT US: HORIZONTAL SCROLLYTELLING */}
+          <AboutHorizontalScrolly onOpenQuote={() => handleOpenQuote(null)} />
 
           {/* SCENE 3: PRODUCTS */}
           <div className="scene-three" id="sceneThree" aria-label="Find Your SUNBLIX">

@@ -2321,7 +2321,7 @@ function BrochureGeneratorInner() {
           {(() => {
             const p4ChunksCount = Math.max(
               1,
-              Math.ceil(((quoteData.portfolios && quoteData.portfolios.length > 0 ? quoteData.portfolios : DEFAULT_PORTFOLIOS).length) / 4)
+              Math.ceil(((quoteData.portfolios && quoteData.portfolios.length > 0 ? quoteData.portfolios : DEFAULT_PORTFOLIOS).length) / 6)
             );
             const totalSheets = pagesOrder.filter((p) => p.enabled).length + (pagesOrder.some((p) => p.id === '4' && p.enabled) ? p4ChunksCount - 1 : 0);
 
@@ -2388,7 +2388,7 @@ function BrochureGeneratorInner() {
             const enabledPages = pagesOrder.filter((p) => p.enabled);
             const p4ChunksCount = Math.max(
               1,
-              Math.ceil(((quoteData.portfolios && quoteData.portfolios.length > 0 ? quoteData.portfolios : DEFAULT_PORTFOLIOS).length) / 4)
+              Math.ceil(((quoteData.portfolios && quoteData.portfolios.length > 0 ? quoteData.portfolios : DEFAULT_PORTFOLIOS).length) / 6)
             );
             const totalSheets = enabledPages.length + (enabledPages.some((p) => p.id === '4') ? p4ChunksCount - 1 : 0);
             const renderedCount =
@@ -3189,10 +3189,10 @@ function BrochureGeneratorInner() {
                 ? quoteData.portfolios
                 : DEFAULT_PORTFOLIOS;
 
-            // Chunk max 4 projek per lembar A4 agar layout tetap presisi dan tidak overflow
+            // Chunk max 6 projek per lembar A4 (2 kolom x 3 baris) agar layout optimal dan tidak kosong
             const portfolioChunks = [];
-            for (let i = 0; i < portfoliosList.length; i += 4) {
-              portfolioChunks.push(portfoliosList.slice(i, i + 4));
+            for (let i = 0; i < portfoliosList.length; i += 6) {
+              portfolioChunks.push(portfoliosList.slice(i, i + 6));
             }
             if (portfolioChunks.length === 0) {
               portfolioChunks.push([]);
@@ -3227,10 +3227,10 @@ function BrochureGeneratorInner() {
                         </p>
                       </div>
 
-                      {/* Grid Kartu Portofolio (Hingga 4 Projek per Lembar A4) */}
+                      {/* Grid Kartu Portofolio (Hingga 6 Projek per Lembar A4) */}
                       <div className="p4-portfolio-grid">
                         {chunk.map((proj, pIdx) => {
-                          const globalIdx = chunkIdx * 4 + pIdx;
+                          const globalIdx = chunkIdx * 6 + pIdx;
                           return (
                             <div key={proj.id || globalIdx} className="p4-card">
                               <div className="p4-card-img-wrap">

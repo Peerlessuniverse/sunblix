@@ -3898,17 +3898,6 @@
   object-position: center;
 }
 
-.p4-card.bento-tall.is-text-mode {
-  display: flex;
-  flex-direction: column;
-}
-
-.p4-card.bento-tall.is-text-mode .p4-card-img-wrap {
-  flex: 1 1 55%;
-  min-height: 150px;
-  max-height: 195px;
-}
-
 /* Bento Box: Wide / Landscape (2 Kolom x 1 Baris) — Sempurna untuk Foto Panorama Horisontal */
 .p4-card.bento-wide {
   grid-column: span 2;
@@ -3925,36 +3914,16 @@
   object-position: center;
 }
 
-.p4-card.bento-wide.is-text-mode {
-  display: flex;
-  flex-direction: row;
+.p4-card.bento-wide .p4-overlay-title {
+  font-size: 11.5px;
 }
 
-.p4-card.bento-wide.is-text-mode .p4-card-img-wrap {
-  width: 45%;
-  height: 100%;
-  min-height: 100%;
-  max-height: none;
-  flex-shrink: 0;
+.p4-card.bento-wide .p4-overlay-loc {
+  font-size: 8.5px;
 }
 
-.p4-card.bento-wide.is-text-mode .p4-card-body {
-  width: 55%;
-  padding: 8px 10px;
-  gap: 2.5px;
-}
-
-.p4-card.bento-wide.is-text-mode .p4-card-title {
-  font-size: 10px;
-}
-
-.p4-card.bento-wide.is-text-mode .p4-card-desc {
-  font-size: 7.2px;
-  line-height: 1.3;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+.p4-card.bento-wide .p4-overlay-specs {
+  font-size: 7.5px;
 }
 
 /* Bento Box: Normal (1 Kolom x 1 Baris) */
@@ -3964,39 +3933,23 @@
   min-height: 135px;
 }
 
-.p4-card.bento-normal.is-text-mode .p4-card-img-wrap {
-  min-height: 70px;
-  max-height: 78px;
-}
-
-.p4-card.bento-normal.is-text-mode .p4-card-body {
-  padding: 5px 7px;
+.p4-card.bento-normal .p4-card-overlay {
+  padding: 5px 8px;
   gap: 2px;
 }
 
-.p4-card.bento-normal.is-text-mode .p4-card-title {
+.p4-card.bento-normal .p4-overlay-title {
   font-size: 8.5px;
+  -webkit-line-clamp: 1;
 }
 
-.p4-card.bento-normal.is-text-mode .p4-card-meta {
+.p4-card.bento-normal .p4-overlay-loc {
+  font-size: 7px;
+}
+
+.p4-card.bento-normal .p4-overlay-specs {
   font-size: 6.5px;
-}
-
-.p4-card.bento-normal.is-text-mode .p4-card-specs-bar {
-  display: none;
-}
-
-.p4-card.bento-normal.is-text-mode .p4-card-desc {
-  font-size: 6.5px;
-  line-height: 1.25;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.p4-card.bento-normal .p4-card-stats-row {
-  display: none;
+  padding: 1.5px 4px;
 }
 
 /* 6 Projek per Lembar (Default 2 Kolom x 3 Baris) */
@@ -4083,123 +4036,117 @@
   height: 100%;
 }
 
-/* Mode Keterangan Teks: Dinamis tanpa ada ruang kosong putih */
+/* Mode Keterangan Teks: Foto Penuh dengan Overlay Transparansi 50% di Bagian Depan */
 .p4-card.is-text-mode {
-  display: flex;
-  flex-direction: column;
+  position: relative;
+  overflow: hidden;
   height: 100%;
+  display: block;
+  background: #0f172a;
 }
 
 .p4-card.is-text-mode .p4-card-img-wrap {
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  flex: 1 1 50%;
-  min-height: 120px;
-  max-height: 145px;
-  background: #0f172a;
+  height: 100%;
+  z-index: 1;
   overflow: hidden;
-  flex-shrink: 0;
+  background: #0f172a;
 }
 
 .p4-card.is-text-mode .p4-card-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   display: block;
 }
 
-.p4-card.is-text-mode .p4-card-body {
-  padding: 6px 8px 7px;
+.p4-card.is-text-mode .p4-card-img.is-contain {
+  object-fit: contain;
+  background: #ffffff;
+}
+
+/* Latar Belakang Transparansi 50% Posisikan di Depan Foto */
+.p4-card-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  background: rgba(3, 31, 69, 0.50); /* Transparansi 50% */
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  padding: 8px 10px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  flex: 1 1 50%;
   gap: 3px;
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+  box-sizing: border-box;
 }
 
-.p4-card.is-text-mode .p4-body-top-block {
-  display: flex;
-  flex-direction: column;
-  gap: 2.5px;
-}
-
-.p4-card.is-text-mode .p4-card-title {
-  font-size: 9px;
+/* 1. Judul Proyek */
+.p4-overlay-title {
+  font-size: 10.5px;
   font-weight: 800;
-  color: #031f45;
+  color: #ffffff;
+  line-height: 1.25;
   margin: 0;
-  line-height: 1.25;
-}
-
-.p4-card.is-text-mode .p4-card-meta {
-  font-size: 7px;
-  color: #64748b;
-  display: flex;
-  align-items: center;
-  gap: 3.5px;
-}
-
-.p4-meta-client {
-  font-weight: 600;
-  color: #1e293b;
-  display: inline-flex;
-  align-items: center;
-}
-
-.p4-meta-loc {
-  font-weight: 500;
-  color: #64748b;
-  display: inline-flex;
-  align-items: center;
-}
-
-.p4-meta-sep {
-  color: #cbd5e1;
-}
-
-.p4-card-specs-bar {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 3px;
-  padding: 2px 5px;
-  font-size: 6.8px;
-  color: #034870;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 3px;
-}
-
-.p4-specs-icon {
-  font-size: 7.5px;
-  flex-shrink: 0;
-}
-
-.p4-specs-text {
-  line-height: 1.15;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.p4-card.is-text-mode .p4-card-desc {
-  font-size: 6.8px;
-  line-height: 1.25;
-  color: #334155;
-  margin: 1px 0;
-  text-align: justify;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-.p4-card-stats-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 3.5px;
-  margin-top: auto;
-  padding-top: 2px;
+/* 2. Lokasi Proyek */
+.p4-overlay-meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.p4-overlay-loc {
+  font-size: 8px;
+  font-weight: 700;
+  color: #7dd3fc;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.75);
+  line-height: 1.2;
+}
+
+/* 3. Spesifikasi Sistem & Komponen */
+.p4-overlay-specs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(2, 132, 199, 0.35);
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  border-radius: 3px;
+  padding: 2.5px 6px;
+  font-size: 7.2px;
+  font-weight: 600;
+  color: #ffffff;
+  line-height: 1.15;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  box-sizing: border-box;
+}
+
+.p4-overlay-specs-icon {
+  font-size: 7.5px;
+  flex-shrink: 0;
+}
+
+.p4-overlay-specs-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Mode Foto Saja: Bebas Blur, Presisi Rasio Horisontal / Vertikal & Logo Sunblix */
@@ -4685,7 +4632,9 @@
   .p4-card.is-text-mode,
   .p4-photo-only-container,
   .p4-photo-only-logo-wrap,
-  .p4-photo-main-img {
+  .p4-photo-main-img,
+  .p4-card-overlay,
+  .p4-overlay-specs {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }

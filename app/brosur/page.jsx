@@ -1149,13 +1149,8 @@ function BrochureGeneratorInner() {
       updated[index] = {
         ...updated[index],
         title: '',
-        client: '',
         location: '',
-        category: '',
-        year: '',
         specs: '',
-        desc: '',
-        stats: [],
         photoOnly: true,
       };
       return { ...prev, portfolios: updated };
@@ -1169,17 +1164,8 @@ function BrochureGeneratorInner() {
       updated[index] = {
         ...updated[index],
         title: `Projek PLTS Portofolio #${index + 1}`,
-        client: 'PT Rekanan Mitra Energi',
-        location: 'Jakarta / Tangerang',
-        category: 'Commercial Rooftop',
-        year: '2026',
+        location: 'Jakarta / Jawa Barat',
         specs: 'Panel Surya Tier-1 · Smart Hybrid Inverter · BESS',
-        desc: 'Dokumentasi implementasi sistem tenaga surya terintegrasi dengan pemantauan performa real-time.',
-        stats: [
-          { label: 'Kapasitas', value: '15 kWp' },
-          { label: 'Est. Hemat', value: 'Rp 35 Jt/th' },
-          { label: 'Garansi', value: '25 Tahun' },
-        ],
         photoOnly: false,
       };
       return { ...prev, portfolios: updated };
@@ -2361,53 +2347,18 @@ function BrochureGeneratorInner() {
                     />
                   </div>
 
-                  <div className="form-row-2" style={{ marginBottom: 6 }}>
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Nama Klien / Instansi</label>
-                      <input
-                        type="text"
-                        className="form-input"
-                        value={port.client}
-                        onChange={(e) => handlePortfolioChange(portIdx, 'client', e.target.value)}
-                        placeholder="Contoh: PT Marga Bara Jaya"
-                      />
-                    </div>
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Lokasi Proyek</label>
-                      <input
-                        type="text"
-                        className="form-input"
-                        value={port.location}
-                        onChange={(e) => handlePortfolioChange(portIdx, 'location', e.target.value)}
-                        placeholder="Contoh: Sumatera Selatan"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="form-row-2" style={{ marginBottom: 6 }}>
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Kategori Proyek</label>
-                      <input
-                        type="text"
-                        className="form-input"
-                        value={port.category}
-                        onChange={(e) => handlePortfolioChange(portIdx, 'category', e.target.value)}
-                        placeholder="Industrial / Commercial / Residential"
-                      />
-                    </div>
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Tahun Pelaksanaan</label>
-                      <input
-                        type="text"
-                        className="form-input"
-                        value={port.year}
-                        onChange={(e) => handlePortfolioChange(portIdx, 'year', e.target.value)}
-                        placeholder="Contoh: 2026"
-                      />
-                    </div>
-                  </div>
-
                   <div className="form-group" style={{ marginBottom: 6 }}>
+                    <label className="form-label">Lokasi Proyek</label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={port.location}
+                      onChange={(e) => handlePortfolioChange(portIdx, 'location', e.target.value)}
+                      placeholder="Contoh: Sumatera Selatan"
+                    />
+                  </div>
+
+                  <div className="form-group" style={{ marginBottom: 8 }}>
                     <label className="form-label">Spesifikasi Sistem & Komponen</label>
                     <input
                       type="text"
@@ -2415,17 +2366,6 @@ function BrochureGeneratorInner() {
                       value={port.specs}
                       onChange={(e) => handlePortfolioChange(portIdx, 'specs', e.target.value)}
                       placeholder="Contoh: 12x 585 Wp Bifacial · Inverter 6 kW · Baterai 5.12 kWh"
-                    />
-                  </div>
-
-                  <div className="form-group" style={{ marginBottom: 8 }}>
-                    <label className="form-label">Deskripsi Ringkas Proyek</label>
-                    <textarea
-                      rows={2}
-                      className="form-textarea"
-                      value={port.desc}
-                      onChange={(e) => handlePortfolioChange(portIdx, 'desc', e.target.value)}
-                      placeholder="Uraian manfaat dan keunggulan sistem yang terpasang..."
                     />
                   </div>
 
@@ -2583,33 +2523,6 @@ function BrochureGeneratorInner() {
                           {port.imageUrl?.startsWith('data:') ? 'Foto Terupload' : 'Foto Aktif'}
                         </span>
                       </div>
-                    </div>
-                  </div>
-
-                  {/* Parameter Highlight (Stats 1, 2, 3) */}
-                  <div className="portfolio-stats-editor" style={{ marginTop: 8 }}>
-                    <label className="form-label" style={{ fontSize: '10.5px' }}>
-                      Highlight Parameter (3 Metrik Ringkas):
-                    </label>
-                    <div className="form-row-3-stats">
-                      {(port.stats || []).map((st, stIdx) => (
-                        <div key={stIdx} className="stat-edit-col">
-                          <input
-                            type="text"
-                            className="form-input stat-edit-lbl"
-                            value={st.label}
-                            onChange={(e) => handlePortfolioStatChange(portIdx, stIdx, 'label', e.target.value)}
-                            placeholder="Label"
-                          />
-                          <input
-                            type="text"
-                            className="form-input stat-edit-val"
-                            value={st.value}
-                            onChange={(e) => handlePortfolioStatChange(portIdx, stIdx, 'value', e.target.value)}
-                            placeholder="Nilai"
-                          />
-                        </div>
-                      ))}
                     </div>
                   </div>
                 </div>
@@ -3557,9 +3470,8 @@ function BrochureGeneratorInner() {
                           }
                           const hasTxt = Boolean(
                             (item.title && item.title.trim()) ||
-                            (item.client && item.client.trim()) ||
-                            (item.specs && item.specs.trim()) ||
-                            (item.desc && item.desc.trim())
+                            (item.location && item.location.trim()) ||
+                            (item.specs && item.specs.trim())
                           );
                           if (!hasTxt || item.photoOnly) {
                             if (item.fitMode === 'contain') return 'tall';
@@ -3575,13 +3487,8 @@ function BrochureGeneratorInner() {
                               const globalIdx = chunkIdx * itemsPerPage + pIdx;
                               const hasText = Boolean(
                                 (proj.title && proj.title.trim()) ||
-                                (proj.client && proj.client.trim()) ||
                                 (proj.location && proj.location.trim()) ||
-                                (proj.category && proj.category.trim()) ||
-                                (proj.year && proj.year.trim()) ||
-                                (proj.specs && proj.specs.trim()) ||
-                                (proj.desc && proj.desc.trim()) ||
-                                (proj.stats && proj.stats.some((s) => (s.label && s.label.trim()) || (s.value && s.value.trim())))
+                                (proj.specs && proj.specs.trim())
                               );
                               const isPhotoOnly = proj.photoOnly || !hasText;
                               const fitMode = proj.fitMode || 'cover';
@@ -3622,69 +3529,49 @@ function BrochureGeneratorInner() {
 
                               return (
                                 <div key={proj.id || globalIdx} className={`p4-card is-text-mode ${isBento ? `bento-${bentoSpan}` : ''}`}>
-                              <div className="p4-card-img-wrap">
-                                <img
-                                  key={proj.imageUrl || `card-img-${globalIdx}`}
-                                  src={normalizeImageUrl(proj.imageUrl) || '/asset/sunlight_house.jpg'}
-                                  alt={proj.title}
-                                  className="p4-card-img"
-                                  referrerPolicy="no-referrer"
-                                  loading="eager"
-                                  onError={(e) => {
-                                    if (e.target.src && !e.target.src.includes('sunlight_house.jpg')) {
-                                      e.target.src = '/asset/sunlight_house.jpg';
-                                    }
-                                  }}
-                                />
-                                <div className="p4-card-category-badge">{proj.category || 'Solar Project'}</div>
-                                <div className="p4-card-year-badge">{proj.year || '2026'}</div>
-                              </div>
-
-                              <div className="p4-card-body">
-                                <div className="p4-body-top-block">
-                                  <h3 className="p4-card-title">{proj.title}</h3>
-
-                                  <div className="p4-card-meta">
-                                    <span className="p4-meta-client">
-                                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2.5" style={{ marginRight: 3, verticalAlign: 'middle' }}>
-                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                                        <circle cx="12" cy="7" r="4" />
-                                      </svg>
-                                      {proj.client}
-                                    </span>
-                                    <span className="p4-meta-sep">•</span>
-                                    <span className="p4-meta-loc">
-                                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2.5" style={{ marginRight: 3, verticalAlign: 'middle' }}>
-                                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                                        <circle cx="12" cy="10" r="3" />
-                                      </svg>
-                                      {proj.location}
-                                    </span>
+                                  {/* Foto Utama Penuh dan Lengkap Memenuhi Kotak */}
+                                  <div className="p4-card-img-wrap">
+                                    <img
+                                      key={proj.imageUrl || `card-img-${globalIdx}`}
+                                      src={imgUrl}
+                                      alt={proj.title || 'Portofolio SUNBLIX'}
+                                      className={`p4-card-img is-${fitMode}`}
+                                      referrerPolicy="no-referrer"
+                                      loading="eager"
+                                      onError={(e) => {
+                                        if (e.target.src && !e.target.src.includes('sunlight_house.jpg')) {
+                                          e.target.src = '/asset/sunlight_house.jpg';
+                                        }
+                                      }}
+                                    />
                                   </div>
 
-                                  <div className="p4-card-specs-bar">
-                                    <span className="p4-specs-icon">⚡</span>
-                                    <span className="p4-specs-text">{proj.specs}</span>
-                                  </div>
+                                  {/* Latar Belakang Transparansi 50% di Depan Foto Berisi 3 Keterangan */}
+                                  <div className="p4-card-overlay">
+                                    {proj.title && <h3 className="p4-overlay-title">{proj.title}</h3>}
 
-                                  <p className="p4-card-desc">{proj.desc}</p>
-                                </div>
-
-                                {/* 3 Metric Pills */}
-                                {proj.stats && proj.stats.length > 0 && (
-                                  <div className="p4-card-stats-row">
-                                    {proj.stats.map((st, stIdx) => (
-                                      <div key={stIdx} className="p4-stat-pill">
-                                        <span className="p4-stat-lbl">{st.label}</span>
-                                        <strong className="p4-stat-val">{st.value}</strong>
+                                    {proj.location && (
+                                      <div className="p4-overlay-meta">
+                                        <span className="p4-overlay-loc">
+                                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" strokeWidth="2.5" style={{ marginRight: 3, verticalAlign: 'middle', flexShrink: 0 }}>
+                                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                                            <circle cx="12" cy="10" r="3" />
+                                          </svg>
+                                          {proj.location}
+                                        </span>
                                       </div>
-                                    ))}
+                                    )}
+
+                                    {proj.specs && (
+                                      <div className="p4-overlay-specs">
+                                        <span className="p4-overlay-specs-icon">⚡</span>
+                                        <span className="p4-overlay-specs-text">{proj.specs}</span>
+                                      </div>
+                                    )}
                                   </div>
-                                )}
-                              </div>
-                            </div>
-                          );
-                        })}
+                                </div>
+                              );
+                            })}
                       </div>
                     );
                   })()}

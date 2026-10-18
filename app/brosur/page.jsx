@@ -1110,26 +1110,40 @@ function BrochureGeneratorInner() {
   };
 
   const handlePortfolioAdd = () => {
+    const newId = `port_${Date.now()}`;
     setQuoteData((prev) => {
       const currentPorts = prev.portfolios || DEFAULT_PORTFOLIOS;
       const newPort = {
-        id: `port_${Date.now()}`,
-        title: 'PLTS Rooftop Sistem Baru',
-        client: 'Klien Proyek Baru',
-        location: 'Indonesia',
-        category: 'Commercial / Residential',
-        specs: 'Panel Surya Tier-1 · Inverter Smart Hybrid · BESS Lithium',
+        id: newId,
+        title: `Projek PLTS Portofolio #${currentPorts.length + 1}`,
+        client: 'Nama Klien / Perusahaan',
+        location: 'Kota / Lokasi Proyek',
+        category: 'Commercial Rooftop',
+        specs: 'Panel Surya Tier-1 · Smart Hybrid Inverter · BESS',
         year: new Date().getFullYear().toString(),
-        desc: 'Deskripsi detail instalasi sistem PLTS terintegrasi dan performa penghematan energi...',
+        desc: 'Pemasangan sistem tenaga surya terintegrasi dengan performa efisiensi tinggi serta pemantauan energi mandiri.',
         imageUrl: '/asset/sunlight_house.jpg',
         stats: [
-          { label: 'Kapasitas', value: '10 kWp' },
-          { label: 'Produksi', value: '~1.000 kWh/bln' },
+          { label: 'Kapasitas', value: '20 kWp' },
+          { label: 'Est. Hemat', value: 'Rp 45 Jt/th' },
           { label: 'Garansi', value: '25 Tahun' },
         ],
       };
       return { ...prev, portfolios: [...currentPorts, newPort] };
     });
+
+    // Buka tab Halaman 4 jika sedang berada di tab halaman lain agar pengguna langsung melihat perubahannya
+    if (activePage !== 'all' && activePage !== '4') {
+      setActivePage('4');
+    }
+
+    // Scroll otomatis pada sidebar ke kartu projek baru yang baru ditambahkan
+    setTimeout(() => {
+      const el = document.getElementById(`portfolio-editor-card-${newId}`);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 120);
   };
 
   const handlePortfolioRemove = (index) => {
@@ -2101,7 +2115,11 @@ function BrochureGeneratorInner() {
 
             <div className="portfolio-editor-list">
               {(quoteData.portfolios || DEFAULT_PORTFOLIOS).map((port, portIdx) => (
-                <div key={port.id || portIdx} className="portfolio-item-card">
+                <div
+                  key={port.id || portIdx}
+                  id={`portfolio-editor-card-${port.id || portIdx}`}
+                  className="portfolio-item-card"
+                >
                   <div className="sph-item-header">
                     <span className="sph-item-num">
                       #{portIdx + 1} • {port.title}
@@ -2300,65 +2318,83 @@ function BrochureGeneratorInner() {
         {/* RIGHT PANEL: LIVE HIGH-FIDELITY BROCHURE PREVIEW */}
         <main className={`generator-preview-stage ${mobileTab === 'editor' ? 'mobile-hidden' : ''}`}>
           {/* PREVIEW CONTROLS TOOLBAR */}
-          <div className="preview-controls-bar print-hide">
-            <div className="page-tab-group">
-              <button
-                type="button"
-                className={`page-tab-btn ${activePage === 'all' ? 'is-active' : ''}`}
-                onClick={() => setActivePage('all')}
-              >
-                📄 Semua ({pagesOrder.filter((p) => p.enabled).length} Hal)
-              </button>
-              {pagesOrder.map((page, idx) => (
-                <button
-                  key={page.id}
-                  type="button"
-                  disabled={!page.enabled}
-                  className={`page-tab-btn ${activePage === page.id ? 'is-active' : ''} ${!page.enabled ? 'is-disabled' : ''}`}
-                  onClick={() => setActivePage(page.id)}
-                  title={!page.enabled ? 'Halaman ini dinonaktifkan di pengaturan' : `Tampilkan urutan ke-${idx + 1}`}
-                >
-                  {idx + 1}. {page.shortTitle}
-                </button>
-              ))}
-            </div>
+          {(() => {
+            const p4ChunksCount = Math.max(
+              1,
+              Math.ceil(((quoteData.portfolios && quoteData.portfolios.length > 0 ? quoteData.portfolios : DEFAULT_PORTFOLIOS).length) / 4)
+            );
+            const totalSheets = pagesOrder.filter((p) => p.enabled).length + (pagesOrder.some((p) => p.id === '4' && p.enabled) ? p4ChunksCount - 1 : 0);
 
-            <div className="zoom-group">
-              <span>Zoom:</span>
-              <button
-                type="button"
-                className="zoom-btn"
-                onClick={() => setZoomScale((prev) => Math.max(0.6, prev - 0.1))}
-                title="Perkecil"
-              >
-                -
-              </button>
-              <span style={{ minWidth: '40px', textAlign: 'center', fontWeight: 700 }}>
-                {Math.round(zoomScale * 100)}%
-              </span>
-              <button
-                type="button"
-                className="zoom-btn"
-                onClick={() => setZoomScale((prev) => Math.min(1.4, prev + 0.1))}
-                title="Perbesar"
-              >
-                +
-              </button>
-              <button
-                type="button"
-                className="zoom-btn"
-                style={{ width: 'auto', padding: '0 8px', fontSize: '11px' }}
-                onClick={() => setZoomScale(1)}
-              >
-                Reset
-              </button>
-            </div>
-          </div>
+            return (
+              <div className="preview-controls-bar print-hide">
+                <div className="page-tab-group">
+                  <button
+                    type="button"
+                    className={`page-tab-btn ${activePage === 'all' ? 'is-active' : ''}`}
+                    onClick={() => setActivePage('all')}
+                  >
+                    📄 Semua ({totalSheets} Hal)
+                  </button>
+                  {pagesOrder.map((page, idx) => (
+                    <button
+                      key={page.id}
+                      type="button"
+                      disabled={!page.enabled}
+                      className={`page-tab-btn ${activePage === page.id ? 'is-active' : ''} ${!page.enabled ? 'is-disabled' : ''}`}
+                      onClick={() => setActivePage(page.id)}
+                      title={!page.enabled ? 'Halaman ini dinonaktifkan di pengaturan' : `Tampilkan urutan ke-${idx + 1}`}
+                    >
+                      {idx + 1}. {page.shortTitle}{page.id === '4' && p4ChunksCount > 1 ? ` (${p4ChunksCount} Lembar)` : ''}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="zoom-group">
+                  <span>Zoom:</span>
+                  <button
+                    type="button"
+                    className="zoom-btn"
+                    onClick={() => setZoomScale((prev) => Math.max(0.6, prev - 0.1))}
+                    title="Perkecil"
+                  >
+                    -
+                  </button>
+                  <span style={{ minWidth: '40px', textAlign: 'center', fontWeight: 700 }}>
+                    {Math.round(zoomScale * 100)}%
+                  </span>
+                  <button
+                    type="button"
+                    className="zoom-btn"
+                    onClick={() => setZoomScale((prev) => Math.min(1.4, prev + 0.1))}
+                    title="Perbesar"
+                  >
+                    +
+                  </button>
+                  <button
+                    type="button"
+                    className="zoom-btn"
+                    style={{ width: 'auto', padding: '0 8px', fontSize: '11px' }}
+                    onClick={() => setZoomScale(1)}
+                  >
+                    Reset
+                  </button>
+                </div>
+              </div>
+            );
+          })()}
 
           {/* A4 CANVAS CONTAINER */}
           {(() => {
             const enabledPages = pagesOrder.filter((p) => p.enabled);
-            const renderedCount = activePage === 'all' ? enabledPages.length : 1;
+            const p4ChunksCount = Math.max(
+              1,
+              Math.ceil(((quoteData.portfolios && quoteData.portfolios.length > 0 ? quoteData.portfolios : DEFAULT_PORTFOLIOS).length) / 4)
+            );
+            const totalSheets = enabledPages.length + (enabledPages.some((p) => p.id === '4') ? p4ChunksCount - 1 : 0);
+            const renderedCount =
+              activePage === 'all'
+                ? totalSheets
+                : (activePage === '4' ? p4ChunksCount : 1);
             const heightDiff =
               zoomScale < 1
                 ? Math.round((renderedCount * 1123 + Math.max(0, renderedCount - 1) * 28) * (1 - zoomScale))
@@ -3148,114 +3184,122 @@ function BrochureGeneratorInner() {
           }
 
           if (page.id === '4') {
-            const portfoliosList = quoteData.portfolios || DEFAULT_PORTFOLIOS;
-            return (
-              <section key="page4" className="a4-sheet" id="brosurPage4">
-                <div className="p4-portfolio-document">
-                  {/* Top Flow Header */}
-                  <div>
-                    {/* Kop Surat Resmi PT SUNBLIX ENERGI INDONESIA */}
-                    <SunblixKopSurat docNo={quoteData.docNo} hideDocNumber={true} />
+            const portfoliosList =
+              quoteData.portfolios && quoteData.portfolios.length > 0
+                ? quoteData.portfolios
+                : DEFAULT_PORTFOLIOS;
 
-                    {/* Header Halaman Portofolio */}
-                    <div className="p4-portfolio-header">
-                      <div className="p4-header-top">
-                        <span className="p4-header-badge">PORTFOLIO & TRACK RECORD</span>
-                        <span className="p4-header-docno">{quoteData.docNo || 'SBX/SPH/X/2026/001'}</span>
-                      </div>
-                      <h2 className="p4-portfolio-title">REKAM JEJAK & PORTOFOLIO PROYEK</h2>
-                      <p className="p4-portfolio-subtitle">
-                        Dokumentasi implementasi Pembangkit Listrik Tenaga Surya (PLTS) dan Battery Energy Storage System (BESS) terintegrasi yang telah terpasang dan beroperasi andal.
-                      </p>
-                    </div>
+            // Chunk max 4 projek per lembar A4 agar layout tetap presisi dan tidak overflow
+            const portfolioChunks = [];
+            for (let i = 0; i < portfoliosList.length; i += 4) {
+              portfolioChunks.push(portfoliosList.slice(i, i + 4));
+            }
+            if (portfolioChunks.length === 0) {
+              portfolioChunks.push([]);
+            }
 
-                    {/* Grid Kartu Portofolio (2x2 Layout Pas di Lembar A4) */}
-                    <div className="p4-portfolio-grid">
-                      {portfoliosList.slice(0, 4).map((proj, pIdx) => (
-                        <div key={proj.id || pIdx} className="p4-card">
-                          <div className="p4-card-img-wrap">
-                            <img
-                              src={proj.imageUrl || '/asset/sunlight_house.jpg'}
-                              alt={proj.title}
-                              className="p4-card-img"
-                              onError={(e) => {
-                                e.target.src = '/asset/sunlight_house.jpg';
-                              }}
-                            />
-                            <div className="p4-card-category-badge">{proj.category || 'Solar Project'}</div>
-                            <div className="p4-card-year-badge">{proj.year || '2026'}</div>
-                          </div>
+            return portfolioChunks.map((chunk, chunkIdx) => {
+              const partSuffix =
+                portfolioChunks.length > 1
+                  ? ` — BAGIAN ${chunkIdx + 1} DARI ${portfolioChunks.length}`
+                  : '';
+              const sheetId = chunkIdx === 0 ? 'brosurPage4' : `brosurPage4_part${chunkIdx + 1}`;
 
-                          <div className="p4-card-body">
-                            <h3 className="p4-card-title">{proj.title}</h3>
+              return (
+                <section key={`page4-chunk-${chunkIdx}`} className="a4-sheet" id={sheetId}>
+                  <div className="p4-portfolio-document">
+                    {/* Top Flow Header */}
+                    <div>
+                      {/* Kop Surat Resmi PT SUNBLIX ENERGI INDONESIA */}
+                      <SunblixKopSurat docNo={quoteData.docNo} hideDocNumber={true} />
 
-                            <div className="p4-card-meta">
-                              <span className="p4-meta-client">
-                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2.5" style={{ marginRight: 3, verticalAlign: 'middle' }}>
-                                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                                  <circle cx="12" cy="7" r="4" />
-                                </svg>
-                                {proj.client}
-                              </span>
-                              <span className="p4-meta-sep">•</span>
-                              <span className="p4-meta-loc">
-                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2.5" style={{ marginRight: 3, verticalAlign: 'middle' }}>
-                                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                                  <circle cx="12" cy="10" r="3" />
-                                </svg>
-                                {proj.location}
-                              </span>
-                            </div>
-
-                            <div className="p4-card-specs-bar">
-                              <span className="p4-specs-icon">⚡</span>
-                              <span className="p4-specs-text">{proj.specs}</span>
-                            </div>
-
-                            <p className="p4-card-desc">{proj.desc}</p>
-
-                            {/* 3 Metric Pills */}
-                            {proj.stats && proj.stats.length > 0 && (
-                              <div className="p4-card-stats-row">
-                                {proj.stats.map((st, stIdx) => (
-                                  <div key={stIdx} className="p4-stat-pill">
-                                    <span className="p4-stat-lbl">{st.label}</span>
-                                    <strong className="p4-stat-val">{st.value}</strong>
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-                          </div>
+                      {/* Header Halaman Portofolio */}
+                      <div className="p4-portfolio-header">
+                        <div className="p4-header-top">
+                          <span className="p4-header-badge">
+                            PORTFOLIO & TRACK RECORD{partSuffix}
+                          </span>
+                          <span className="p4-header-docno">{quoteData.docNo || 'SBX/SPH/X/2026/001'}</span>
                         </div>
-                      ))}
+                        <h2 className="p4-portfolio-title">REKAM JEJAK & PORTOFOLIO PROYEK</h2>
+                        <p className="p4-portfolio-subtitle">
+                          Dokumentasi implementasi Pembangkit Listrik Tenaga Surya (PLTS) dan Battery Energy Storage System (BESS) terintegrasi yang telah terpasang dan beroperasi andal.
+                        </p>
+                      </div>
+
+                      {/* Grid Kartu Portofolio (Hingga 4 Projek per Lembar A4) */}
+                      <div className="p4-portfolio-grid">
+                        {chunk.map((proj, pIdx) => {
+                          const globalIdx = chunkIdx * 4 + pIdx;
+                          return (
+                            <div key={proj.id || globalIdx} className="p4-card">
+                              <div className="p4-card-img-wrap">
+                                <img
+                                  src={proj.imageUrl || '/asset/sunlight_house.jpg'}
+                                  alt={proj.title}
+                                  className="p4-card-img"
+                                  onError={(e) => {
+                                    e.target.src = '/asset/sunlight_house.jpg';
+                                  }}
+                                />
+                                <div className="p4-card-category-badge">{proj.category || 'Solar Project'}</div>
+                                <div className="p4-card-year-badge">{proj.year || '2026'}</div>
+                              </div>
+
+                              <div className="p4-card-body">
+                                <h3 className="p4-card-title">{proj.title}</h3>
+
+                                <div className="p4-card-meta">
+                                  <span className="p4-meta-client">
+                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2.5" style={{ marginRight: 3, verticalAlign: 'middle' }}>
+                                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                      <circle cx="12" cy="7" r="4" />
+                                    </svg>
+                                    {proj.client}
+                                  </span>
+                                  <span className="p4-meta-sep">•</span>
+                                  <span className="p4-meta-loc">
+                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2.5" style={{ marginRight: 3, verticalAlign: 'middle' }}>
+                                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                                      <circle cx="12" cy="10" r="3" />
+                                    </svg>
+                                    {proj.location}
+                                  </span>
+                                </div>
+
+                                <div className="p4-card-specs-bar">
+                                  <span className="p4-specs-icon">⚡</span>
+                                  <span className="p4-specs-text">{proj.specs}</span>
+                                </div>
+
+                                <p className="p4-card-desc">{proj.desc}</p>
+
+                                {/* 3 Metric Pills */}
+                                {proj.stats && proj.stats.length > 0 && (
+                                  <div className="p4-card-stats-row">
+                                    {proj.stats.map((st, stIdx) => (
+                                      <div key={stIdx} className="p4-stat-pill">
+                                        <span className="p4-stat-lbl">{st.label}</span>
+                                        <strong className="p4-stat-val">{st.value}</strong>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Footer Garis Batas Bawah Sesuai Standar Brosur (Tanpa Teks / Strip Footer) */}
+                    <div className="p4-portfolio-footer-wrap">
+                      <div className="p4-portfolio-footer" />
                     </div>
                   </div>
-
-                  {/* Bottom Trust Strip & Footer */}
-                  <div className="p4-bottom-container">
-                    <div className="p4-trust-strip">
-                      <div className="p4-trust-item">
-                        <span className="p4-trust-icon">🛡️</span>
-                        <span>Garansi Resmi Pabrikan s/d 25 Tahun</span>
-                      </div>
-                      <div className="p4-trust-sep">|</div>
-                      <div className="p4-trust-item">
-                        <span className="p4-trust-icon">⚙️</span>
-                        <span>Tim EPC Bersertifikat K3 & Standar PUIL</span>
-                      </div>
-                      <div className="p4-trust-sep">|</div>
-                      <div className="p4-trust-item">
-                        <span className="p4-trust-icon">📱</span>
-                        <span>24/7 Smart Cloud IoT Monitoring</span>
-                      </div>
-                    </div>
-
-                    {/* Footer Garis Batas Bawah Sesuai Standar Brosur */}
-                    <div className="p4-portfolio-footer" />
-                  </div>
-                </div>
-              </section>
-            );
+                </section>
+              );
+            });
           }
 
                   return null;

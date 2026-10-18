@@ -3854,8 +3854,8 @@
 .p4-portfolio-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin-top: 4px;
+  gap: 12px;
+  margin-top: 6px;
   margin-bottom: 6px;
 }
 
@@ -3874,7 +3874,7 @@
 .p4-card-img-wrap {
   position: relative;
   width: 100%;
-  height: 108px;
+  height: 114px;
   background: #0f172a;
   overflow: hidden;
 }
@@ -4020,38 +4020,10 @@
   white-space: nowrap;
 }
 
-/* Bottom Trust Strip & Footer */
-.p4-bottom-container {
-  margin-top: 4px;
-}
-
-.p4-trust-strip {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  background: #f8fafc;
-  border: 1px solid #cbd5e1;
-  border-radius: 4px;
-  padding: 4px 10px;
-  font-size: 7.5px;
-  font-weight: 700;
-  color: #031f45;
-  margin-bottom: 4px;
-}
-
-.p4-trust-item {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.p4-trust-icon {
-  font-size: 9px;
-}
-
-.p4-trust-sep {
-  color: #cbd5e1;
+/* Bottom Footer (Clean Border Line Only) */
+.p4-portfolio-footer-wrap {
+  margin-top: auto;
+  padding-top: 10px;
 }
 
 .p4-portfolio-footer {

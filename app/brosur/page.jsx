@@ -996,10 +996,44 @@ function BrochureGeneratorInner() {
     e.target.value = '';
   };
 
-  // Financial Calculations with Tiered Discount (Max 8%)
+  // Parser for currency and numeric text values (e.g. "Rp 177.200.000", "5.000.000", 5000000)
+  const parsePriceNumber = (val) => {
+    if (typeof val === 'number') return isNaN(val) ? 0 : val;
+    if (!val || typeof val !== 'string') return 0;
+    const cleaned = val.replace(/[^0-9]/g, '');
+    if (!cleaned) return 0;
+    const num = parseInt(cleaned, 10);
+    return isNaN(num) ? 0 : num;
+  };
+
+  // Calculate subtotal for each SPH section (A s/d E)
+  const getSectionSubtotal = (sec) => {
+    if (!sec) return 0;
+    const headerNum = parsePriceNumber(sec.priceText);
+    const itemsNum = (sec.items || []).reduce((acc, it) => {
+      const rawPrice = it.priceText !== undefined && it.priceText !== '' ? it.priceText : it.unitPrice;
+      const p = parsePriceNumber(rawPrice);
+      const q = Number(it.qty) || 1;
+      return acc + (p * q);
+    }, 0);
+
+    // If header has explicit price (> 0), use it; otherwise fallback to items sum
+    if (headerNum > 0) return headerNum;
+    return itemsNum;
+  };
+
+  // Financial Calculations: Automatically sum sections A, B, C, D, E (Material Utama, Pendukung, Instalasi, Tambahan, Pengiriman)
+  const sectionsSubtotal = useMemo(() => {
+    const secs = ensureSections(quoteData);
+    return secs.reduce((acc, sec) => acc + getSectionSubtotal(sec), 0);
+  }, [quoteData.sections, quoteData.items]);
+
   const subtotal = useMemo(() => {
-    return quoteData.items.reduce((acc, item) => acc + (item.qty * item.unitPrice), 0);
-  }, [quoteData.items]);
+    if (sectionsSubtotal > 0) return sectionsSubtotal;
+    const itemsTotal = (quoteData.items || []).reduce((acc, item) => acc + (item.qty * (item.unitPrice || 0)), 0);
+    if (itemsTotal > 0) return itemsTotal;
+    return quoteData.unitBasePrice || 177200000;
+  }, [sectionsSubtotal, quoteData.items, quoteData.unitBasePrice]);
 
   const discountRate = useMemo(() => {
     return Math.min(8, Math.max(0, Number(discountPercent) || 0));
@@ -2510,10 +2544,10 @@ function BrochureGeneratorInner() {
           if (page.id === '3') {
             const currentSections = ensureSections(quoteData);
             const packageCount = Number(quoteData.packageCount) || 12;
-            const currentUnitBasePrice = quoteData.unitBasePrice !== undefined ? quoteData.unitBasePrice : subtotalAfterDiscount;
-            const currentUnitPpn = quoteData.unitPpn !== undefined ? quoteData.unitPpn : (includePpn ? Math.round(currentUnitBasePrice * 0.11) : 0);
-            const currentUnitTotal = quoteData.unitTotalPrice !== undefined ? quoteData.unitTotalPrice : (currentUnitBasePrice + currentUnitPpn);
-            const currentGrandTotal = quoteData.totalOffer !== undefined ? quoteData.totalOffer : (currentUnitTotal * packageCount);
+            const currentUnitBasePrice = subtotalAfterDiscount;
+            const currentUnitPpn = includePpn ? Math.round(currentUnitBasePrice * 0.11) : 0;
+            const currentUnitTotal = currentUnitBasePrice + currentUnitPpn;
+            const currentGrandTotal = currentUnitTotal * packageCount;
             const termsList = quoteData.terms || quoteData.notes || [];
 
             return (
@@ -2620,7 +2654,16 @@ function BrochureGeneratorInner() {
                                 <td style={{ textAlign: 'center', fontWeight: 'bold' }}>{sec.code}</td>
                                 <td style={{ fontWeight: 'bold' }}>{sec.title}</td>
                                 <td colSpan={4}></td>
-                                <td style={{ textAlign: 'right', fontWeight: 'bold' }}>{sec.priceText}</td>
+                                <td style={{ textAlign: 'right', fontWeight: 'bold' }}>
+                                  {(() => {
+                                    if (sec.priceText && sec.priceText !== '-' && sec.priceText !== '') {
+                                      return sec.priceText;
+                                    }
+                                    const secTotal = getSectionSubtotal(sec);
+                                    if (secTotal > 0) return formatRupiah(secTotal);
+                                    return sec.priceText || '-';
+                                  })()}
+                                </td>
                               </tr>
                               {sec.items.map((it, itIdx) => {
                                 const itemNo = runningNo++;
@@ -2680,9 +2723,16 @@ function BrochureGeneratorInner() {
                     <div className="p3-sph-terms-box">
                       <div className="p3-sph-terms-title">Ketentuan:</div>
                       <ol className="p3-sph-terms-list">
-                        {termsList.map((t, idx) => (
-                          <li key={idx}>{t}</li>
-                        ))}
+                        {termsList.map((t, idx) => {
+                          let formattedTerm = t;
+                          if (t.includes('50% uang muka') && t.includes('40% setelah material')) {
+                            const dp50 = Math.round(currentGrandTotal * 0.5);
+                            const mid40 = Math.round(currentGrandTotal * 0.4);
+                            const fin10 = currentGrandTotal - dp50 - mid40;
+                            formattedTerm = `Termin pembayaran (dari total nilai penawaran): 50% uang muka sebelum pengiriman material (${formatRupiah(dp50)}); 40% setelah material tiba di lokasi (${formatRupiah(mid40)}); 10% setelah instalasi & commissioning selesai (${formatRupiah(fin10)}).`;
+                          }
+                          return <li key={idx}>{formattedTerm}</li>;
+                        })}
                       </ol>
                       <p className="p3-sph-closing-text">
                         Demikian penawaran ini kami sampaikan. Atas perhatian dan kerja samanya kami ucapkan terima kasih.

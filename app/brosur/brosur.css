@@ -3862,15 +3862,85 @@
 }
 
 /* 2x3 Portfolio Grid Layout (Optimized for 6 Projects per A4 Page) */
+/* Portfolio Grid Layout: Dinamis 6, 4, atau 2 projek per lembar A4 */
 .p4-portfolio-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-auto-rows: 1fr;
   gap: 10px 12px;
   margin-top: 5px;
   margin-bottom: 6px;
+  flex: 1;
 }
 
+/* 6 Projek per Lembar (Default 2 Kolom x 3 Baris) */
+.p4-portfolio-grid.per-page-6 {
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: 1fr;
+  min-height: 670px;
+}
+
+/* 4 Projek per Lembar (Optimal Campur 2 Kolom x 2 Baris) */
+.p4-portfolio-grid.per-page-4 {
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: 1fr;
+  min-height: 670px;
+  gap: 14px 16px;
+}
+
+.p4-portfolio-grid.per-page-4 .p4-card {
+  min-height: 315px;
+}
+
+.p4-portfolio-grid.per-page-4 .p4-card.is-text-mode .p4-card-img-wrap {
+  min-height: 160px;
+  max-height: 185px;
+}
+
+.p4-portfolio-grid.per-page-4 .p4-card.is-text-mode .p4-card-title {
+  font-size: 10.5px;
+}
+
+.p4-portfolio-grid.per-page-4 .p4-card.is-text-mode .p4-card-desc {
+  font-size: 7.8px;
+  -webkit-line-clamp: 4;
+}
+
+/* 2 Projek per Lembar (Showcase Eksklusif 1 Kolom x 2 Baris) */
+.p4-portfolio-grid.per-page-2 {
+  grid-template-columns: 1fr;
+  grid-auto-rows: 1fr;
+  min-height: 670px;
+  gap: 16px;
+}
+
+.p4-portfolio-grid.per-page-2 .p4-card {
+  min-height: 325px;
+}
+
+.p4-portfolio-grid.per-page-2 .p4-card.is-text-mode {
+  flex-direction: row;
+}
+
+.p4-portfolio-grid.per-page-2 .p4-card.is-text-mode .p4-card-img-wrap {
+  width: 50%;
+  min-height: 100%;
+  max-height: none;
+}
+
+.p4-portfolio-grid.per-page-2 .p4-card.is-text-mode .p4-card-body {
+  width: 50%;
+  padding: 14px;
+}
+
+.p4-portfolio-grid.per-page-2 .p4-card.is-text-mode .p4-card-title {
+  font-size: 12px;
+}
+
+.p4-portfolio-grid.per-page-2 .p4-card.is-text-mode .p4-card-desc {
+  font-size: 8.5px;
+  -webkit-line-clamp: 5;
+}
+
+/* Base Card Container */
 .p4-card {
   background: #ffffff;
   border: 1px solid #cbd5e1;
@@ -3885,14 +3955,135 @@
   height: 100%;
 }
 
-/* Mode Foto Saja (Hanya Tampil Foto Utuh & Logo Sunblix di Kiri Atas) */
+/* Mode Keterangan Teks: Dinamis tanpa ada ruang kosong putih */
+.p4-card.is-text-mode {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.p4-card.is-text-mode .p4-card-img-wrap {
+  position: relative;
+  width: 100%;
+  flex: 1 1 50%;
+  min-height: 120px;
+  max-height: 145px;
+  background: #0f172a;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.p4-card.is-text-mode .p4-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.p4-card.is-text-mode .p4-card-body {
+  padding: 6px 8px 7px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1 1 50%;
+  gap: 3px;
+}
+
+.p4-card.is-text-mode .p4-body-top-block {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5px;
+}
+
+.p4-card.is-text-mode .p4-card-title {
+  font-size: 9px;
+  font-weight: 800;
+  color: #031f45;
+  margin: 0;
+  line-height: 1.25;
+}
+
+.p4-card.is-text-mode .p4-card-meta {
+  font-size: 7px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 3.5px;
+}
+
+.p4-meta-client {
+  font-weight: 600;
+  color: #1e293b;
+  display: inline-flex;
+  align-items: center;
+}
+
+.p4-meta-loc {
+  font-weight: 500;
+  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+}
+
+.p4-meta-sep {
+  color: #cbd5e1;
+}
+
+.p4-card-specs-bar {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 3px;
+  padding: 2px 5px;
+  font-size: 6.8px;
+  color: #034870;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.p4-specs-icon {
+  font-size: 7.5px;
+  flex-shrink: 0;
+}
+
+.p4-specs-text {
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.p4-card.is-text-mode .p4-card-desc {
+  font-size: 6.8px;
+  line-height: 1.25;
+  color: #334155;
+  margin: 1px 0;
+  text-align: justify;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.p4-card-stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3.5px;
+  margin-top: auto;
+  padding-top: 2px;
+}
+
+/* Mode Foto Saja: Bebas Blur, Presisi Rasio Horisontal / Vertikal & Logo Sunblix */
 .p4-card.is-photo-only {
-  background: #090d16;
+  background: #ffffff;
   border: 1px solid #cbd5e1;
   padding: 0;
   display: flex;
   flex-direction: column;
   position: relative;
+  overflow: hidden;
+  height: 100%;
 }
 
 .p4-photo-only-container {
@@ -3903,25 +4094,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #090d16;
+  background: #ffffff; /* Latar bersih putih, bebas blur yang memboroskan tinta */
   overflow: hidden;
 }
 
-/* Ambient blurred reflection backdrop untuk menjaga proporsi asli foto (Vertikal / Timemark / Horisontal / 1:1) tanpa terpotong */
-.p4-photo-ambient-bg {
-  position: absolute;
-  inset: -15px;
-  width: calc(100% + 30px);
-  height: calc(100% + 30px);
-  object-fit: cover;
-  filter: blur(18px) brightness(0.48) saturate(1.2);
-  opacity: 0.9;
-  transform: scale(1.12);
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* Foto Dokumentasi Utama */
+/* Foto Dokumentasi Utama Bebas Blur */
 .p4-photo-main-img {
   position: relative;
   z-index: 2;
@@ -3930,12 +4107,17 @@
   display: block;
 }
 
-.p4-photo-main-img.is-contain {
-  object-fit: contain;
-}
-
+/* Horisontal: Mengisi penuh kotak dengan rasio presisi */
 .p4-photo-main-img.is-cover {
   object-fit: cover;
+  object-position: center;
+}
+
+/* Vertikal / Timemark / 1:1: Tampil utuh presisi tanpa terpotong */
+.p4-photo-main-img.is-contain {
+  object-fit: contain;
+  object-position: center;
+  background: #ffffff;
 }
 
 /* Logo SUNBLIX Resmi di Pojok Kiri Atas */
@@ -3960,6 +4142,70 @@
   width: auto;
   object-fit: contain;
   display: block;
+}
+
+/* Paginasi Setting di Sidebar */
+.portfolio-pagination-setting {
+  margin-bottom: 12px;
+  padding: 8px 10px;
+  background: rgba(2, 132, 199, 0.08);
+  border-radius: 6px;
+  border: 1px solid rgba(56, 189, 248, 0.25);
+}
+
+.p4-page-count-badge {
+  font-size: 10px;
+  font-weight: 700;
+  color: #38bdf8;
+  background: rgba(2, 132, 199, 0.2);
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.perpage-buttons-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.btn-perpage-opt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #94a3b8;
+  padding: 6px 4px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.btn-perpage-opt:hover {
+  background: #334155;
+  color: #f8fafc;
+}
+
+.btn-perpage-opt.is-active {
+  background: #0284c7;
+  border-color: #38bdf8;
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+}
+
+.btn-perpage-title {
+  font-size: 10px;
+  font-weight: 700;
+  display: block;
+}
+
+.btn-perpage-sub {
+  font-size: 8.5px;
+  opacity: 0.85;
+  display: block;
+  margin-top: 1px;
 }
 
 /* Sidebar styling for mode bar and fit toggle */
@@ -4041,132 +4287,6 @@
   border-color: #38bdf8;
   color: #ffffff;
   font-weight: 700;
-}
-
-.p4-card-img-wrap {
-  position: relative;
-  width: 100%;
-  height: 112px;
-  background: #0f172a;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-.p4-card-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.p4-card-category-badge {
-  position: absolute;
-  top: 4px;
-  left: 5px;
-  background: rgba(3, 31, 69, 0.88);
-  color: #38bdf8;
-  font-size: 6.8px;
-  font-weight: 800;
-  padding: 1.5px 5.5px;
-  border-radius: 3px;
-  backdrop-filter: blur(4px);
-  letter-spacing: 0.2px;
-  border: 0.5px solid rgba(56, 189, 248, 0.3);
-}
-
-.p4-card-year-badge {
-  position: absolute;
-  top: 4px;
-  right: 5px;
-  background: rgba(2, 132, 199, 0.9);
-  color: #ffffff;
-  font-size: 6.8px;
-  font-weight: 800;
-  padding: 1.5px 5px;
-  border-radius: 3px;
-}
-
-.p4-card-body {
-  padding: 6px 8px 7px;
-  display: flex;
-  flex-direction: column;
-  gap: 2.5px;
-  flex: 1;
-}
-
-.p4-card-title {
-  font-size: 9px;
-  font-weight: 800;
-  color: #031f45;
-  margin: 0;
-  line-height: 1.25;
-}
-
-.p4-card-meta {
-  font-size: 7px;
-  color: #64748b;
-  display: flex;
-  align-items: center;
-  gap: 3.5px;
-}
-
-.p4-meta-client {
-  font-weight: 600;
-  color: #1e293b;
-  display: inline-flex;
-  align-items: center;
-}
-
-.p4-meta-loc {
-  font-weight: 500;
-  color: #64748b;
-  display: inline-flex;
-  align-items: center;
-}
-
-.p4-meta-sep {
-  color: #cbd5e1;
-}
-
-.p4-card-specs-bar {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 3px;
-  padding: 2px 5px;
-  font-size: 6.8px;
-  color: #034870;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 3px;
-}
-
-.p4-specs-icon {
-  font-size: 7.5px;
-  flex-shrink: 0;
-}
-
-.p4-specs-text {
-  line-height: 1.15;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.p4-card-desc {
-  font-size: 6.8px;
-  line-height: 1.25;
-  color: #334155;
-  margin: 1px 0;
-  text-align: justify;
-}
-
-.p4-card-stats-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 3.5px;
-  margin-top: auto;
-  padding-top: 2px;
 }
 
 .p4-stat-pill {
@@ -4410,9 +4530,9 @@
   }
 
   .p4-card.is-photo-only,
+  .p4-card.is-text-mode,
   .p4-photo-only-container,
   .p4-photo-only-logo-wrap,
-  .p4-photo-ambient-bg,
   .p4-photo-main-img {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;

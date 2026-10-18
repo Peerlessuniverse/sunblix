@@ -1250,6 +1250,13 @@ function BrochureGeneratorInner() {
     });
   };
 
+  const handlePortfolioItemsPerPageChange = (count) => {
+    setQuoteData((prev) => ({
+      ...prev,
+      portfolioItemsPerPage: count,
+    }));
+  };
+
   // Parser for currency and numeric text values (e.g. "Rp 177.200.000", "5.000.000", 5000000)
   const parsePriceNumber = (val) => {
     if (typeof val === 'number') return isNaN(val) ? 0 : val;
@@ -2224,6 +2231,40 @@ function BrochureGeneratorInner() {
               </button>
             </div>
 
+            {/* KAPASITAS LEMBAR A4 & PAGINASI OTOMATIS */}
+            <div className="portfolio-pagination-setting">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                <label className="form-label" style={{ fontSize: '11px', color: '#0284c7', fontWeight: 800, margin: 0 }}>
+                  📄 Kapasitas per Lembar A4 (Paginasi Otomatis):
+                </label>
+                <span className="p4-page-count-badge">
+                  {Math.max(1, Math.ceil(((quoteData.portfolios || DEFAULT_PORTFOLIOS).length) / (Number(quoteData.portfolioItemsPerPage) || 6)))} Lembar A4 Portofolio
+                </span>
+              </div>
+              <div className="perpage-buttons-grid">
+                {[
+                  { count: 6, label: '6 Projek / Lembar', sub: 'Standar Terpadat (2x3)' },
+                  { count: 4, label: '4 Projek / Lembar', sub: 'Optimal Campur (2x2)' },
+                  { count: 2, label: '2 Projek / Lembar', sub: 'Showcase Eksklusif (1x2)' },
+                ].map((opt) => {
+                  const current = Number(quoteData.portfolioItemsPerPage) || 6;
+                  const isActive = current === opt.count;
+                  return (
+                    <button
+                      key={opt.count}
+                      type="button"
+                      className={`btn-perpage-opt ${isActive ? 'is-active' : ''}`}
+                      onClick={() => handlePortfolioItemsPerPageChange(opt.count)}
+                      title={`Atur tata letak ${opt.count} projek per lembar A4`}
+                    >
+                      <span className="btn-perpage-title">{opt.label}</span>
+                      <span className="btn-perpage-sub">{opt.sub}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
             <div className="portfolio-editor-list">
               {(quoteData.portfolios || DEFAULT_PORTFOLIOS).map((port, portIdx) => (
                 <div
@@ -2434,27 +2475,27 @@ function BrochureGeneratorInner() {
                       </select>
                     </div>
 
-                    {/* Pilihan Fit Mode Foto: Pas Utuh (Contain) atau Penuh Kotak (Cover) */}
+                    {/* Pilihan Fit Mode Foto: Penuh Kotak (Cover - Horisontal) atau Pas Utuh Presisi (Contain - Vertikal) */}
                     <div className="portfolio-fit-mode-row">
                       <span className="form-label" style={{ fontSize: '10px', color: '#94a3b8', margin: 0 }}>
-                        Format Tampilan Foto (Optimalisasi Aspek Rasio):
+                        Format Tampilan Foto (Optimalisasi Rasio Presisi Bebas Blur):
                       </span>
                       <div className="fit-toggle-group">
                         <button
                           type="button"
-                          className={`btn-fit-toggle ${(port.fitMode || 'contain') === 'contain' ? 'active' : ''}`}
-                          onClick={() => handlePortfolioChange(portIdx, 'fitMode', 'contain')}
-                          title="Tampilkan foto utuh tanpa terpotong (Sangat cocok untuk foto vertikal / Timemark / 1:1)"
+                          className={`btn-fit-toggle ${(port.fitMode || 'cover') === 'cover' ? 'active' : ''}`}
+                          onClick={() => handlePortfolioChange(portIdx, 'fitMode', 'cover')}
+                          title="Tampilkan foto memenuhi kotak secara horisontal presisi tanpa latar blur (Rekomendasi Foto Horisontal)"
                         >
-                          📐 Pas Utuh (Contain — Rekomendasi Timemark)
+                          ⬛ Penuh Kotak (Cover — Rekomendasi Horisontal)
                         </button>
                         <button
                           type="button"
-                          className={`btn-fit-toggle ${port.fitMode === 'cover' ? 'active' : ''}`}
-                          onClick={() => handlePortfolioChange(portIdx, 'fitMode', 'cover')}
-                          title="Tampilkan foto memenuhi seluruh kotak (Cover)"
+                          className={`btn-fit-toggle ${port.fitMode === 'contain' ? 'active' : ''}`}
+                          onClick={() => handlePortfolioChange(portIdx, 'fitMode', 'contain')}
+                          title="Tampilkan foto utuh tanpa terpotong dengan latar bersih bebas blur (Rekomendasi Foto Vertikal / Timemark / 1:1)"
                         >
-                          ⬛ Penuh Kotak (Cover)
+                          📐 Pas Utuh Presisi (Contain — Rekomendasi Vertikal)
                         </button>
                       </div>
                     </div>
@@ -2532,9 +2573,10 @@ function BrochureGeneratorInner() {
         <main className={`generator-preview-stage ${mobileTab === 'editor' ? 'mobile-hidden' : ''}`}>
           {/* PREVIEW CONTROLS TOOLBAR */}
           {(() => {
+            const itemsPerPage = Number(quoteData.portfolioItemsPerPage) || 6;
             const p4ChunksCount = Math.max(
               1,
-              Math.ceil(((quoteData.portfolios && quoteData.portfolios.length > 0 ? quoteData.portfolios : DEFAULT_PORTFOLIOS).length) / 6)
+              Math.ceil(((quoteData.portfolios && quoteData.portfolios.length > 0 ? quoteData.portfolios : DEFAULT_PORTFOLIOS).length) / itemsPerPage)
             );
             const totalSheets = pagesOrder.filter((p) => p.enabled).length + (pagesOrder.some((p) => p.id === '4' && p.enabled) ? p4ChunksCount - 1 : 0);
 
@@ -3402,10 +3444,11 @@ function BrochureGeneratorInner() {
                 ? quoteData.portfolios
                 : DEFAULT_PORTFOLIOS;
 
-            // Chunk max 6 projek per lembar A4 (2 kolom x 3 baris) agar layout optimal dan tidak kosong
+            // Paginasi Dinamis Bebas: 6, 4, atau 2 projek per lembar A4 (Otomatis menambah lembar jika melebihi kapasitas)
+            const itemsPerPage = Number(quoteData.portfolioItemsPerPage) || 6;
             const portfolioChunks = [];
-            for (let i = 0; i < portfoliosList.length; i += 6) {
-              portfolioChunks.push(portfoliosList.slice(i, i + 6));
+            for (let i = 0; i < portfoliosList.length; i += itemsPerPage) {
+              portfolioChunks.push(portfoliosList.slice(i, i + itemsPerPage));
             }
             if (portfolioChunks.length === 0) {
               portfolioChunks.push([]);
@@ -3440,10 +3483,10 @@ function BrochureGeneratorInner() {
                         </p>
                       </div>
 
-                      {/* Grid Kartu Portofolio (Hingga 6 Projek per Lembar A4) */}
-                      <div className="p4-portfolio-grid">
+                      {/* Grid Kartu Portofolio (Dinamis: 6, 4, atau 2 per Lembar A4) */}
+                      <div className={`p4-portfolio-grid per-page-${itemsPerPage}`}>
                         {chunk.map((proj, pIdx) => {
-                          const globalIdx = chunkIdx * 6 + pIdx;
+                          const globalIdx = chunkIdx * itemsPerPage + pIdx;
                           const hasText = Boolean(
                             (proj.title && proj.title.trim()) ||
                             (proj.client && proj.client.trim()) ||
@@ -3455,14 +3498,14 @@ function BrochureGeneratorInner() {
                             (proj.stats && proj.stats.some((s) => (s.label && s.label.trim()) || (s.value && s.value.trim())))
                           );
                           const isPhotoOnly = proj.photoOnly || !hasText;
-                          const fitMode = proj.fitMode || 'contain';
+                          const fitMode = proj.fitMode || 'cover';
                           const imgUrl = normalizeImageUrl(proj.imageUrl) || '/asset/sunlight_house.jpg';
 
                           if (isPhotoOnly) {
                             return (
                               <div key={proj.id || globalIdx} className="p4-card is-photo-only">
                                 <div className="p4-photo-only-container">
-                                  {/* Logo SUNBLIX di Sisi Kiri Atas persis seperti unggahan */}
+                                  {/* Logo SUNBLIX di Sisi Kiri Atas */}
                                   <div className="p4-photo-only-logo-wrap">
                                     <img
                                       src="/asset/logo.png"
@@ -3471,18 +3514,7 @@ function BrochureGeneratorInner() {
                                     />
                                   </div>
 
-                                  {/* Ambient blurred backdrop untuk menjaga proporsi foto asli (Vertikal / Timemark / Horisontal / 1:1) tanpa terpotong */}
-                                  {fitMode === 'contain' && (
-                                    <img
-                                      src={imgUrl}
-                                      alt=""
-                                      className="p4-photo-ambient-bg"
-                                      aria-hidden="true"
-                                      referrerPolicy="no-referrer"
-                                    />
-                                  )}
-
-                                  {/* Foto Utama Tampil Utuh Sesuai Aslinya */}
+                                  {/* Foto Utama Tampil Presisi Bersih Tanpa Efek Blur */}
                                   <img
                                     key={proj.imageUrl || `card-photo-${globalIdx}`}
                                     src={imgUrl}
@@ -3502,7 +3534,7 @@ function BrochureGeneratorInner() {
                           }
 
                           return (
-                            <div key={proj.id || globalIdx} className="p4-card">
+                            <div key={proj.id || globalIdx} className="p4-card is-text-mode">
                               <div className="p4-card-img-wrap">
                                 <img
                                   key={proj.imageUrl || `card-img-${globalIdx}`}
@@ -3522,32 +3554,34 @@ function BrochureGeneratorInner() {
                               </div>
 
                               <div className="p4-card-body">
-                                <h3 className="p4-card-title">{proj.title}</h3>
+                                <div className="p4-body-top-block">
+                                  <h3 className="p4-card-title">{proj.title}</h3>
 
-                                <div className="p4-card-meta">
-                                  <span className="p4-meta-client">
-                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2.5" style={{ marginRight: 3, verticalAlign: 'middle' }}>
-                                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                                      <circle cx="12" cy="7" r="4" />
-                                    </svg>
-                                    {proj.client}
-                                  </span>
-                                  <span className="p4-meta-sep">•</span>
-                                  <span className="p4-meta-loc">
-                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2.5" style={{ marginRight: 3, verticalAlign: 'middle' }}>
-                                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                                      <circle cx="12" cy="10" r="3" />
-                                    </svg>
-                                    {proj.location}
-                                  </span>
+                                  <div className="p4-card-meta">
+                                    <span className="p4-meta-client">
+                                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2.5" style={{ marginRight: 3, verticalAlign: 'middle' }}>
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                        <circle cx="12" cy="7" r="4" />
+                                      </svg>
+                                      {proj.client}
+                                    </span>
+                                    <span className="p4-meta-sep">•</span>
+                                    <span className="p4-meta-loc">
+                                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2.5" style={{ marginRight: 3, verticalAlign: 'middle' }}>
+                                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                                        <circle cx="12" cy="10" r="3" />
+                                      </svg>
+                                      {proj.location}
+                                    </span>
+                                  </div>
+
+                                  <div className="p4-card-specs-bar">
+                                    <span className="p4-specs-icon">⚡</span>
+                                    <span className="p4-specs-text">{proj.specs}</span>
+                                  </div>
+
+                                  <p className="p4-card-desc">{proj.desc}</p>
                                 </div>
-
-                                <div className="p4-card-specs-bar">
-                                  <span className="p4-specs-icon">⚡</span>
-                                  <span className="p4-specs-text">{proj.specs}</span>
-                                </div>
-
-                                <p className="p4-card-desc">{proj.desc}</p>
 
                                 {/* 3 Metric Pills */}
                                 {proj.stats && proj.stats.length > 0 && (

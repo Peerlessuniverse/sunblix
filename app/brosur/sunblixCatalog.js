@@ -940,6 +940,7 @@ export const DEFAULT_PORTFOLIOS = [
     year: '2026',
     desc: 'Instalasi PLTS hybrid mandiri 24/7 untuk 12 pos keamanan di area operasional terpencil dengan zero-downtime tanpa ketergantungan genset.',
     imageUrl: '/asset/sunlight_house.jpg',
+    bentoSpan: 'wide',
     stats: [
       { label: 'Kapasitas', value: '7,02 kWp' },
       { label: 'Produksi', value: '~711 kWh/bln' },
@@ -956,6 +957,7 @@ export const DEFAULT_PORTFOLIOS = [
     year: '2025',
     desc: 'Efisiensi beban puncak operasional siang hari dan suplai darurat saat pemadaman jaringan industri dengan backup instan <10 ms.',
     imageUrl: '/asset/how_hero.jpg',
+    bentoSpan: 'normal',
     stats: [
       { label: 'Kapasitas', value: '14,04 kWp' },
       { label: 'Penghematan', value: 'Rp 2,5 Jt/bln' },
@@ -972,6 +974,7 @@ export const DEFAULT_PORTFOLIOS = [
     year: '2025',
     desc: 'Sistem solar atap estetis arsitektural dengan integrasi cloud monitoring IoT smartphone dan proteksi anti-petir terpadu.',
     imageUrl: '/asset/how_step4.jpg',
+    bentoSpan: 'tall',
     stats: [
       { label: 'Kapasitas', value: '9,36 kWp' },
       { label: 'Produksi', value: '~1.170 kWh/bln' },
@@ -988,6 +991,7 @@ export const DEFAULT_PORTFOLIOS = [
     year: '2025',
     desc: 'Sistem energi bersih zero-emission untuk kawasan wisata ramah lingkungan yang beroperasi 100% mandiri energi terbarukan.',
     imageUrl: '/asset/how_step5.jpg',
+    bentoSpan: 'normal',
     stats: [
       { label: 'Kapasitas', value: '10,53 kWp' },
       { label: 'Baterai', value: '20,48 kWh' },
@@ -1004,6 +1008,7 @@ export const DEFAULT_PORTFOLIOS = [
     year: '2026',
     desc: 'Catu daya listrik kritis dengan stabilitas tegangan presisi tinggi untuk peralatan laboratorium dan ruang tindakan tanpa jeda transfer.',
     imageUrl: '/asset/how_step3.jpg',
+    bentoSpan: 'wide',
     stats: [
       { label: 'Kapasitas', value: '17,55 kWp' },
       { label: 'Uptime', value: '99.99%' },
@@ -1020,6 +1025,7 @@ export const DEFAULT_PORTFOLIOS = [
     year: '2026',
     desc: 'Menopang pendingin chiller dan freezer 24 jam dengan reduksi biaya tagihan listrik PLN signifikan di jam beban puncak (WBP).',
     imageUrl: '/asset/product_pro.jpg',
+    bentoSpan: 'normal',
     stats: [
       { label: 'Kapasitas', value: '23,40 kWp' },
       { label: 'Penghematan', value: 'Rp 4,8 Jt/bln' },

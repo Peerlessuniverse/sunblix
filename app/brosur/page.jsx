@@ -684,6 +684,7 @@ function BrochureGeneratorInner() {
     return {
       ...base,
       portfolios: base.portfolios || DEFAULT_PORTFOLIOS,
+      portfolioLayoutStyle: base.portfolioLayoutStyle || 'bento',
       sphCode: searchParams.get('sph') || base.sphCode || 'SPH 002',
       customer: searchParams.get('customer') || base.customer,
       project: searchParams.get('project') || base.project,
@@ -1254,6 +1255,13 @@ function BrochureGeneratorInner() {
     setQuoteData((prev) => ({
       ...prev,
       portfolioItemsPerPage: count,
+    }));
+  };
+
+  const handlePortfolioLayoutStyleChange = (style) => {
+    setQuoteData((prev) => ({
+      ...prev,
+      portfolioLayoutStyle: style,
     }));
   };
 
@@ -2265,6 +2273,33 @@ function BrochureGeneratorInner() {
               </div>
             </div>
 
+            {/* GAYA TATA LETAK: BENTO BOX DINAMIS VS GRID KLASIK */}
+            <div className="portfolio-style-setting" style={{ marginBottom: 12, padding: '8px 10px', background: 'rgba(2, 132, 199, 0.05)', borderRadius: 6, border: '1px solid rgba(56, 189, 248, 0.2)' }}>
+              <label className="form-label" style={{ fontSize: '11px', color: '#0284c7', fontWeight: 800, marginBottom: 6 }}>
+                🍱 Gaya Desain Tata Letak:
+              </label>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 6 }}>
+                <button
+                  type="button"
+                  className={`btn-perpage-opt ${(quoteData.portfolioLayoutStyle || 'bento') === 'bento' ? 'is-active' : ''}`}
+                  onClick={() => handlePortfolioLayoutStyleChange('bento')}
+                  title="Layout Bento Box asimetris dinamis yang otomatis menyesuaikan foto portrait & landscape"
+                >
+                  <span className="btn-perpage-title">🍱 Bento Box Dinamis</span>
+                  <span className="btn-perpage-sub">Asimetris Alami (Rekomendasi)</span>
+                </button>
+                <button
+                  type="button"
+                  className={`btn-perpage-opt ${quoteData.portfolioLayoutStyle === 'grid' ? 'is-active' : ''}`}
+                  onClick={() => handlePortfolioLayoutStyleChange('grid')}
+                  title="Layout Grid seragam berbaris rapi"
+                >
+                  <span className="btn-perpage-title">📐 Grid Klasik</span>
+                  <span className="btn-perpage-sub">Berbaris Rapi Seragam</span>
+                </button>
+              </div>
+            </div>
+
             <div className="portfolio-editor-list">
               {(quoteData.portfolios || DEFAULT_PORTFOLIOS).map((port, portIdx) => (
                 <div
@@ -2497,6 +2532,34 @@ function BrochureGeneratorInner() {
                         >
                           📐 Pas Utuh Presisi (Contain — Rekomendasi Vertikal)
                         </button>
+                      </div>
+                    </div>
+
+                    {/* Format Bento Box Span (Bila Menggunakan Bento Layout) */}
+                    <div className="portfolio-bento-span-row" style={{ marginTop: 6, marginBottom: 8, padding: '6px 8px', background: 'rgba(2, 132, 199, 0.05)', borderRadius: 5, border: '1px solid rgba(56, 189, 248, 0.2)' }}>
+                      <span className="form-label" style={{ fontSize: '10px', color: '#0284c7', fontWeight: 700, margin: 0 }}>
+                        🍱 Bentuk Kotak Bento Box:
+                      </span>
+                      <div className="fit-toggle-group" style={{ marginTop: 4 }}>
+                        {[
+                          { id: 'auto', label: '⚡ Auto' },
+                          { id: 'tall', label: '↕️ Portrait' },
+                          { id: 'wide', label: '↔️ Landscape' },
+                          { id: 'normal', label: '⏹️ Normal' },
+                        ].map((bOpt) => {
+                          const activeSpan = port.bentoSpan || 'auto';
+                          return (
+                            <button
+                              key={bOpt.id}
+                              type="button"
+                              className={`btn-fit-toggle ${activeSpan === bOpt.id ? 'active' : ''}`}
+                              onClick={() => handlePortfolioChange(portIdx, 'bentoSpan', bOpt.id)}
+                              title={`Ubah format kotak bento menjadi ${bOpt.label}`}
+                            >
+                              {bOpt.label}
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
 
@@ -3483,58 +3546,82 @@ function BrochureGeneratorInner() {
                         </p>
                       </div>
 
-                      {/* Grid Kartu Portofolio (Dinamis: 6, 4, atau 2 per Lembar A4) */}
-                      <div className={`p4-portfolio-grid per-page-${itemsPerPage}`}>
-                        {chunk.map((proj, pIdx) => {
-                          const globalIdx = chunkIdx * itemsPerPage + pIdx;
-                          const hasText = Boolean(
-                            (proj.title && proj.title.trim()) ||
-                            (proj.client && proj.client.trim()) ||
-                            (proj.location && proj.location.trim()) ||
-                            (proj.category && proj.category.trim()) ||
-                            (proj.year && proj.year.trim()) ||
-                            (proj.specs && proj.specs.trim()) ||
-                            (proj.desc && proj.desc.trim()) ||
-                            (proj.stats && proj.stats.some((s) => (s.label && s.label.trim()) || (s.value && s.value.trim())))
-                          );
-                          const isPhotoOnly = proj.photoOnly || !hasText;
-                          const fitMode = proj.fitMode || 'cover';
-                          const imgUrl = normalizeImageUrl(proj.imageUrl) || '/asset/sunlight_house.jpg';
+                      {/* Grid Kartu Portofolio (Bento Box Dinamis atau Grid Klasik) */}
+                      {(() => {
+                        const layoutStyle = quoteData.portfolioLayoutStyle || 'bento';
+                        const isBento = layoutStyle === 'bento';
 
-                          if (isPhotoOnly) {
-                            return (
-                              <div key={proj.id || globalIdx} className="p4-card is-photo-only">
-                                <div className="p4-photo-only-container">
-                                  {/* Logo SUNBLIX di Sisi Kiri Atas */}
-                                  <div className="p4-photo-only-logo-wrap">
-                                    <img
-                                      src="/asset/logo.png"
-                                      alt="SUNBLIX"
-                                      className="p4-photo-only-logo"
-                                    />
-                                  </div>
-
-                                  {/* Foto Utama Tampil Presisi Bersih Tanpa Efek Blur */}
-                                  <img
-                                    key={proj.imageUrl || `card-photo-${globalIdx}`}
-                                    src={imgUrl}
-                                    alt="Dokumentasi Portofolio SUNBLIX"
-                                    className={`p4-photo-main-img is-${fitMode}`}
-                                    referrerPolicy="no-referrer"
-                                    loading="eager"
-                                    onError={(e) => {
-                                      if (e.target.src && !e.target.src.includes('sunlight_house.jpg')) {
-                                        e.target.src = '/asset/sunlight_house.jpg';
-                                      }
-                                    }}
-                                  />
-                                </div>
-                              </div>
-                            );
+                        const getProjectBentoSpan = (item, idx) => {
+                          if (item.bentoSpan && item.bentoSpan !== 'auto') {
+                            return item.bentoSpan;
                           }
+                          const hasTxt = Boolean(
+                            (item.title && item.title.trim()) ||
+                            (item.client && item.client.trim()) ||
+                            (item.specs && item.specs.trim()) ||
+                            (item.desc && item.desc.trim())
+                          );
+                          if (!hasTxt || item.photoOnly) {
+                            if (item.fitMode === 'contain') return 'tall';
+                            return 'wide';
+                          }
+                          const defaultPattern = ['wide', 'normal', 'tall', 'normal', 'wide', 'normal'];
+                          return defaultPattern[idx % defaultPattern.length] || 'normal';
+                        };
 
-                          return (
-                            <div key={proj.id || globalIdx} className="p4-card is-text-mode">
+                        return (
+                          <div className={`p4-portfolio-grid ${isBento ? 'is-bento' : `per-page-${itemsPerPage}`}`}>
+                            {chunk.map((proj, pIdx) => {
+                              const globalIdx = chunkIdx * itemsPerPage + pIdx;
+                              const hasText = Boolean(
+                                (proj.title && proj.title.trim()) ||
+                                (proj.client && proj.client.trim()) ||
+                                (proj.location && proj.location.trim()) ||
+                                (proj.category && proj.category.trim()) ||
+                                (proj.year && proj.year.trim()) ||
+                                (proj.specs && proj.specs.trim()) ||
+                                (proj.desc && proj.desc.trim()) ||
+                                (proj.stats && proj.stats.some((s) => (s.label && s.label.trim()) || (s.value && s.value.trim())))
+                              );
+                              const isPhotoOnly = proj.photoOnly || !hasText;
+                              const fitMode = proj.fitMode || 'cover';
+                              const bentoSpan = isBento ? getProjectBentoSpan(proj, pIdx) : 'normal';
+                              const imgUrl = normalizeImageUrl(proj.imageUrl) || '/asset/sunlight_house.jpg';
+
+                              if (isPhotoOnly) {
+                                return (
+                                  <div key={proj.id || globalIdx} className={`p4-card is-photo-only ${isBento ? `bento-${bentoSpan}` : ''}`}>
+                                    <div className="p4-photo-only-container">
+                                      {/* Logo SUNBLIX di Sisi Kiri Atas */}
+                                      <div className="p4-photo-only-logo-wrap">
+                                        <img
+                                          src="/asset/logo.png"
+                                          alt="SUNBLIX"
+                                          className="p4-photo-only-logo"
+                                        />
+                                      </div>
+
+                                      {/* Foto Utama Tampil Presisi Bersih Tanpa Efek Blur */}
+                                      <img
+                                        key={proj.imageUrl || `card-photo-${globalIdx}`}
+                                        src={imgUrl}
+                                        alt="Dokumentasi Portofolio SUNBLIX"
+                                        className={`p4-photo-main-img is-${fitMode}`}
+                                        referrerPolicy="no-referrer"
+                                        loading="eager"
+                                        onError={(e) => {
+                                          if (e.target.src && !e.target.src.includes('sunlight_house.jpg')) {
+                                            e.target.src = '/asset/sunlight_house.jpg';
+                                          }
+                                        }}
+                                      />
+                                    </div>
+                                  </div>
+                                );
+                              }
+
+                              return (
+                                <div key={proj.id || globalIdx} className={`p4-card is-text-mode ${isBento ? `bento-${bentoSpan}` : ''}`}>
                               <div className="p4-card-img-wrap">
                                 <img
                                   key={proj.imageUrl || `card-img-${globalIdx}`}
@@ -3599,7 +3686,9 @@ function BrochureGeneratorInner() {
                           );
                         })}
                       </div>
-                    </div>
+                    );
+                  })()}
+                </div>
 
                     {/* Footer Garis Batas Bawah Sesuai Standar Brosur (Tanpa Teks / Strip Footer) */}
                     <div className="p4-portfolio-footer-wrap">

@@ -4,8 +4,8 @@ import { useState, useMemo } from 'react';
 
 const PROPERTY_OPTIONS = [
   { id: 'house', label: 'Rumah', icon: '🏠' },
-  { id: 'villa', label: 'Villa', icon: '🏡' },
-  { id: 'commercial', label: 'Ruko / Usaha', icon: '🏢' },
+  { id: 'villa', label: 'Villa & Resort', icon: '🏡' },
+  { id: 'commercial', label: 'Ruko / Bisnis', icon: '🏢' },
   { id: 'warehouse', label: 'Pabrik / Gudang', icon: '🏭' },
 ];
 
@@ -26,6 +26,7 @@ const QUICK_BILLS = [
 export default function SolarCalculator({ onOpenQuote }) {
   const [property, setProperty] = useState('house');
   const [bill, setBill] = useState(2500000);
+  const [systemType, setSystemType] = useState('hybrid'); // 'hybrid' | 'ongrid'
   const [rooftop, setRooftop] = useState('medium');
 
   const formatRupiah = (num) => {
@@ -38,6 +39,9 @@ export default function SolarCalculator({ onOpenQuote }) {
     setBill(isNaN(num) || num <= 0 ? 0 : num);
   };
 
+  // ---------------------------------------------------------------------------
+  // SIZING ENGINE HARMONISASI DENGAN 002SUNBLIX-SPH-MRB-2026 (MODE HPP A)
+  // ---------------------------------------------------------------------------
   const system = useMemo(() => {
     let mult = 1.0;
     if (property === 'villa') mult = 1.15;
@@ -45,78 +49,135 @@ export default function SolarCalculator({ onOpenQuote }) {
     else if (property === 'warehouse') mult = 1.4;
 
     const adjustedBill = bill * mult;
+    const isHybrid = systemType === 'hybrid';
 
-    let sysName = 'SUNBLIX 4.68';
-    let kwp = '4.68';
-    let kwpNum = 4.68;
-    let panels = '8';
-    let area = '26 m²';
-    let inverter = '6 kW';
+    // Catalog Matrix Sesuai Database Paket Supplier Resmi (Modul Astronergy 585 Wp & Deye Inverter)
+    let pkg = {
+      kwp: 4.68,
+      panels: 8,
+      area: '26 m²',
+      inverter: '6 kW',
+      inverterDesc: isHybrid ? 'Deye Hybrid Smart' : 'Grid-Tie Dual MPPT',
+      battery: isHybrid ? '5.1 kWh LiFePO4' : 'On-Grid (Tanpa Baterai)',
+      investment: isHybrid ? 128000000 : 82000000,
+    };
 
     if (adjustedBill <= 1800000 || (rooftop === 'small' && adjustedBill <= 3000000)) {
-      sysName = 'SUNBLIX 2.34';
-      kwp = '2.34';
-      kwpNum = 2.34;
-      panels = '4';
-      area = '13 m²';
-      inverter = '3 kW';
+      pkg = {
+        kwp: 2.34,
+        panels: 4,
+        area: '13 m²',
+        inverter: isHybrid ? '6 kW' : '3 kW',
+        inverterDesc: isHybrid ? 'Deye Hybrid Smart' : 'Grid-Tie Dual MPPT',
+        battery: isHybrid ? '5.1 kWh LiFePO4' : 'On-Grid (Tanpa Baterai)',
+        investment: isHybrid ? 91500000 : 58000000,
+      };
     } else if (adjustedBill <= 4000000) {
-      sysName = 'SUNBLIX 4.68';
-      kwp = '4.68';
-      kwpNum = 4.68;
-      panels = '8';
-      area = '26 m²';
-      inverter = '6 kW';
-    } else if (adjustedBill <= 8000000) {
-      sysName = 'SUNBLIX 8.19';
-      kwp = '8.19';
-      kwpNum = 8.19;
-      panels = '14';
-      area = '45 m²';
-      inverter = '10 kW';
-    } else if (adjustedBill <= 15000000) {
-      sysName = 'SUNBLIX 14.04';
-      kwp = '14.04';
-      kwpNum = 14.04;
-      panels = '24';
-      area = '78 m²';
-      inverter = '15 kW';
+      pkg = {
+        kwp: 4.68,
+        panels: 8,
+        area: '26 m²',
+        inverter: isHybrid ? '6 kW' : '5 kW',
+        inverterDesc: isHybrid ? 'Deye Hybrid Smart' : 'Grid-Tie Dual MPPT',
+        battery: isHybrid ? '5.1 kWh LiFePO4' : 'On-Grid (Tanpa Baterai)',
+        investment: isHybrid ? 128000000 : 82000000,
+      };
+    } else if (adjustedBill <= 7500000) {
+      // Paket No. 6 SPH 002: 7.02 kWp (12 panel × 585 Wp)
+      pkg = {
+        kwp: 7.02,
+        panels: 12,
+        area: '39 m²',
+        inverter: '6 kW',
+        inverterDesc: isHybrid ? 'Deye SUN-6K-SG05LP1' : 'Grid-Tie Smart Inverter',
+        battery: isHybrid ? '5.1 kWh LiFePO4' : 'On-Grid (Tanpa Baterai)',
+        investment: isHybrid ? 177200000 : 122000000,
+      };
+    } else if (adjustedBill <= 11000000) {
+      // Paket No. 7 SPH 002: 8.19 kWp (14 panel × 585 Wp)
+      pkg = {
+        kwp: 8.19,
+        panels: 14,
+        area: '45 m²',
+        inverter: '8 kW',
+        inverterDesc: isHybrid ? 'Deye SUN-8K-SG05LP1' : 'Grid-Tie Smart Inverter',
+        battery: isHybrid ? '5.1 kWh LiFePO4' : 'On-Grid (Tanpa Baterai)',
+        investment: isHybrid ? 209500000 : 142000000,
+      };
+    } else if (adjustedBill <= 16000000) {
+      // Paket No. 10 SPH 002: 11.70 kWp (20 panel × 585 Wp)
+      pkg = {
+        kwp: 11.70,
+        panels: 20,
+        area: '64 m²',
+        inverter: isHybrid ? '12 kW' : '10 kW',
+        inverterDesc: isHybrid ? 'Deye SUN-12K-SG05LP1' : 'Grid-Tie 3-Phase',
+        battery: isHybrid ? '10.2 kWh LiFePO4' : 'On-Grid (Tanpa Baterai)',
+        investment: isHybrid ? 295200000 : 198000000,
+      };
     } else {
-      const calcKwp = Math.min(100, Math.max(16, adjustedBill / 1500 / 30 / 3.8)).toFixed(2);
-      const calcPanels = Math.round((Number(calcKwp) * 1000) / 585);
-      const calcArea = Math.round(calcPanels * 3.2);
-      const calcInv = Math.ceil(Number(calcKwp) * 1.2);
-      sysName = `SUNBLIX ${calcKwp}`;
-      kwp = String(calcKwp);
-      kwpNum = parseFloat(calcKwp);
-      panels = String(calcPanels);
-      area = `${calcArea} m²`;
-      inverter = `${calcInv} kW`;
+      // Paket No. 11 SPH 002: 14.04 kWp (24 panel × 585 Wp)
+      pkg = {
+        kwp: 14.04,
+        panels: 24,
+        area: '77 m²',
+        inverter: isHybrid ? '12 kW' : '15 kW',
+        inverterDesc: isHybrid ? 'Deye 3P / 12kW Hybrid' : 'Grid-Tie 3-Phase Multi-MPPT',
+        battery: isHybrid ? '10.2 kWh LiFePO4' : 'On-Grid (Tanpa Baterai)',
+        investment: isHybrid ? 352400000 : 238000000,
+      };
     }
 
-    const monthlyKwh = Math.round(kwpNum * 120);
-    const savingsRatio = bill <= 1500000 ? 0.72 : bill <= 3500000 ? 0.78 : 0.8;
+    const sysName = `SUNBLIX ${pkg.kwp} ${isHybrid ? 'Hybrid' : 'On-Grid'}`;
+
+    // Rumus Produksi Energi Resmi SPH: kWp × PSH 4.5 × 75% efisiensi sistem × 30 hari = ~101.25 kWh/kWp/bln
+    const monthlyKwh = Math.round(pkg.kwp * 4.5 * 0.75 * 30);
+
+    // Rasio penghematan realistis: Hybrid (80-85% karena baterai backup malam), On-Grid (70-75% siang hari)
+    const savingsRatio = isHybrid
+      ? (bill <= 2000000 ? 0.80 : 0.85)
+      : (bill <= 2000000 ? 0.70 : 0.75);
+
     const estSavings = Math.round(bill * savingsRatio);
     const savingsPct = Math.round(savingsRatio * 100);
     const co2Kg = Math.round(monthlyKwh * 0.82);
 
-    const waMsg = `Halo Tim Ahli SUNBLIX, saya telah menghitung kebutuhan di website dan ingin konsultasi resmi untuk paket rekomendasi: *${sysName}* (${kwp} kWp, ${panels} Panel, inverter ${inverter}, estimasi rooftop ${area}) dengan tagihan listrik saat ini: *${formatRupiah(bill)}/bln*. Estimasi hemat: *${formatRupiah(estSavings)}/bln* (${savingsPct}%). Mohon info jadwal survei atap dan rincian penawaran resminya.`;
+    // Payback Period (BEP) dalam tahun = Investasi / (Penghematan tahunan)
+    const annualSavings = estSavings * 12;
+    const paybackYears = annualSavings > 0
+      ? Math.max(3.5, Math.min(8.0, pkg.investment / annualSavings)).toFixed(1)
+      : '5.2';
+
+    const savings25y = formatRupiah(estSavings * 12 * 25);
+
+    const waMsg = `Halo Tim Ahli SUNBLIX, saya telah menghitung kebutuhan di website dan ingin konsultasi resmi untuk paket rekomendasi: *${sysName}* (${pkg.kwp} kWp, ${pkg.panels} Panel Astronergy 585Wp, inverter ${pkg.inverter}, baterai: ${pkg.battery}, estimasi atap ${pkg.area}) dengan tagihan listrik saat ini: *${formatRupiah(bill)}/bln*.\n\n*Estimasi Nilai Paket:* ${formatRupiah(pkg.investment)}\n*Estimasi Hemat Listrik:* ${formatRupiah(estSavings)}/bln (~${savingsPct}%)\n*Estimasi Balik Modal:* ~${paybackYears} Tahun\n\nMohon info ketersediaan jadwal survei lokasi dan estimasi penawaran resminya.`;
 
     const waUrl = `https://wa.me/6285288581027?text=${encodeURIComponent(waMsg)}`;
 
     return {
       sysName,
-      kwp,
-      panels,
-      area,
-      inverter,
+      kwp: String(pkg.kwp),
+      kwpNum: pkg.kwp,
+      panels: String(pkg.panels),
+      area: pkg.area,
+      inverter: pkg.inverter,
+      inverterDesc: pkg.inverterDesc,
+      systemType: isHybrid ? 'Hybrid (Smart BESS)' : 'On-Grid (Siang Hari)',
+      systemTypeId: systemType,
+      battery: pkg.battery,
+      batteryCap: pkg.battery,
+      estInvestment: pkg.investment,
+      paybackYears,
       monthlyKwh,
       estSavings,
       savingsPct,
+      savings25y,
       co2Kg,
       waUrl,
+      bill,
+      property,
     };
-  }, [property, bill, rooftop]);
+  }, [property, bill, systemType, rooftop]);
 
   return (
     <div className="calculator-horizontal-bar">
@@ -129,7 +190,9 @@ export default function SolarCalculator({ onOpenQuote }) {
           <br />
           LISTRIK PLTS<span className="calc-dot">.</span>
         </h3>
-        <p className="calc-desc">Hitung estimasi penghematan hingga 80% & dapatkan rekomendasi spesifikasi PLTS terbaik.</p>
+        <p className="calc-desc">
+          Hitung estimasi penghematan hingga 85%, estimasi investasi paket, &amp; durasi balik modal (ROI) sesuai standar resmi SUNBLIX.
+        </p>
       </div>
 
       {/* CENTER INPUTS ROW */}
@@ -147,10 +210,10 @@ export default function SolarCalculator({ onOpenQuote }) {
               value={property}
               onChange={(e) => setProperty(e.target.value)}
             >
-              <option value="house">Rumah (House)</option>
-              <option value="villa">Villa & Resort</option>
-              <option value="commercial">Commercial / Ruko</option>
-              <option value="warehouse">Warehouse / Factory</option>
+              <option value="house">Rumah (Residential)</option>
+              <option value="villa">Villa &amp; Resort</option>
+              <option value="commercial">Ruko / Komersial</option>
+              <option value="warehouse">Pabrik / Industri</option>
             </select>
           </div>
 
@@ -220,37 +283,53 @@ export default function SolarCalculator({ onOpenQuote }) {
           </div>
         </div>
 
-        {/* FIELD 3: ROOFTOP AREA */}
+        {/* FIELD 3: SYSTEM TYPE & BATTERY CONFIGURATION */}
         <div className="calc-field">
-          <label htmlFor="calcRooftop">
-            <span>Ukuran Rooftop</span>
+          <label htmlFor="calcSysType">
+            <span>Konfigurasi &amp; Baterai</span>
           </label>
 
-          {/* Desktop Select Dropdown */}
           <div className="select-wrapper">
+            <select
+              id="calcSysType"
+              value={systemType}
+              onChange={(e) => setSystemType(e.target.value)}
+            >
+              <option value="hybrid">⚡ Hybrid (Baterai BESS Backup 24 Jam)</option>
+              <option value="ongrid">☀️ On-Grid (Hemat Siang Hari)</option>
+            </select>
+          </div>
+
+          <div
+            className="calc-sub-rooftop"
+            style={{
+              marginTop: '4px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              fontSize: '9px',
+              color: '#4b6b94',
+            }}
+          >
+            <span>Ukuran Atap:</span>
             <select
               id="calcRooftop"
               value={rooftop}
               onChange={(e) => setRooftop(e.target.value)}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: '#0066cc',
+                fontWeight: '700',
+                cursor: 'pointer',
+                outline: 'none',
+                fontSize: '9px',
+              }}
             >
-              <option value="small">Small (&lt; 25 m²)</option>
-              <option value="medium">Medium (25–50 m²)</option>
-              <option value="large">Large (&gt; 50 m²)</option>
+              <option value="small">&lt; 25 m²</option>
+              <option value="medium">25–50 m²</option>
+              <option value="large">&gt; 50 m²</option>
             </select>
-          </div>
-
-          {/* Mobile Tactile Chips */}
-          <div className="calc-chips-group calc-chips-rooftop">
-            {ROOFTOP_OPTIONS.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                className={`calc-chip-btn ${rooftop === item.id ? 'is-active' : ''}`}
-                onClick={() => setRooftop(item.id)}
-              >
-                <span className="chip-text">{item.label}</span>
-              </button>
-            ))}
           </div>
         </div>
       </div>
@@ -259,8 +338,8 @@ export default function SolarCalculator({ onOpenQuote }) {
       <div className="calc-result-card" id="calcResultCard">
         <div className="result-header">
           <div className="result-label-row">
-            <span className="result-label">REKOMENDASI SISTEM TERBAIK</span>
-            <span className="result-tier-badge">BEST MATCH</span>
+            <span className="result-label">REKOMENDASI SISTEM RESMI</span>
+            <span className="result-tier-badge">{system.systemType}</span>
           </div>
           <h4 className="result-system-name" id="resSystemName">
             {system.sysName}
@@ -268,7 +347,7 @@ export default function SolarCalculator({ onOpenQuote }) {
           <div className="result-accent-bar" />
         </div>
 
-        {/* 4 SPEC CARDS */}
+        {/* 4 SPEC METRICS (SINKRON HPP A & EXCEL SPH) */}
         <div className="result-metrics-grid">
           <div className="result-metric">
             <strong id="resKwp">{system.kwp} kWp</strong>
@@ -276,19 +355,19 @@ export default function SolarCalculator({ onOpenQuote }) {
           </div>
           <div className="result-metric">
             <strong id="resPanels">{system.panels} Panel</strong>
-            <span>Tier-1 585Wp</span>
-          </div>
-          <div className="result-metric">
-            <strong id="resArea">{system.area}</strong>
-            <span>Estimasi Atap</span>
+            <span>Astronergy 585Wp</span>
           </div>
           <div className="result-metric">
             <strong id="resInverter">{system.inverter}</strong>
-            <span>Inverter On-Grid</span>
+            <span title={system.inverterDesc}>{system.inverterDesc}</span>
+          </div>
+          <div className="result-metric">
+            <strong id="resBattery">{system.battery.split(' ')[0]} {system.battery.split(' ')[1] || ''}</strong>
+            <span>{system.systemTypeId === 'hybrid' ? 'BESS LiFePO4' : 'Grid-Tied'}</span>
           </div>
         </div>
 
-        {/* CALCULATION BREAKDOWN SUMMARY */}
+        {/* FINANCIAL & ROI BREAKDOWN BAR */}
         <div className="result-summary-bar">
           <div className="calc-summary-item">
             <span className="summary-label">Estimasi Hemat / Bulan</span>
@@ -296,7 +375,17 @@ export default function SolarCalculator({ onOpenQuote }) {
               {formatRupiah(system.estSavings)}
             </strong>
             <span className="summary-sub" id="resSavingsPct">
-              Hemat ~{system.savingsPct}% tagihan listrik PLN
+              Hemat ~{system.savingsPct}% tagihan PLN
+            </span>
+          </div>
+          <div className="calc-summary-divider" />
+          <div className="calc-summary-item">
+            <span className="summary-label">Estimasi Nilai Paket (SPH)</span>
+            <strong className="summary-val highlight-blue" id="resInvestment" style={{ color: '#0066cc' }}>
+              {formatRupiah(system.estInvestment)}
+            </strong>
+            <span className="summary-sub" id="resPayback">
+              Balik Modal: ~{system.paybackYears} Tahun
             </span>
           </div>
           <div className="calc-summary-divider" />
@@ -311,7 +400,7 @@ export default function SolarCalculator({ onOpenQuote }) {
           </div>
         </div>
 
-        {/* ACTION BUTTONS (DESKTOP & MOBILE) */}
+        {/* ACTION BUTTONS */}
         <div className="calc-result-actions">
           <button
             type="button"
@@ -321,7 +410,7 @@ export default function SolarCalculator({ onOpenQuote }) {
               if (onOpenQuote) onOpenQuote(system);
             }}
           >
-            <span>Penawaran Resmi (PDF)</span>
+            <span>Dapatkan Penawaran Resmi (PDF)</span>
             <span className="btn-arrow">→</span>
           </button>
 

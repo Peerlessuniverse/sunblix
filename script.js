@@ -585,24 +585,51 @@
   });
 
   // ============================================================
-  // BABAK 6: HORIZONTAL SOLAR CALCULATOR
+  // BABAK 6: HORIZONTAL SOLAR CALCULATOR (HARMONISASI SPH 002)
   // ============================================================
   const calcProperty = document.getElementById('calcProperty');
   const calcBill = document.getElementById('calcBill');
+  const calcSysType = document.getElementById('calcSysType');
   const calcRooftop = document.getElementById('calcRooftop');
   const btnCalculate = document.getElementById('btnCalculate');
   const quickBillBtns = document.querySelectorAll('.quick-bill-btn');
 
   const resSystemName = document.getElementById('resSystemName');
+  const resTierBadge = document.getElementById('resTierBadge');
   const resKwp = document.getElementById('resKwp');
   const resPanels = document.getElementById('resPanels');
   const resArea = document.getElementById('resArea');
   const resInverter = document.getElementById('resInverter');
+  const resInverterDesc = document.getElementById('resInverterDesc');
+  const resBattery = document.getElementById('resBattery');
+  const resBatteryDesc = document.getElementById('resBatteryDesc');
   const resSavings = document.getElementById('resSavings');
   const resSavingsPct = document.getElementById('resSavingsPct');
+  const resInvestment = document.getElementById('resInvestment');
+  const resPayback = document.getElementById('resPayback');
   const resProduction = document.getElementById('resProduction');
   const resCo2 = document.getElementById('resCo2');
   const calcResultCard = document.getElementById('calcResultCard');
+
+  let currentSolarSystem = {
+    sysName: 'SUNBLIX 4.68 Hybrid',
+    kwp: '4.68',
+    kwpNum: 4.68,
+    panels: '8',
+    area: '26 m²',
+    inverter: '6 kW',
+    inverterDesc: 'Deye Hybrid Smart',
+    battery: '5.1 kWh LiFePO4',
+    systemType: 'Hybrid (Smart BESS)',
+    systemTypeId: 'hybrid',
+    estInvestment: 128000000,
+    paybackYears: '5.5',
+    monthlyKwh: 474,
+    estSavings: 2000000,
+    savingsPct: 80,
+    co2Kg: 389,
+    rawBill: 2500000,
+  };
 
   function formatRupiah(num) {
     return 'Rp ' + Number(num).toLocaleString('id-ID');
@@ -619,6 +646,8 @@
     const rawBill = parseRupiah(calcBill ? calcBill.value : '2500000');
     const property = calcProperty ? calcProperty.value : 'house';
     const rooftop = calcRooftop ? calcRooftop.value : 'medium';
+    const sysTypeVal = calcSysType ? calcSysType.value : 'hybrid';
+    const isHybrid = sysTypeVal === 'hybrid';
 
     let mult = 1.0;
     if (property === 'villa') mult = 1.15;
@@ -627,75 +656,151 @@
 
     const adjustedBill = rawBill * mult;
 
-    let sysName = 'SUNBLIX 4.68';
-    let kwp = '4.68';
-    let kwpNum = 4.68;
-    let panels = '8';
-    let area = '26 m²';
-    let inverter = '6 kW';
+    // Database Paket Supplier Resmi (Modul Astronergy 585 Wp & Inverter Deye Hybrid/On-Grid)
+    let pkg = {
+      kwp: 4.68,
+      panels: 8,
+      area: '26 m²',
+      inverter: '6 kW',
+      inverterDesc: isHybrid ? 'Deye Hybrid Smart' : 'Grid-Tie Dual MPPT',
+      battery: isHybrid ? '5.1 kWh LiFePO4' : 'On-Grid (Tanpa Baterai)',
+      investment: isHybrid ? 128000000 : 82000000,
+    };
 
     if (adjustedBill <= 1800000 || (rooftop === 'small' && adjustedBill <= 3000000)) {
-      sysName = 'SUNBLIX 2.34';
-      kwp = '2.34';
-      kwpNum = 2.34;
-      panels = '4';
-      area = '13 m²';
-      inverter = '3 kW';
+      pkg = {
+        kwp: 2.34,
+        panels: 4,
+        area: '13 m²',
+        inverter: isHybrid ? '6 kW' : '3 kW',
+        inverterDesc: isHybrid ? 'Deye Hybrid Smart' : 'Grid-Tie Dual MPPT',
+        battery: isHybrid ? '5.1 kWh LiFePO4' : 'On-Grid (Tanpa Baterai)',
+        investment: isHybrid ? 91500000 : 58000000,
+      };
     } else if (adjustedBill <= 4000000) {
-      sysName = 'SUNBLIX 4.68';
-      kwp = '4.68';
-      kwpNum = 4.68;
-      panels = '8';
-      area = '26 m²';
-      inverter = '6 kW';
-    } else if (adjustedBill <= 8000000) {
-      sysName = 'SUNBLIX 8.19';
-      kwp = '8.19';
-      kwpNum = 8.19;
-      panels = '14';
-      area = '45 m²';
-      inverter = '10 kW';
-    } else if (adjustedBill <= 15000000) {
-      sysName = 'SUNBLIX 14.04';
-      kwp = '14.04';
-      kwpNum = 14.04;
-      panels = '24';
-      area = '78 m²';
-      inverter = '15 kW';
+      pkg = {
+        kwp: 4.68,
+        panels: 8,
+        area: '26 m²',
+        inverter: isHybrid ? '6 kW' : '5 kW',
+        inverterDesc: isHybrid ? 'Deye Hybrid Smart' : 'Grid-Tie Dual MPPT',
+        battery: isHybrid ? '5.1 kWh LiFePO4' : 'On-Grid (Tanpa Baterai)',
+        investment: isHybrid ? 128000000 : 82000000,
+      };
+    } else if (adjustedBill <= 7500000) {
+      // Paket No. 6 SPH 002: 7.02 kWp (12 panel × 585 Wp)
+      pkg = {
+        kwp: 7.02,
+        panels: 12,
+        area: '39 m²',
+        inverter: '6 kW',
+        inverterDesc: isHybrid ? 'Deye SUN-6K-SG05LP1' : 'Grid-Tie Smart Inverter',
+        battery: isHybrid ? '5.1 kWh LiFePO4' : 'On-Grid (Tanpa Baterai)',
+        investment: isHybrid ? 177200000 : 122000000,
+      };
+    } else if (adjustedBill <= 11000000) {
+      // Paket No. 7 SPH 002: 8.19 kWp (14 panel × 585 Wp)
+      pkg = {
+        kwp: 8.19,
+        panels: 14,
+        area: '45 m²',
+        inverter: '8 kW',
+        inverterDesc: isHybrid ? 'Deye SUN-8K-SG05LP1' : 'Grid-Tie Smart Inverter',
+        battery: isHybrid ? '5.1 kWh LiFePO4' : 'On-Grid (Tanpa Baterai)',
+        investment: isHybrid ? 209500000 : 142000000,
+      };
+    } else if (adjustedBill <= 16000000) {
+      // Paket No. 10 SPH 002: 11.70 kWp (20 panel × 585 Wp)
+      pkg = {
+        kwp: 11.70,
+        panels: 20,
+        area: '64 m²',
+        inverter: isHybrid ? '12 kW' : '10 kW',
+        inverterDesc: isHybrid ? 'Deye SUN-12K-SG05LP1' : 'Grid-Tie 3-Phase',
+        battery: isHybrid ? '10.2 kWh LiFePO4' : 'On-Grid (Tanpa Baterai)',
+        investment: isHybrid ? 295200000 : 198000000,
+      };
     } else {
-      const calcKwp = Math.min(100, Math.max(16, (adjustedBill / 1500 / 30 / 3.8))).toFixed(2);
-      const calcPanels = Math.round((calcKwp * 1000) / 585);
-      const calcArea = Math.round(calcPanels * 3.2);
-      const calcInv = Math.ceil(calcKwp * 1.2);
-      sysName = `SUNBLIX ${calcKwp}`;
-      kwp = String(calcKwp);
-      kwpNum = parseFloat(calcKwp);
-      panels = String(calcPanels);
-      area = `${calcArea} m²`;
-      inverter = `${calcInv} kW`;
+      // Paket No. 11 SPH 002: 14.04 kWp (24 panel × 585 Wp)
+      pkg = {
+        kwp: 14.04,
+        panels: 24,
+        area: '77 m²',
+        inverter: isHybrid ? '12 kW' : '15 kW',
+        inverterDesc: isHybrid ? 'Deye 3P / 12kW Hybrid' : 'Grid-Tie 3-Phase Multi-MPPT',
+        battery: isHybrid ? '10.2 kWh LiFePO4' : 'On-Grid (Tanpa Baterai)',
+        investment: isHybrid ? 352400000 : 238000000,
+      };
     }
 
-    // Estimated solar monthly generation = kWp * 4.0 PSH * 30 days
-    const monthlyKwh = Math.round(kwpNum * 120);
-    // Typical rooftop PV system offsets 70% - 80% of monthly electricity bills
-    const savingsRatio = rawBill <= 1500000 ? 0.72 : (rawBill <= 3500000 ? 0.78 : 0.80);
+    const sysName = `SUNBLIX ${pkg.kwp} ${isHybrid ? 'Hybrid' : 'On-Grid'}`;
+
+    // Rumus Produksi Energi Resmi SPH: kWp × PSH 4.5 × 75% efisiensi sistem × 30 hari = ~101.25 kWh/kWp/bln
+    const monthlyKwh = Math.round(pkg.kwp * 4.5 * 0.75 * 30);
+
+    // Rasio penghematan realistis: Hybrid (80-85%), On-Grid (70-75%)
+    const savingsRatio = isHybrid
+      ? (rawBill <= 2000000 ? 0.80 : 0.85)
+      : (rawBill <= 2000000 ? 0.70 : 0.75);
+
     const estSavings = Math.round(rawBill * savingsRatio);
     const savingsPct = Math.round(savingsRatio * 100);
     const co2Kg = Math.round(monthlyKwh * 0.82);
 
+    // Payback Period (BEP) dalam tahun = Investasi / (Penghematan tahunan)
+    const annualSavings = estSavings * 12;
+    const paybackYears = annualSavings > 0
+      ? Math.max(3.5, Math.min(8.0, pkg.investment / annualSavings)).toFixed(1)
+      : '5.2';
+
+    // Simpan ke state global untuk Quote Modal
+    currentSolarSystem = {
+      sysName,
+      kwp: String(pkg.kwp),
+      kwpNum: pkg.kwp,
+      panels: String(pkg.panels),
+      area: pkg.area,
+      inverter: pkg.inverter,
+      inverterDesc: pkg.inverterDesc,
+      battery: pkg.battery,
+      systemType: isHybrid ? 'Hybrid (Smart BESS)' : 'On-Grid (Siang Hari)',
+      systemTypeId: sysTypeVal,
+      estInvestment: pkg.investment,
+      paybackYears,
+      monthlyKwh,
+      estSavings,
+      savingsPct,
+      co2Kg,
+      rawBill,
+    };
+
     if (resSystemName) resSystemName.textContent = sysName;
-    if (resKwp) resKwp.textContent = kwp;
-    if (resPanels) resPanels.textContent = panels;
-    if (resArea) resArea.textContent = area;
-    if (resInverter) resInverter.textContent = inverter;
+    if (resTierBadge) resTierBadge.textContent = currentSolarSystem.systemType;
+    if (resKwp) resKwp.textContent = `${pkg.kwp} kWp`;
+    if (resPanels) resPanels.textContent = `${pkg.panels} Panel`;
+    if (resArea) resArea.textContent = pkg.area;
+    if (resInverter) resInverter.textContent = pkg.inverter;
+    if (resInverterDesc) {
+      resInverterDesc.textContent = pkg.inverterDesc;
+      resInverterDesc.setAttribute('title', pkg.inverterDesc);
+    }
+    if (resBattery) {
+      const parts = pkg.battery.split(' ');
+      resBattery.textContent = `${parts[0]} ${parts[1] || ''}`.trim();
+    }
+    if (resBatteryDesc) {
+      resBatteryDesc.textContent = isHybrid ? 'BESS LiFePO4' : 'Grid-Tied';
+    }
 
     if (resSavings) resSavings.textContent = formatRupiah(estSavings);
-    if (resSavingsPct) resSavingsPct.textContent = `Hemat ~${savingsPct}% tagihan`;
+    if (resSavingsPct) resSavingsPct.textContent = `Hemat ~${savingsPct}% tagihan PLN`;
+    if (resInvestment) resInvestment.textContent = formatRupiah(pkg.investment);
+    if (resPayback) resPayback.textContent = `Balik Modal: ~${paybackYears} Tahun`;
     if (resProduction) resProduction.textContent = `~${monthlyKwh.toLocaleString('id-ID')} kWh`;
     if (resCo2) resCo2.textContent = `Reduksi CO₂ ~${co2Kg.toLocaleString('id-ID')} kg`;
 
     // Dynamic WhatsApp consultation link with pre-filled calculated system
-    const waCalcMsg = `Halo Tim Ahli SUNBLIX, saya telah menghitung kebutuhan di website dan ingin konsultasi resmi untuk paket rekomendasi: *${sysName}* (${kwp} kWp, ${panels} Panel, inverter ${inverter}, estimasi rooftop ${area}) dengan tagihan listrik saat ini: *${formatRupiah(rawBill)}/bln*. Estimasi hemat: *${formatRupiah(estSavings)}/bln* (${savingsPct}%). Mohon info jadwal survei atap dan rincian penawaran resminya.`;
+    const waCalcMsg = `Halo Tim Ahli SUNBLIX, saya telah menghitung kebutuhan di website dan ingin konsultasi resmi untuk paket rekomendasi: *${sysName}* (${pkg.kwp} kWp, ${pkg.panels} Panel Astronergy 585Wp, inverter ${pkg.inverter}, baterai: ${pkg.battery}, estimasi atap ${pkg.area}) dengan tagihan listrik saat ini: *${formatRupiah(rawBill)}/bln*.\n\n*Estimasi Nilai Paket:* ${formatRupiah(pkg.investment)}\n*Estimasi Hemat Listrik:* ${formatRupiah(estSavings)}/bln (~${savingsPct}%)\n*Estimasi Balik Modal:* ~${paybackYears} Tahun\n\nMohon info ketersediaan jadwal survei lokasi dan estimasi penawaran resminya.`;
     const calcWaUrl = `https://wa.me/6285288581027?text=${encodeURIComponent(waCalcMsg)}`;
     const calcWaActionBtn = document.getElementById('calcWaActionBtn');
     const resArrowBtn = document.getElementById('resArrowBtn');
@@ -795,6 +900,10 @@
     });
   }
 
+  if (calcSysType) {
+    calcSysType.addEventListener('change', calculateSolar);
+  }
+
   if (calcRooftop) {
     calcRooftop.addEventListener('change', () => {
       calcRooftopChips.forEach(c => {
@@ -808,12 +917,6 @@
     let existingModal = document.getElementById('staticQuoteModal');
     if (existingModal) existingModal.remove();
 
-    const sysTitle = document.getElementById('resSystemTitle')?.textContent || 'SUNBLIX Residential';
-    const kwpVal = document.getElementById('resKwp')?.textContent || '5.85';
-    const panelsVal = document.getElementById('resPanels')?.textContent || '10';
-    const areaVal = document.getElementById('resArea')?.textContent || '32';
-    const inverterVal = document.getElementById('resInverter')?.textContent || '5';
-    const savingsVal = document.getElementById('resSavings')?.textContent || 'Rp 1.950.000';
     const billVal = calcBill ? calcBill.value : 'Rp 2.500.000';
 
     const modalBackdrop = document.createElement('div');
@@ -825,11 +928,23 @@
       <div class="quote-modal-card" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:24px;max-width:560px;width:100%;padding:32px 28px;color:#0f172a;box-shadow:0 25px 60px rgba(0,0,0,0.18),0 4px 16px rgba(8,123,232,0.08);position:relative;max-height:92vh;overflow-y:auto;font-family:inherit;">
         <button type="button" id="closeStaticModalBtn" aria-label="Tutup" style="position:absolute;top:20px;right:20px;background:#f1f5f9;border:1px solid #e2e8f0;color:#475569;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all 0.2s ease;">✕</button>
         <div id="staticModalBody">
-          <div style="margin-bottom:22px;">
+          <div style="margin-bottom:18px;">
             <span style="font-size:11px;font-weight:800;letter-spacing:2px;color:#0284c7;text-transform:uppercase;">PT SUNBLIX ENERGI INDONESIA</span>
             <h3 style="margin:6px 0 8px;font-size:22px;font-weight:800;color:#031f45;letter-spacing:-0.3px;">Permintaan Penawaran Resmi (PDF)</h3>
             <p style="margin:0;font-size:13.5px;color:#64748b;line-height:1.5;">Dapatkan estimasi teknis, analisis ROI, dan proposal resmi Siap Pakai langsung ke email dan WhatsApp Anda.</p>
           </div>
+
+          <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:12px;color:#0369a1;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+            <div>
+              <strong style="color:#0284c7;font-size:13px;display:block;">${currentSolarSystem.sysName}</strong>
+              <span style="font-size:11.5px;color:#475569;">${currentSolarSystem.kwp} kWp • ${currentSolarSystem.panels} Panel Astronergy 585Wp • ${currentSolarSystem.battery}</span>
+            </div>
+            <div style="text-align:right;">
+              <strong style="color:#0f172a;display:block;font-size:12.5px;">Est. ${formatRupiah(currentSolarSystem.estInvestment)}</strong>
+              <span style="font-size:11px;color:#16a34a;font-weight:700;">ROI: ~${currentSolarSystem.paybackYears} Thn</span>
+            </div>
+          </div>
+
           <form id="staticQuoteForm" style="display:grid;gap:14px;">
             <div>
               <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#1e293b;">Nama Lengkap *</label>
@@ -863,7 +978,7 @@
             </div>
             <div>
               <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#1e293b;">Catatan Kebutuhan / Tipe Atap (Opsional)</label>
-              <textarea id="sqNotes" rows="2" placeholder="Misal: Atap genteng bitumen, ingin konsultasi opsi baterai cadangan..." style="width:100%;padding:10px 14px;border-radius:10px;background:#f8fafc;border:1.5px solid #cbd5e1;color:#0f172a;font-size:13px;outline:none;resize:none;box-sizing:border-box;"></textarea>
+              <textarea id="sqNotes" rows="2" placeholder="Misal: Atap genteng bitumen, butuh backup inverter 24 jam..." style="width:100%;padding:10px 14px;border-radius:10px;background:#f8fafc;border:1.5px solid #cbd5e1;color:#0f172a;font-size:13px;outline:none;resize:none;box-sizing:border-box;"></textarea>
             </div>
             <button type="submit" style="margin-top:10px;padding:14px 20px;border-radius:12px;background:linear-gradient(135deg, #0284c7 0%, #0369a1 100%);color:#fff;border:none;font-size:14px;font-weight:800;letter-spacing:0.3px;cursor:pointer;box-shadow:0 8px 20px rgba(2, 132, 199, 0.3);display:flex;align-items:center;justify-content:center;gap:8px;transition:transform 0.2s ease;">
               Kirim Permintaan Penawaran Resmi →
@@ -913,7 +1028,7 @@
                 <button type="button" id="printQuoteBtn" style="padding:14px;border-radius:12px;background:linear-gradient(135deg, #0284c7 0%, #0369a1 100%);color:#fff;border:none;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 20px rgba(2, 132, 199, 0.25);">
                   📥 Unduh / Simpan Penawaran Resmi (PDF)
                 </button>
-                <a href="/brosur?customer=${encodeURIComponent(nameVal || '')}&project=${encodeURIComponent(sysTitle || '')}&docNo=${encodeURIComponent(quoteCode)}" target="_blank" rel="noopener noreferrer" style="padding:12px;border-radius:12px;background:#f8fafc;border:1.5px solid #0284c7;color:#0284c7;font-size:13px;font-weight:700;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;">
+                <a href="/brosur?customer=${encodeURIComponent(nameVal || '')}&project=${encodeURIComponent(currentSolarSystem.sysName || '')}&docNo=${encodeURIComponent(quoteCode)}" target="_blank" rel="noopener noreferrer" style="padding:12px;border-radius:12px;background:#f8fafc;border:1.5px solid #0284c7;color:#0284c7;font-size:13px;font-weight:700;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;">
                   ✨ Buka di Generator Brosur Lengkap (3 Halaman) ↗
                 </a>
                 <button type="button" id="waDirectBtn" style="padding:14px;border-radius:12px;background:#25D366;color:#fff;border:none;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 20px rgba(37, 211, 102, 0.25);">
@@ -929,7 +1044,7 @@
           document.getElementById('closeDoneBtn').onclick = () => modalBackdrop.remove();
 
           document.getElementById('waDirectBtn').onclick = () => {
-            const waText = `Halo Tim Ahli SUNBLIX, saya telah mengisi formulir penawaran resmi di website dengan No. Ref: *${quoteCode}*.\n\n*Nama:* ${nameVal}\n*Lokasi:* ${cityVal}\n*Daya PLN:* ${powerVal}\n*Tagihan Listrik:* ${billVal}\n*Paket Terpilih:* ${sysTitle}\n\nMohon info ketersediaan jadwal survei lokasi dan estimasi proposalnya.`;
+            const waText = `Halo Tim Ahli SUNBLIX, saya telah mengisi formulir penawaran resmi di website dengan No. Ref: *${quoteCode}*.\n\n*Nama:* ${nameVal}\n*Lokasi:* ${cityVal}\n*Daya PLN:* ${powerVal}\n*Tagihan Listrik:* ${billVal}\n*Paket Terpilih:* ${currentSolarSystem.sysName} (${currentSolarSystem.kwp} kWp, ${currentSolarSystem.panels} Panel Astronergy 585Wp, ${currentSolarSystem.battery})\n*Estimasi Nilai Paket:* ${formatRupiah(currentSolarSystem.estInvestment)}\n*Estimasi Hemat:* ${formatRupiah(currentSolarSystem.estSavings)}/bln (~${currentSolarSystem.savingsPct}%)\n*Estimasi Balik Modal:* ~${currentSolarSystem.paybackYears} Tahun\n\nMohon info ketersediaan jadwal survei lokasi dan estimasi proposal resminya.`;
             window.open('https://wa.me/6285288581027?text=' + encodeURIComponent(waText), '_blank');
           };
 
@@ -1058,14 +1173,14 @@
   <div class="doc-header-row">
     <div>
       <div class="doc-title">ESTIMASI PENAWARAN RESMI</div>
-      <div class="doc-sub">Smart Rooftop & Solar Engineering Solutions</div>
+      <div class="doc-sub">Smart Rooftop &amp; Solar Engineering Solutions</div>
     </div>
     <div class="doc-meta">
       <div class="ref-badge">${quoteCode}</div>
       <div class="date">Tanggal: ${dateStr}</div>
     </div>
   </div>
-  <div class="section-title">1. Data Pemohon & Lokasi Instalasi</div>
+  <div class="section-title">1. Data Pemohon &amp; Lokasi Instalasi</div>
   <div class="info-grid">
     <div class="info-item"><span class="info-label">Nama Pemohon</span><span class="info-val">${nameVal}</span></div>
     <div class="info-item"><span class="info-label">Kota / Lokasi</span><span class="info-val">${cityVal}</span></div>
@@ -1078,29 +1193,37 @@
   <table>
     <thead><tr><th>Komponen</th><th>Spesifikasi</th><th>Keterangan</th></tr></thead>
     <tbody>
-      <tr><td><strong>Paket Solusi</strong></td><td><strong>${sysTitle}</strong></td><td>Paket Siap Pakai (All-in engineering & instalasi)</td></tr>
-      <tr><td><strong>Daya Sistem</strong></td><td><strong>${kwpVal} kWp</strong></td><td>Optimal menyerap konsumsi siang hari</td></tr>
-      <tr><td><strong>Modul Surya</strong></td><td>${panelsVal} Unit Modul</td><td>Monocrystalline N-Type Half-Cell High Output</td></tr>
-      <tr><td><strong>Luas Atap</strong></td><td>~${areaVal} m²</td><td>Struktur aluminium anodized anti-korosi SNI</td></tr>
-      <tr><td><strong>Inverter</strong></td><td>${inverterVal} kW Inverter</td><td>Efisiensi 98.6% + Dual MPPT + Proteksi Petir</td></tr>
-      <tr><td><strong>Monitoring</strong></td><td>SUNBLIX IoT Cloud Live Mobile App</td><td>Pantau performa real-time 24/7</td></tr>
+      <tr><td><strong>Paket Solusi</strong></td><td><strong>${currentSolarSystem.sysName}</strong></td><td>Paket Siap Pakai SPH 002 (Mode HPP A)</td></tr>
+      <tr><td><strong>Konfigurasi Sistem</strong></td><td><strong>${currentSolarSystem.systemType}</strong></td><td>${currentSolarSystem.systemTypeId === 'hybrid' ? 'Smart BESS (Cadangan Daya Otomatis 24 Jam)' : 'Grid-Tie Self-Consumption (Efisiensi Siang Hari)'}</td></tr>
+      <tr><td><strong>Daya Terpasang</strong></td><td><strong>${currentSolarSystem.kwp} kWp</strong></td><td>Estimasi produksi ~${currentSolarSystem.monthlyKwh.toLocaleString('id-ID')} kWh/bulan</td></tr>
+      <tr><td><strong>Modul Surya</strong></td><td>${currentSolarSystem.panels} Unit Modul</td><td>Astronergy N-Type TOPCon Bifacial 585 Wp</td></tr>
+      <tr><td><strong>Inverter</strong></td><td>${currentSolarSystem.inverter} (${currentSolarSystem.inverterDesc})</td><td>Efisiensi 98.6% + Dual/Multi MPPT + Proteksi Petir</td></tr>
+      <tr><td><strong>Baterai BESS</strong></td><td>${currentSolarSystem.battery}</td><td>${currentSolarSystem.systemTypeId === 'hybrid' ? 'BESS LiFePO4 Deye High Cycle Life' : 'Sistem On-Grid tanpa baterai penyimpanan'}</td></tr>
+      <tr><td><strong>Luas Atap Diperlukan</strong></td><td>~${currentSolarSystem.area}</td><td>Struktur mounting aluminium SNI anti-korosi</td></tr>
+      <tr><td><strong>Monitoring IoT</strong></td><td>SUNBLIX IoT Cloud Live Mobile App</td><td>Pantau performa real-time 24/7</td></tr>
     </tbody>
   </table>
   <div class="highlight-box">
     <div>
       <div class="highlight-label">Potensi Penghematan Listrik</div>
-      <div class="highlight-val">${savingsVal} / Bulan</div>
+      <div class="highlight-val">${formatRupiah(currentSolarSystem.estSavings)} / Bulan</div>
+      <div class="highlight-sub">Hemat ~${currentSolarSystem.savingsPct}% tagihan PLN</div>
+    </div>
+    <div style="text-align:right;">
+      <div class="highlight-label" style="color:#0369a1;">Estimasi Nilai Paket (SPH)</div>
+      <div class="highlight-val" style="color:#0284c7;font-size:18px;">${formatRupiah(currentSolarSystem.estInvestment)}</div>
+      <div class="highlight-sub">Balik Modal (BEP): ~${currentSolarSystem.paybackYears} Tahun</div>
     </div>
   </div>
-  <div class="section-title">3. Jaminan & Layanan Purna Jual</div>
+  <div class="section-title">3. Jaminan &amp; Layanan Purna Jual</div>
   <div class="guarantees">
-    <div class="guarantee-card"><span class="guarantee-val">Resmi Pabrik</span><span class="guarantee-desc">Garansi Modul Surya Sesuai Manufaktur</span></div>
-    <div class="guarantee-card"><span class="guarantee-val">5 - 10 Tahun</span><span class="guarantee-desc">Garansi Resmi Inverter & Komponen</span></div>
-    <div class="guarantee-card"><span class="guarantee-val">Full Support</span><span class="guarantee-desc">Dukungan Teknis & Monitoring Sistem</span></div>
+    <div class="guarantee-card"><span class="guarantee-val">Resmi Pabrik</span><span class="guarantee-desc">Garansi Modul Surya 25-30 Tahun Sesuai Manufaktur</span></div>
+    <div class="guarantee-card"><span class="guarantee-val">5 - 10 Tahun</span><span class="guarantee-desc">Garansi Resmi Inverter &amp; BESS Komponen</span></div>
+    <div class="guarantee-card"><span class="guarantee-val">Full Support</span><span class="guarantee-desc">Dukungan Teknis &amp; Monitoring Sistem 24/7</span></div>
   </div>
   ${notesVal ? `<div class="section-title" style="margin-top:14px;">4. Catatan Khusus</div><div style="font-size:12px;background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:8px 12px;color:#92400e;">${notesVal}</div>` : ''}
   <div class="footer">
-    <div><em>* Dokumen ini merupakan estimasi awal berbasis kalkulator surya SUNBLIX.<br>Proposal final dan gambar teknik CAD diterbitkan setelah survei lokasi.</em></div>
+    <div><em>* Dokumen ini merupakan estimasi awal berbasis kalkulator surya resmi SUNBLIX.<br>Proposal final SPH dan gambar teknik CAD diterbitkan setelah survei lokasi.</em></div>
     <div class="signature">
       <div class="signature-lead">Tertanda Pemohon,</div>
       <div class="signature-space"></div>

@@ -1404,8 +1404,7 @@
                 <div class="calc-eyebrow">⚡ SOLAR CALCULATOR</div>
                 <div class="calc-accent-line"></div>
                 <h3 class="calc-main-title">SIMULASI HEMAT<br>LISTRIK PLTS<span class="calc-dot">.</span></h3>
-                <p class="calc-desc">Hitung estimasi penghematan hingga 80% & dapatkan rekomendasi spesifikasi PLTS
-                  terbaik.</p>
+                <p class="calc-desc">Hitung estimasi penghematan hingga 85%, estimasi investasi paket, &amp; durasi balik modal (ROI) sesuai standar resmi SUNBLIX.</p>
               </div>
 
               <!-- CENTER INPUTS ROW -->
@@ -1467,27 +1466,22 @@
                   </div>
                 </div>
 
-                <!-- FIELD 3: ROOFTOP SIZE -->
+                <!-- FIELD 3: SYSTEM TYPE & BATTERY CONFIGURATION -->
                 <div class="calc-field">
-                  <label for="calcRooftop"><span>Ukuran Rooftop</span></label>
+                  <label for="calcSysType"><span>Konfigurasi &amp; Baterai</span></label>
                   <div class="select-wrapper">
-                    <select id="calcRooftop">
-                      <option value="small">Small (&lt; 25 m²)</option>
-                      <option value="medium" selected>Medium (25–50 m²)</option>
-                      <option value="large">Large (&gt; 50 m²)</option>
+                    <select id="calcSysType">
+                      <option value="hybrid" selected>⚡ Hybrid (Baterai BESS Backup 24 Jam)</option>
+                      <option value="ongrid">☀️ On-Grid (Hemat Siang Hari)</option>
                     </select>
                   </div>
-                  <!-- Mobile Tactile Chips -->
-                  <div class="calc-chips-group calc-chips-rooftop">
-                    <button type="button" class="calc-chip-btn calc-chip-rooftop" data-val="small">
-                      <span class="chip-text">Kecil (&lt; 25 m²)</span>
-                    </button>
-                    <button type="button" class="calc-chip-btn calc-chip-rooftop is-active" data-val="medium">
-                      <span class="chip-text">Sedang (25–50 m²)</span>
-                    </button>
-                    <button type="button" class="calc-chip-btn calc-chip-rooftop" data-val="large">
-                      <span class="chip-text">Luas (&gt; 50 m²)</span>
-                    </button>
+                  <div class="calc-sub-rooftop" style="margin-top: 4px; display: flex; align-items: center; justify-content: space-between; font-size: 9px; color: #4b6b94;">
+                    <span>Ukuran Atap:</span>
+                    <select id="calcRooftop" style="background: transparent; border: none; color: #0066cc; font-weight: 700; cursor: pointer; outline: none; font-size: 9px;">
+                      <option value="small">&lt; 25 m²</option>
+                      <option value="medium" selected>25–50 m²</option>
+                      <option value="large">&gt; 50 m²</option>
+                    </select>
                   </div>
                 </div>
 
@@ -1497,10 +1491,10 @@
               <div class="calc-result-card" id="calcResultCard">
                 <div class="result-header">
                   <div class="result-label-row">
-                    <span class="result-label">REKOMENDASI SISTEM TERBAIK</span>
-                    <span class="result-tier-badge">BEST MATCH</span>
+                    <span class="result-label">REKOMENDASI SISTEM RESMI</span>
+                    <span class="result-tier-badge" id="resTierBadge">Hybrid (Smart BESS)</span>
                   </div>
-                  <h4 class="result-system-name" id="resSystemName">SUNBLIX 4.68</h4>
+                  <h4 class="result-system-name" id="resSystemName">SUNBLIX 4.68 Hybrid</h4>
                   <div class="result-accent-bar"></div>
                 </div>
 
@@ -1512,15 +1506,15 @@
                   </div>
                   <div class="result-metric">
                     <strong id="resPanels">8 Panel</strong>
-                    <span>Tier-1 585Wp</span>
-                  </div>
-                  <div class="result-metric">
-                    <strong id="resArea">26 m²</strong>
-                    <span>Estimasi Atap</span>
+                    <span>Astronergy 585Wp</span>
                   </div>
                   <div class="result-metric">
                     <strong id="resInverter">6 kW</strong>
-                    <span>Inverter On-Grid</span>
+                    <span id="resInverterDesc" title="Deye Hybrid Smart">Deye Hybrid</span>
+                  </div>
+                  <div class="result-metric">
+                    <strong id="resBattery">5.1 kWh</strong>
+                    <span id="resBatteryDesc">BESS LiFePO4</span>
                   </div>
 
                 </div>
@@ -1530,13 +1524,19 @@
                   <div class="calc-summary-item">
                     <span class="summary-label">Estimasi Hemat / Bulan</span>
                     <strong class="summary-val highlight-green" id="resSavings">Rp 1.950.000</strong>
-                    <span class="summary-sub" id="resSavingsPct">Hemat ~78% tagihan listrik PLN</span>
+                    <span class="summary-sub" id="resSavingsPct">Hemat ~80% tagihan PLN</span>
+                  </div>
+                  <div class="calc-summary-divider"></div>
+                  <div class="calc-summary-item">
+                    <span class="summary-label">Estimasi Nilai Paket (SPH)</span>
+                    <strong class="summary-val highlight-blue" id="resInvestment" style="color: #0066cc;">Rp 128.000.000</strong>
+                    <span class="summary-sub" id="resPayback">Balik Modal: ~5.5 Tahun</span>
                   </div>
                   <div class="calc-summary-divider"></div>
                   <div class="calc-summary-item">
                     <span class="summary-label">Produksi Daya / Bulan</span>
-                    <strong class="summary-val" id="resProduction">~562 kWh</strong>
-                    <span class="summary-sub" id="resCo2">Reduksi CO₂ ~460 kg</span>
+                    <strong class="summary-val" id="resProduction">~474 kWh</strong>
+                    <span class="summary-sub" id="resCo2">Reduksi CO₂ ~389 kg</span>
                   </div>
                 </div>
 

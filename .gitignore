@@ -20,8 +20,9 @@ yarn-error.log*
 .DS_Store
 Thumbs.db
 
-# Scratch scripts
+# Scratch scripts & temp files
 scratch_*.js
+scratch/
 
 # Large media files (served via YouTube / external CDN)
 asset/*vid*.mp4

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect, Suspense } from 'react';
+import { useState, useMemo, useEffect, Suspense, Fragment } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import './brosur.css';
@@ -9,6 +9,7 @@ import {
   BATTERY_ADDONS,
   COMPONENT_TEMPLATES,
   SUNBLIX_TERMS_2026,
+  SUNBLIX_SECTION_CATALOG,
   getPresetFromPackage,
 } from './sunblixCatalog';
 
@@ -16,6 +17,201 @@ import {
 // DEFAULT DATA PRESETS
 // -----------------------------------------------------------------------------
 const PRESETS = {
+  sph002: {
+    id: 'sph002',
+    label: 'SPH 002 (PLTS Hybrid 12 Pos Security)',
+    sub: 'PT Marga Bara Jaya — 12 Pos Security',
+    docNo: '002/SUNBLIX-SPH/X/2026',
+    sphCode: 'SPH 002',
+    date: 'Jakarta, 19 Oktober 2026',
+    customer: 'PT Marga Bara Jaya',
+    customerAddress: 'Di Tempat',
+    attn: 'Bpk. Jajang Safaat',
+    email: 'jajang.safaat@geocoal.com',
+    project: 'PLTS Hybrid 12 Pos Security (1 sistem per pos)',
+    systemType: 'Hybrid 1 Fasa',
+    delivery: '12 lokasi pos (belum diinformasikan)',
+    location: '12 lokasi pos (belum diinformasikan)',
+    phone: '085288581027',
+    powerKwp: '7,02',
+    inverterKw: '6,0',
+    batteryKwh: '5,10',
+    estMonthlyKwh: 711,
+    packageCount: 12,
+    unitBasePrice: 177200000,
+    unitPpn: 19492000,
+    unitTotalPrice: 196692000,
+    totalOffer: 2360304000,
+    panels: '12 Pcs (Bifacial 585Wp Astronergy)',
+    coverImage: '/asset/product_pro.jpg',
+    sections: [
+      {
+        code: 'A',
+        title: 'MATERIAL UTAMA',
+        priceText: 'Rp 177.200.000',
+        items: [
+          {
+            no: 1,
+            item: 'Panel surya (PV module)',
+            spec: 'SBX-PV-585-ABF — Panel Surya N-Type TOPCon Bifacial 585 Wp · Astronergy CHSM72N(DG)/F-BH',
+            qty: 12,
+            unit: 'Pcs',
+            warranty: '12 thn (ketentuan paket)',
+            priceText: '',
+          },
+          {
+            no: 2,
+            item: 'Inverter',
+            spec: 'SBX-INV-HY1L-6K-S5 — Inverter Hybrid 1 Fasa 6 kW (baterai 48 V) · Deye SUN-6K-SG05LP1',
+            qty: 1,
+            unit: 'Unit',
+            warranty: '5 thn (ketentuan paket)',
+            priceText: '',
+          },
+          {
+            no: 3,
+            item: 'Baterai penyimpanan energi (BESS)',
+            spec: 'SBX-BAT-L051-DG05 — Baterai LiFePO4 51,2 V 5,1 kWh · Deye SE-G5.1',
+            qty: 1,
+            unit: 'Unit',
+            warranty: '5 thn (ketentuan paket)',
+            priceText: '',
+          },
+          {
+            no: 4,
+            item: 'Struktur mounting',
+            spec: 'SBX-MTG-LFEET + SBX-MTG-RAIL-3600 — Rail aluminium, bracket l feet, clamp & grounding modul',
+            qty: 1,
+            unit: 'Set',
+            warranty: 'Bracket 5 thn (ketentuan paket)',
+            priceText: '',
+          },
+        ],
+      },
+      {
+        code: 'B',
+        title: 'MATERIAL PENDUKUNG',
+        priceText: 'Termasuk',
+        items: [
+          {
+            no: 5,
+            item: 'Kabel daya PLTS',
+            spec: 'Kabel solar PV (DC), kabel AC & kabel baterai',
+            qty: 1,
+            unit: 'Lot',
+            warranty: 'SUNBLIX 1 thn',
+            priceText: '',
+          },
+          {
+            no: 6,
+            item: 'Panel proteksi',
+            spec: 'SPD DC/AC, MCB/MCCB, proteksi baterai & grounding',
+            qty: 1,
+            unit: 'Lot',
+            warranty: 'SUNBLIX 1 thn',
+            priceText: '',
+          },
+          {
+            no: 7,
+            item: 'Aksesori & material kecil',
+            spec: 'Conduit, cable tray, terminal & bulk material',
+            qty: 1,
+            unit: 'Lot',
+            warranty: 'SUNBLIX 1 thn',
+            priceText: '',
+          },
+        ],
+      },
+      {
+        code: 'C',
+        title: 'INSTALASI & COMMISSIONING',
+        priceText: 'Termasuk',
+        items: [
+          {
+            no: 8,
+            item: 'Instalasi mekanikal',
+            spec: 'Pemasangan mounting & panel surya',
+            qty: 1,
+            unit: 'Lot',
+            warranty: 'SUNBLIX 1 thn',
+            priceText: '',
+          },
+          {
+            no: 9,
+            item: 'Instalasi elektrikal',
+            spec: 'Wiring DC/AC, pemasangan inverter, baterai & panel proteksi',
+            qty: 1,
+            unit: 'Lot',
+            warranty: 'SUNBLIX 1 thn',
+            priceText: '',
+          },
+          {
+            no: 10,
+            item: 'Testing & commissioning',
+            spec: 'Uji sistem, setting inverter & aktivasi akun monitoring',
+            qty: 1,
+            unit: 'Lot',
+            warranty: '-',
+            priceText: '',
+          },
+        ],
+      },
+      {
+        code: 'D',
+        title: 'PEKERJAAN TAMBAHAN',
+        priceText: '-',
+        items: [
+          {
+            no: 11,
+            item: 'Training & dukungan proyek',
+            spec: 'Training pengguna, akomodasi tim & administrasi proyek',
+            qty: 1,
+            unit: 'Lot',
+            warranty: '-',
+            priceText: '',
+          },
+        ],
+      },
+      {
+        code: 'E',
+        title: 'PENGIRIMAN',
+        priceText: '-',
+        items: [
+          {
+            no: 12,
+            item: 'Pengiriman material',
+            spec: 'Pengiriman material ke 12 lokasi pos (belum diinformasikan) (sesuai biaya aktual)',
+            qty: 1,
+            unit: 'Lot',
+            warranty: '-',
+            priceText: '',
+          },
+        ],
+      },
+    ],
+    items: [
+      { id: '1', code: 'SBX-PV-585-ABF', desc: 'Panel Surya N-Type TOPCon Bifacial 585 Wp · Astronergy CHSM72N(DG)/F-BH', qty: 12, unit: 'Pcs', unitPrice: 2250000, notes: '12 thn' },
+      { id: '2', code: 'SBX-INV-HY1L-6K-S5', desc: 'Inverter Hybrid 1 Fasa 6 kW (baterai 48 V) · Deye SUN-6K-SG05LP1', qty: 1, unit: 'Unit', unitPrice: 24500000, notes: '5 thn' },
+      { id: '3', code: 'SBX-BAT-L051-DG05', desc: 'Baterai LiFePO4 51,2 V 5,1 kWh · Deye SE-G5.1', qty: 1, unit: 'Unit', unitPrice: 20400000, notes: '5 thn' },
+      { id: '4', code: 'SBX-MTG-LFEET+RAIL', desc: 'Rail aluminium, bracket l feet, clamp & grounding modul', qty: 1, unit: 'Set', unitPrice: 16800000, notes: 'Bracket 5 thn' },
+    ],
+    terms: [
+      'Termin pembayaran (dari total nilai penawaran): 50% uang muka sebelum pengiriman material (Rp 1.180.152.000); 40% setelah material tiba di lokasi (Rp 944.121.600); 10% setelah instalasi & commissioning selesai (Rp 236.030.400).',
+      'Masa berlaku penawaran 14 hari, sampai dengan 2 November 2026.',
+      'Garansi instalasi & workmanship SUNBLIX 1 tahun sejak serah terima. Garansi produk mengikuti ketentuan pabrikan sebagaimana tercantum pada tabel.',
+      'Harga dalam Rupiah, PPN dicantumkan terpisah. Harga material mengacu pada kurs maksimum Rp 18.500/USD; kenaikan kurs di atas batas tersebut dapat menyesuaikan harga.',
+      'Biaya pengiriman ke 12 lokasi pos (belum diinformasikan) dikenakan sesuai biaya aktual.',
+      'Pemesanan material dilakukan setelah uang muka diterima. Jadwal pengiriman dan instalasi dikonfirmasi setelah survey lapangan.',
+      'Penawaran disusun berdasarkan data awal dari customer. Kapasitas, konfigurasi dan harga final ditetapkan setelah survey lapangan dan verifikasi engineering.',
+      'Lampiran: Analisa Teknis Sistem PLTS.',
+    ],
+    signatory: {
+      name: 'Warsa',
+      title: 'Account Executive',
+      company: 'PT SUNBLIX ENERGI INDONESIA',
+    },
+  },
+
   sph001: {
     id: 'sph001',
     label: 'SPH 001 (PLTS Hybrid 2.56 kW)',
@@ -88,7 +284,7 @@ const PRESETS = {
     ],
     signatory: {
       name: 'Warsa',
-      title: 'Authorized Representative',
+      title: 'Account Executive',
       company: 'PT. SUNBLIX ENERGI INDONESIA',
     },
   },
@@ -252,7 +448,7 @@ function formatRupiah(num) {
 // OFFICIAL SUNBLIX KOP SURAT (LETTERHEAD) COMPONENT
 // Identik seragam dengan kop surat resmi PT Sunblix Energi Indonesia
 // -----------------------------------------------------------------------------
-function SunblixKopSurat({ docNo }) {
+function SunblixKopSurat({ docNo, hideDocNumber = false }) {
   return (
     <div className="sunblix-kop-surat">
       <div className="kop-main-row">
@@ -273,7 +469,7 @@ function SunblixKopSurat({ docNo }) {
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
               <circle cx="12" cy="10" r="3" />
             </svg>
-            <span>Bintaro Business Centre, Jl. RC. Veteran No. 1-I, Bintaro, Jakarta Selatan 12330</span>
+            <span>Bintaro Business Centre, Jl. RC. Veteran No. 1-I, Bintaro, Pesanggrahan, Jakarta Selatan 12330</span>
           </div>
           <div className="kop-contacts-row">
             <span className="kop-contact-item">
@@ -284,21 +480,21 @@ function SunblixKopSurat({ docNo }) {
               </svg>
               <span>sunblix.id</span>
             </span>
-            <span className="kop-sep">|</span>
+            <span className="kop-sep">·</span>
             <span className="kop-contact-item">
               <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="#0066cc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
               </svg>
               <span>021 7362 639</span>
             </span>
-            <span className="kop-sep">|</span>
+            <span className="kop-sep">·</span>
             <span className="kop-contact-item">
               <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="#0066cc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
               </svg>
-              <span>085288581027</span>
+              <span>0852 8858 1027</span>
             </span>
-            <span className="kop-sep">|</span>
+            <span className="kop-sep">·</span>
             <span className="kop-contact-item">
               <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="#0066cc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
@@ -317,10 +513,12 @@ function SunblixKopSurat({ docNo }) {
         <div className="bar-green" />
       </div>
 
-      {/* Centered Bold Underlined Reference Document Number */}
-      <div className="kop-doc-number">
-        <u>{docNo || 'SBX/QTN/2026/001'}</u>
-      </div>
+      {/* Centered Bold Underlined Reference Document Number (Hidden on formal SPH letterhead) */}
+      {!hideDocNumber && (
+        <div className="kop-doc-number">
+          <u>{docNo || 'SBX/QTN/2026/001'}</u>
+        </div>
+      )}
     </div>
   );
 }
@@ -331,8 +529,8 @@ function SunblixKopSurat({ docNo }) {
 function BrochureGeneratorInner() {
   const searchParams = useSearchParams();
 
-  // Active preset & official package catalog
-  const initialPresetKey = searchParams.get('preset') || 'sph001';
+  // Active preset & official package catalog (Defaults to official SPH 002)
+  const initialPresetKey = searchParams.get('preset') || 'sph002';
   const [activePreset, setActivePreset] = useState(initialPresetKey);
   const [selectedTier, setSelectedTier] = useState('STANDARD+');
   const [discountPercent, setDiscountPercent] = useState(0);
@@ -437,11 +635,11 @@ function BrochureGeneratorInner() {
 
   // Form State
   const [quoteData, setQuoteData] = useState(() => {
-    const base = PRESETS[initialPresetKey] || PRESETS.sph001;
+    const base = PRESETS[initialPresetKey] || PRESETS.sph002 || PRESETS.sph001;
     // Allow URL params override
     return {
       ...base,
-      sphCode: searchParams.get('sph') || base.sphCode || 'SPH 001',
+      sphCode: searchParams.get('sph') || base.sphCode || 'SPH 002',
       customer: searchParams.get('customer') || base.customer,
       project: searchParams.get('project') || base.project,
       powerKwp: searchParams.get('kwp') || base.powerKwp,
@@ -455,6 +653,7 @@ function BrochureGeneratorInner() {
   const [includePpn, setIncludePpn] = useState(true);
   const [copiedMsg, setCopiedMsg] = useState(false);
   const [mobileTab, setMobileTab] = useState('editor'); // 'editor' | 'preview'
+  const [activeSectionTab, setActiveSectionTab] = useState('ALL'); // 'ALL' | 'A' | 'B' | 'C' | 'D' | 'E'
 
   // Dynamic Page Ordering & Visibility State
   const DEFAULT_PAGES = [
@@ -587,6 +786,214 @@ function BrochureGeneratorInner() {
     }
     const updated = quoteData.items.filter((_, i) => i !== index);
     setQuoteData({ ...quoteData, items: updated });
+  };
+
+  // Helper to ensure all 5 official SPH sections (A s/d E) exist
+  const ensureSections = (data) => {
+    if (data?.sections && Array.isArray(data.sections) && data.sections.length >= 5) {
+      return data.sections;
+    }
+    return [
+      {
+        code: 'A',
+        title: 'MATERIAL UTAMA',
+        priceText: data?.unitBasePrice ? `Rp ${Number(data.unitBasePrice).toLocaleString('id-ID')}` : 'Rp 177.200.000',
+        items: [
+          {
+            item: 'Panel surya (PV module)',
+            spec: 'SBX-PV-585-ABF — Panel Surya N-Type TOPCon Bifacial 585 Wp · Astronergy CHSM72N(DG)/F-BH',
+            qty: 12,
+            unit: 'Pcs',
+            warranty: '12 thn (ketentuan paket)',
+            priceText: '',
+          },
+          {
+            item: 'Inverter hybrid',
+            spec: 'SBX-INV-HY1L-6K-S5 — Inverter Hybrid 1 Fasa 6 kW (baterai 48 V) · Deye SUN-6K-SG05LP1',
+            qty: 1,
+            unit: 'Unit',
+            warranty: '5 thn (ketentuan paket)',
+            priceText: '',
+          },
+          {
+            item: 'Baterai lithium (ESS)',
+            spec: 'SBX-BAT-L051-DG05 — Baterai LiFePO4 51,2 V 5,1 kWh · Deye SE-G5.1',
+            qty: 1,
+            unit: 'Unit',
+            warranty: '5 thn (ketentuan paket)',
+            priceText: '',
+          },
+        ],
+      },
+      {
+        code: 'B',
+        title: 'MATERIAL PENDUKUNG',
+        priceText: 'Termasuk',
+        items: [
+          {
+            item: 'Mounting & rel panel',
+            spec: 'Rail aluminium, bracket L feet, clamp & grounding modul',
+            qty: 1,
+            unit: 'Set',
+            warranty: '5 thn',
+            priceText: '',
+          },
+          {
+            item: 'Kabel DC & AC',
+            spec: 'Kabel surya DC 1x4 mm² (±60 m) & kabel AC NYYHY (±15 m)',
+            qty: 1,
+            unit: 'Lot',
+            warranty: '-',
+            priceText: '',
+          },
+          {
+            item: 'Panel proteksi DC & AC',
+            spec: 'Box panel, DC MCB, AC MCB, DC SPD, AC SPD, grounding kit',
+            qty: 1,
+            unit: 'Set',
+            warranty: 'SUNBLIX 1 thn',
+            priceText: '',
+          },
+        ],
+      },
+      {
+        code: 'C',
+        title: 'INSTALASI & COMMISSIONING',
+        priceText: 'Termasuk',
+        items: [
+          {
+            item: 'Instalasi mekanikal',
+            spec: 'Pemasangan mounting & panel surya standar K3',
+            qty: 1,
+            unit: 'Lot',
+            warranty: 'SUNBLIX 1 thn',
+            priceText: '',
+          },
+          {
+            item: 'Instalasi elektrikal',
+            spec: 'Wiring DC/AC, pemasangan inverter, baterai & panel proteksi',
+            qty: 1,
+            unit: 'Lot',
+            warranty: 'SUNBLIX 1 thn',
+            priceText: '',
+          },
+          {
+            item: 'Testing & commissioning',
+            spec: 'Uji sistem, setting inverter & aktivasi akun monitoring',
+            qty: 1,
+            unit: 'Lot',
+            warranty: '-',
+            priceText: '',
+          },
+        ],
+      },
+      {
+        code: 'D',
+        title: 'PEKERJAAN TAMBAHAN',
+        priceText: '-',
+        items: [
+          {
+            item: 'Training & dukungan proyek',
+            spec: 'Training pengguna, akomodasi tim & administrasi proyek',
+            qty: 1,
+            unit: 'Lot',
+            warranty: '-',
+            priceText: '',
+          },
+        ],
+      },
+      {
+        code: 'E',
+        title: 'PENGIRIMAN',
+        priceText: '-',
+        items: [
+          {
+            item: 'Pengiriman material',
+            spec: 'Pengiriman material ke lokasi site proyek (sesuai biaya aktual)',
+            qty: 1,
+            unit: 'Lot',
+            warranty: '-',
+            priceText: '',
+          },
+        ],
+      },
+    ];
+  };
+
+  // Section (A s/d E) BOQ Handlers for Account Executive Customization
+  const handleSectionPriceChange = (secCode, newPriceText) => {
+    const currentSecs = ensureSections(quoteData);
+    const updated = currentSecs.map((sec) =>
+      sec.code === secCode ? { ...sec, priceText: newPriceText } : sec
+    );
+    setQuoteData((prev) => ({ ...prev, sections: updated }));
+  };
+
+  const handleSectionItemChange = (secCode, itemIndex, field, value) => {
+    const currentSecs = ensureSections(quoteData);
+    const updated = currentSecs.map((sec) => {
+      if (sec.code !== secCode) return sec;
+      const newItems = [...sec.items];
+      newItems[itemIndex] = {
+        ...newItems[itemIndex],
+        [field]: field === 'qty' ? (Number(value) || 0) : value,
+      };
+      return { ...sec, items: newItems };
+    });
+    setQuoteData((prev) => ({ ...prev, sections: updated }));
+  };
+
+  const handleSectionAddItem = (secCode, template = null) => {
+    const currentSecs = ensureSections(quoteData);
+    const updated = currentSecs.map((sec) => {
+      if (sec.code !== secCode) return sec;
+      const newItem = template
+        ? {
+            item: template.item,
+            spec: template.spec,
+            qty: template.qty || 1,
+            unit: template.unit || 'Unit',
+            warranty: template.warranty || '-',
+            priceText: template.priceText || '',
+          }
+        : {
+            item: 'Item Baru',
+            spec: 'Spesifikasi detail material / jasa...',
+            qty: 1,
+            unit: 'Pcs',
+            warranty: '-',
+            priceText: '',
+          };
+      return { ...sec, items: [...sec.items, newItem] };
+    });
+    setQuoteData((prev) => ({ ...prev, sections: updated }));
+  };
+
+  const handleSectionRemoveItem = (secCode, itemIndex) => {
+    const currentSecs = ensureSections(quoteData);
+    const targetSec = currentSecs.find((s) => s.code === secCode);
+    if (targetSec && targetSec.items.length <= 1) {
+      if (!confirm(`Kategori ${secCode} tinggal memiliki 1 baris item. Tetap hapus baris ini?`)) {
+        return;
+      }
+    }
+    const updated = currentSecs.map((sec) => {
+      if (sec.code !== secCode) return sec;
+      const newItems = sec.items.filter((_, idx) => idx !== itemIndex);
+      return { ...sec, items: newItems };
+    });
+    setQuoteData((prev) => ({ ...prev, sections: updated }));
+  };
+
+  const handleSectionCatalogSelect = (secCode, e) => {
+    const val = e.target.value;
+    if (val === '' || val === undefined) return;
+    const catOptions = SUNBLIX_SECTION_CATALOG[secCode]?.options;
+    const optIdx = parseInt(val, 10);
+    if (catOptions && catOptions[optIdx]) {
+      handleSectionAddItem(secCode, catOptions[optIdx]);
+    }
+    e.target.value = '';
   };
 
   // Financial Calculations with Tiered Discount (Max 8%)
@@ -1034,6 +1441,52 @@ function BrochureGeneratorInner() {
               />
             </div>
 
+            <div className="form-row-2">
+              <div className="form-group">
+                <label className="form-label">Alamat / Keterangan Klien</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={quoteData.customerAddress || ''}
+                  placeholder="Contoh: Di Tempat"
+                  onChange={(e) => setQuoteData({ ...quoteData, customerAddress: e.target.value })}
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Up. / Kontak Person</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={quoteData.attn || ''}
+                  placeholder="Contoh: Bpk. Jajang Safaat"
+                  onChange={(e) => setQuoteData({ ...quoteData, attn: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div className="form-row-2">
+              <div className="form-group">
+                <label className="form-label">Email Klien</label>
+                <input
+                  type="email"
+                  className="form-input"
+                  value={quoteData.email || ''}
+                  placeholder="Contoh: customer@email.com"
+                  onChange={(e) => setQuoteData({ ...quoteData, email: e.target.value })}
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Jenis Sistem PLTS</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={quoteData.systemType || ''}
+                  placeholder="Contoh: Hybrid 1 Fasa"
+                  onChange={(e) => setQuoteData({ ...quoteData, systemType: e.target.value })}
+                />
+              </div>
+            </div>
+
             <div className="form-group">
               <label className="form-label">Nama / Judul Proyek</label>
               <input
@@ -1064,155 +1517,219 @@ function BrochureGeneratorInner() {
                 />
               </div>
             </div>
+
+            <div className="form-row-2">
+              <div className="form-group">
+                <label className="form-label">Inverter (kW)</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={quoteData.inverterKw || ''}
+                  placeholder="Contoh: 6,0"
+                  onChange={(e) => setQuoteData({ ...quoteData, inverterKw: e.target.value })}
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Jumlah Paket</label>
+                <input
+                  type="number"
+                  className="form-input"
+                  value={quoteData.packageCount || 1}
+                  onChange={(e) => setQuoteData({ ...quoteData, packageCount: Number(e.target.value) || 1 })}
+                />
+              </div>
+            </div>
           </div>
 
-          {/* SECTION 3: BILL OF MATERIALS / ITEMS TABLE EDITOR */}
+          {/* SECTION 4: BILL OF QUANTITIES & KATEGORI SPH (A s/d E) */}
           <div className="sidebar-section">
             <div className="sidebar-section-title">
-              <span>📦</span>
-              <span>Daftar Item Material / Jasa ({quoteData.items.length})</span>
+              <span>📊</span>
+              <span>Kategori & BOQ SPH (A s/d E)</span>
+            </div>
+            <p className="section-hint-text">
+              Sesuaikan item dan subtotal penawaran untuk tiap kategori resmi. Pilihan katalog resmi SUNBLIX 2026 tersedia di tiap kategori:
+            </p>
+
+            {/* Filter Tabs Kategori SPH */}
+            <div className="sph-cat-filter-tabs">
+              {[
+                { code: 'ALL', label: 'Semua (5)' },
+                { code: 'A', label: 'A. Utama' },
+                { code: 'B', label: 'B. Pendukung' },
+                { code: 'C', label: 'C. Instalasi' },
+                { code: 'D', label: 'D. Tambahan' },
+                { code: 'E', label: 'E. Pengiriman' },
+              ].map((tab) => (
+                <button
+                  key={tab.code}
+                  type="button"
+                  className={`sph-cat-filter-tab ${activeSectionTab === tab.code ? 'active' : ''}`}
+                  onClick={() => setActiveSectionTab(tab.code)}
+                >
+                  {tab.label}
+                </button>
+              ))}
             </div>
 
-            {quoteData.items.map((item, idx) => (
-              <div key={item.id || idx} className="item-editor-row">
-                <div className="item-editor-header">
-                  <span className="item-editor-num">Item #{idx + 1}</span>
-                  <button
-                    type="button"
-                    className="btn-remove-item"
-                    onClick={() => handleRemoveItem(idx)}
-                    title="Hapus baris item ini"
-                  >
-                    ✕
-                  </button>
-                </div>
+            {/* Render Category Sections (A s/d E) */}
+            {ensureSections(quoteData)
+              .filter((sec) => activeSectionTab === 'ALL' || activeSectionTab === sec.code)
+              .map((sec) => {
+                const catalogOptions = SUNBLIX_SECTION_CATALOG[sec.code]?.options || [];
+                return (
+                  <div key={sec.code} className="sph-cat-card">
+                    {/* Header Kategori */}
+                    <div className="sph-cat-header">
+                      <div className="sph-cat-title-wrap">
+                        <span className="sph-cat-badge">{sec.code}</span>
+                        <strong className="sph-cat-title">{sec.title}</strong>
+                        <span className="sph-cat-count-badge">{sec.items.length} item</span>
+                      </div>
+                    </div>
 
-                <div className="form-group">
-                  <label className="form-label">Kode / Nama Komponen</label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    value={item.code}
-                    onChange={(e) => handleItemChange(idx, 'code', e.target.value)}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Deskripsi & Spesifikasi Teknis</label>
-                  <textarea
-                    rows={2}
-                    className="form-textarea"
-                    value={item.desc}
-                    onChange={(e) => handleItemChange(idx, 'desc', e.target.value)}
-                  />
-                </div>
-
-                <div className="form-row-2">
-                  <div className="form-group">
-                    <label className="form-label">Merk Produk</label>
-                    <input
-                      type="text"
-                      className="form-input"
-                      value={item.brand}
-                      onChange={(e) => handleItemChange(idx, 'brand', e.target.value)}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">Qty &amp; Satuan</label>
-                    <div className="qty-unit-row">
-                      <input
-                        type="number"
-                        min="1"
-                        className="form-input"
-                        value={item.qty}
-                        onChange={(e) => handleItemChange(idx, 'qty', e.target.value)}
-                      />
+                    {/* Input Subtotal / Status Kategori yang tampil di kolom Harga tabel SPH */}
+                    <div className="sph-cat-price-row">
+                      <label className="form-label" style={{ marginBottom: 2 }}>
+                        Status / Subtotal Kategori di Tabel SPH:
+                      </label>
                       <input
                         type="text"
-                        className="form-input"
-                        value={item.unit}
-                        onChange={(e) => handleItemChange(idx, 'unit', e.target.value)}
+                        className="form-input sph-cat-price-input"
+                        value={sec.priceText || ''}
+                        onChange={(e) => handleSectionPriceChange(sec.code, e.target.value)}
+                        placeholder="Contoh: Rp 177.200.000 / Termasuk / -"
                       />
                     </div>
+
+                    {/* Dropdown Pilihan Katalog Resmi SUNBLIX 2026 */}
+                    <div className="sph-cat-actions-row">
+                      <label className="form-label" style={{ marginBottom: 2, fontSize: '11px', color: 'var(--sbx-primary-soft)' }}>
+                        ⚡ Tambah dari Katalog Resmi SUNBLIX ({sec.code}):
+                      </label>
+                      <select
+                        className="quick-add-select sph-catalog-select"
+                        defaultValue=""
+                        onChange={(e) => handleSectionCatalogSelect(sec.code, e)}
+                      >
+                        <option value="" disabled>-- Pilih Komponen dari Katalog Sunblix 2026 --</option>
+                        {catalogOptions.map((opt, optIdx) => (
+                          <option key={optIdx} value={optIdx}>
+                            + {opt.label} ({opt.qty} {opt.unit} • {opt.warranty})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Tombol Tambah Baris Manual */}
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 4 }}>
+                      <button
+                        type="button"
+                        className="btn-add-section-item"
+                        onClick={() => handleSectionAddItem(sec.code, null)}
+                        title={`Tambah baris item manual baru ke kategori ${sec.code}`}
+                      >
+                        + Tambah Baris Manual ({sec.code})
+                      </button>
+                    </div>
+
+                    {/* Daftar Baris Item dalam Kategori */}
+                    <div className="sph-cat-items-list">
+                      {sec.items.length === 0 ? (
+                        <div className="sph-cat-empty">
+                          Belum ada item di kategori ini. Silakan pilih dari katalog di atas atau klik &quot;Tambah Baris Manual&quot;.
+                        </div>
+                      ) : (
+                        sec.items.map((it, itemIdx) => (
+                          <div key={`${sec.code}_${itemIdx}`} className="sph-item-box">
+                            <div className="sph-item-header">
+                              <span className="sph-item-num">
+                                #{itemIdx + 1} • {it.item || 'Item'}
+                              </span>
+                              <button
+                                type="button"
+                                className="btn-remove-sph-item"
+                                onClick={() => handleSectionRemoveItem(sec.code, itemIdx)}
+                                title="Hapus baris item ini"
+                              >
+                                ✕ Hapus
+                              </button>
+                            </div>
+
+                            <div className="form-group" style={{ marginBottom: 6 }}>
+                              <label className="form-label">Nama Item / Pekerjaan</label>
+                              <input
+                                type="text"
+                                className="form-input"
+                                value={it.item}
+                                onChange={(e) => handleSectionItemChange(sec.code, itemIdx, 'item', e.target.value)}
+                                placeholder="Contoh: Panel surya (PV module)"
+                              />
+                            </div>
+
+                            <div className="form-group" style={{ marginBottom: 6 }}>
+                              <label className="form-label">Spesifikasi Teknis & Brand</label>
+                              <textarea
+                                rows={2}
+                                className="form-textarea"
+                                value={it.spec}
+                                onChange={(e) => handleSectionItemChange(sec.code, itemIdx, 'spec', e.target.value)}
+                                placeholder="Detail spesifikasi komponen atau lingkup pekerjaan..."
+                              />
+                            </div>
+
+                            <div className="form-row-4">
+                              <div className="form-group" style={{ marginBottom: 0 }}>
+                                <label className="form-label">Qty</label>
+                                <input
+                                  type="number"
+                                  min="1"
+                                  className="form-input"
+                                  value={it.qty}
+                                  onChange={(e) => handleSectionItemChange(sec.code, itemIdx, 'qty', e.target.value)}
+                                />
+                              </div>
+
+                              <div className="form-group" style={{ marginBottom: 0 }}>
+                                <label className="form-label">Satuan</label>
+                                <input
+                                  type="text"
+                                  className="form-input"
+                                  value={it.unit}
+                                  placeholder="Pcs/Unit/Set"
+                                  onChange={(e) => handleSectionItemChange(sec.code, itemIdx, 'unit', e.target.value)}
+                                />
+                              </div>
+
+                              <div className="form-group" style={{ marginBottom: 0 }}>
+                                <label className="form-label">Garansi</label>
+                                <input
+                                  type="text"
+                                  className="form-input"
+                                  value={it.warranty}
+                                  placeholder="Contoh: 12 thn"
+                                  onChange={(e) => handleSectionItemChange(sec.code, itemIdx, 'warranty', e.target.value)}
+                                />
+                              </div>
+
+                              <div className="form-group" style={{ marginBottom: 0 }}>
+                                <label className="form-label">Harga (Opsional)</label>
+                                <input
+                                  type="text"
+                                  className="form-input"
+                                  value={it.priceText || ''}
+                                  placeholder="Kosongkan jika terpadu"
+                                  onChange={(e) => handleSectionItemChange(sec.code, itemIdx, 'priceText', e.target.value)}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
                   </div>
-                </div>
-
-                <div className="form-row-2">
-                  <div className="form-group">
-                    <label className="form-label">Harga Satuan (Rp)</label>
-                    <input
-                      type="number"
-                      className="form-input"
-                      value={item.unitPrice}
-                      onChange={(e) => handleItemChange(idx, 'unitPrice', e.target.value)}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">Catatan / Status</label>
-                    <input
-                      type="text"
-                      className="form-input"
-                      value={item.notes}
-                      onChange={(e) => handleItemChange(idx, 'notes', e.target.value)}
-                    />
-                  </div>
-                </div>
-
-                <div className="item-row-total">
-                  Total Baris: <strong style={{ color: 'var(--sbx-primary-soft)' }}>{formatRupiah(item.qty * item.unitPrice)}</strong>
-                </div>
-              </div>
-            ))}
-
-            {/* Quick Component Template from Pricelist 2026 */}
-            <div className="quick-add-box">
-              <span className="quick-add-label">Pilih dari Katalog Resmi Sunblix 2026:</span>
-              <select
-                className="quick-add-select"
-                defaultValue=""
-                onChange={(e) => {
-                  const val = e.target.value;
-                  if (!val) return;
-                  const found = COMPONENT_TEMPLATES.find((t) => t.id === val);
-                  if (found) {
-                    handleAddItem(found);
-                    if (found.batteryKwh) {
-                      const cur = parseFloat(quoteData.batteryKwh) || 0;
-                      const added = parseFloat(found.batteryKwh) || 0;
-                      setQuoteData((prev) => ({
-                        ...prev,
-                        batteryKwh: (cur + added).toFixed(2).replace(/\.00$/, ''),
-                      }));
-                    }
-                  }
-                  e.target.value = '';
-                }}
-              >
-                <option value="" disabled>-- Tambah Komponen Standar (Auto-Fill Harga) --</option>
-                <optgroup label="🔋 Battery Add-On (Sheet Pricelist 2026)">
-                  <option value="bat_wm_5">Wall Mounted 5.12 kWh — Rp 20.400.000</option>
-                  <option value="bat_wm_10">Wall Mounted 10.24 kWh — Rp 39.200.000</option>
-                  <option value="bat_rm_5">Rack Mounted 5.12 kWh — Rp 18.000.000</option>
-                </optgroup>
-                <optgroup label="☀️ Modul Surya & Inverter">
-                  <option value="pv_mod_585">Panel Surya Longi 585 Wp — Rp 2.150.000</option>
-                  <option value="inv_deye_6k">Inverter Deye Hybrid 6 kW 1-Phase — Rp 23.500.000</option>
-                  <option value="inv_deye_8k">Inverter Deye Hybrid 8 kW 1-Phase — Rp 29.800.000</option>
-                  <option value="inv_deye_10k_3p">Inverter Deye Hybrid 10 kW 3-Phase — Rp 38.500.000</option>
-                </optgroup>
-                <optgroup label="🔩 Material & EPC">
-                  <option value="mat_mounting_cabling">Paket Mounting Aluminium & Proteksi — Rp 14.500.000</option>
-                  <option value="srv_epc_commissioning">Jasa Instalasi, Komisioning & SLO — Rp 12.500.000</option>
-                </optgroup>
-                <optgroup label="➕ Custom">
-                  <option value="custom_blank">Baris Kosong Manual (Custom Item)</option>
-                </optgroup>
-              </select>
-            </div>
-
-            <button type="button" className="btn-add-item" onClick={() => handleAddItem(null)}>
-              + Tambah Baris Komponen Baru (Manual)
-            </button>
+                );
+              })}
           </div>
 
           {/* SECTION 4: TAX & FINANCIALS */}
@@ -1325,11 +1842,11 @@ function BrochureGeneratorInner() {
           <div className="sidebar-section">
             <div className="sidebar-section-title">
               <span>✍️</span>
-              <span>Penandatangan Resmi</span>
+              <span>Penandatangan Resmi & Tanda Tangan</span>
             </div>
             <div className="form-row-2">
               <div className="form-group">
-                <label className="form-label">Nama Representative</label>
+                <label className="form-label">Nama Account Executive</label>
                 <input
                   type="text"
                   className="form-input"
@@ -1357,6 +1874,9 @@ function BrochureGeneratorInner() {
                 />
               </div>
             </div>
+            <p className="section-hint-text" style={{ marginTop: '8px' }}>
+              ✓ Tanda tangan resmi Warsa terpasang otomatis di belakang emblem stempel resmi SUNBLIX.
+            </p>
           </div>
 
           {/* MOBILE GO-TO-PREVIEW BUTTON */}
@@ -1987,155 +2507,218 @@ function BrochureGeneratorInner() {
             );
           }
 
-                  if (page.id === '3') {
-                    return (
-                      <section key="page3" className="a4-sheet" id="brosurPage3">
-                <div className="p3-quote-content-pdf">
-                  {/* Unified Top Flow Container to Eliminate Unwanted Vertical Gaps */}
-                  <div className="p3-body-flow">
-                    {/* Kop Surat Resmi SUNBLIX Identik Format Cetak/PDF */}
-                    <SunblixKopSurat docNo={quoteData.docNo} />
+          if (page.id === '3') {
+            const currentSections = ensureSections(quoteData);
+            const packageCount = Number(quoteData.packageCount) || 12;
+            const currentUnitBasePrice = quoteData.unitBasePrice !== undefined ? quoteData.unitBasePrice : subtotalAfterDiscount;
+            const currentUnitPpn = quoteData.unitPpn !== undefined ? quoteData.unitPpn : (includePpn ? Math.round(currentUnitBasePrice * 0.11) : 0);
+            const currentUnitTotal = quoteData.unitTotalPrice !== undefined ? quoteData.unitTotalPrice : (currentUnitBasePrice + currentUnitPpn);
+            const currentGrandTotal = quoteData.totalOffer !== undefined ? quoteData.totalOffer : (currentUnitTotal * packageCount);
+            const termsList = quoteData.terms || quoteData.notes || [];
 
-                    {/* Project, Client, Technical Specs (Battery & Power) & Delivery Meta Box */}
-                    <div className="p3-pdf-meta-box">
-                      <div className="p3-pdf-meta-field">
-                        <span className="p3-pdf-meta-lbl">PROJECT</span>
-                        <span className="p3-pdf-meta-val">{quoteData.project}</span>
+            return (
+              <section key="page3" className="a4-sheet" id="brosurPage3">
+                <div className="p3-sph-document">
+                  {/* Top Flow Header */}
+                  <div>
+                    {/* Kop Surat Resmi PT SUNBLIX ENERGI INDONESIA (Tanpa Underline DocNo di Kop Surat) */}
+                    <SunblixKopSurat docNo={quoteData.docNo} hideDocNumber={true} />
+
+                    {/* 2-Column Meta Section Identik Format Resmi PDF */}
+                    <div className="p3-sph-meta-row">
+                      <div className="p3-sph-meta-left">
+                        <div className="p3-sph-meta-yth">Kepada Yth.</div>
+                        <div className="p3-sph-customer-name">{quoteData.customer || 'PT Marga Bara Jaya'}</div>
+                        <div className="p3-sph-customer-address">{quoteData.customerAddress || 'Di Tempat'}</div>
+                        {quoteData.attn && (
+                          <div className="p3-sph-customer-attn">Up. {quoteData.attn}</div>
+                        )}
+                        {quoteData.email && (
+                          <div className="p3-sph-customer-email">{quoteData.email}</div>
+                        )}
                       </div>
-                      <div className="p3-pdf-meta-field">
-                        <span className="p3-pdf-meta-lbl">CLIENT</span>
-                        <span className="p3-pdf-meta-val">{quoteData.customer}</span>
-                      </div>
-                      <div className="p3-pdf-meta-field">
-                        <span className="p3-pdf-meta-lbl">TANGGAL</span>
-                        <span className="p3-pdf-meta-val">{quoteData.date}</span>
-                      </div>
-                      <div className="p3-pdf-meta-field">
-                        <span className="p3-pdf-meta-lbl">DAYA SISTEM</span>
-                        <span className="p3-pdf-meta-val">{quoteData.powerKwp ? `${quoteData.powerKwp} kWp` : '—'}</span>
-                      </div>
-                      <div className="p3-pdf-meta-field">
-                        <span className="p3-pdf-meta-lbl">KAPASITAS BATERAI</span>
-                        <span className="p3-pdf-meta-val highlight-battery">
-                          {quoteData.batteryKwh ? `${quoteData.batteryKwh} kWh` : '—'}
-                        </span>
-                      </div>
-                      <div className="p3-pdf-meta-field">
-                        <span className="p3-pdf-meta-lbl">DELIVERY</span>
-                        <span className="p3-pdf-meta-val">{quoteData.delivery}</span>
+
+                      <div className="p3-sph-meta-right">
+                        <table className="p3-sph-meta-table">
+                          <tbody>
+                            <tr>
+                              <td className="p3-meta-lbl">Tanggal</td>
+                              <td className="p3-meta-sep">:</td>
+                              <td className="p3-meta-val">{quoteData.date || 'Jakarta, 19 Oktober 2026'}</td>
+                            </tr>
+                            <tr>
+                              <td className="p3-meta-lbl">No. Penawaran</td>
+                              <td className="p3-meta-sep">:</td>
+                              <td className="p3-meta-val bold-doc">{quoteData.docNo || '002/SUNBLIX-SPH/X/2026'}</td>
+                            </tr>
+                            <tr>
+                              <td className="p3-meta-lbl">Proyek</td>
+                              <td className="p3-meta-sep">:</td>
+                              <td className="p3-meta-val">{quoteData.project || 'PLTS Hybrid 12 Pos Security (1 sistem per pos)'}</td>
+                            </tr>
+                            <tr>
+                              <td className="p3-meta-lbl">Lokasi</td>
+                              <td className="p3-meta-sep">:</td>
+                              <td className="p3-meta-val">{quoteData.location || quoteData.delivery || '12 lokasi pos (belum diinformasikan)'}</td>
+                            </tr>
+                          </tbody>
+                        </table>
                       </div>
                     </div>
 
-                    {/* Tabel BOQ SPH 001 Identik PDF */}
-                    <table className="p3-pdf-table">
+                    {/* Judul Surat Resmi */}
+                    <div className="p3-sph-title">SURAT PENAWARAN HARGA</div>
+
+                    {/* Paragraf Pembuka */}
+                    <p className="p3-sph-opening">
+                      Dengan hormat, bersama ini kami sampaikan penawaran harga pengadaan dan pemasangan Pembangkit Listrik Tenaga Surya (PLTS) sistem {quoteData.systemType || 'Hybrid 1 Fasa'} untuk {quoteData.project || 'PLTS Hybrid 12 Pos Security (1 sistem per pos)'}, dengan rincian sebagai berikut:
+                    </p>
+
+                    {/* Highlight Box Parameter Teknis (5 Kolom Rapi) */}
+                    <div className="p3-sph-specs-bar">
+                      <div className="p3-spec-col">
+                        <span className="p3-spec-lbl">Kapasitas PV</span>
+                        <strong className="p3-spec-v">{quoteData.powerKwp ? `${quoteData.powerKwp} kWp` : '7,02 kWp'}</strong>
+                      </div>
+                      <div className="p3-spec-col">
+                        <span className="p3-spec-lbl">Inverter</span>
+                        <strong className="p3-spec-v">{quoteData.inverterKw ? `${quoteData.inverterKw} kW` : '6,0 kW'}</strong>
+                      </div>
+                      <div className="p3-spec-col">
+                        <span className="p3-spec-lbl">Baterai</span>
+                        <strong className="p3-spec-v">{quoteData.batteryKwh ? `${quoteData.batteryKwh} kWh` : '5,10 kWh'}</strong>
+                      </div>
+                      <div className="p3-spec-col">
+                        <span className="p3-spec-lbl">Produksi ±</span>
+                        <strong className="p3-spec-v">{quoteData.estMonthlyKwh ? `${quoteData.estMonthlyKwh} kWh/bln` : '711 kWh/bln'}</strong>
+                      </div>
+                      <div className="p3-spec-col">
+                        <span className="p3-spec-lbl">Jumlah paket</span>
+                        <strong className="p3-spec-v highlight">{packageCount} paket</strong>
+                      </div>
+                    </div>
+
+                    {/* Tabel BOQ SPH Identik Format PDF */}
+                    <table className="p3-sph-table">
                       <thead>
                         <tr>
-                          <th style={{ width: '4%', textAlign: 'center' }}>No.</th>
-                          <th style={{ width: '22%' }}>Material / Jasa</th>
-                          <th style={{ width: '34%' }}>Deskripsi / Spesifikasi</th>
-                          <th style={{ width: '7%', textAlign: 'center' }}>Qty</th>
-                          <th style={{ width: '13%', textAlign: 'right' }}>Harga Satuan</th>
-                          <th style={{ width: '13%', textAlign: 'right' }}>Total</th>
-                          <th style={{ width: '7%', textAlign: 'left', paddingLeft: '6px' }}>Catatan</th>
+                          <th style={{ width: '4%', textAlign: 'center' }}>No</th>
+                          <th style={{ width: '22%' }}>Item</th>
+                          <th style={{ width: '38%' }}>Spesifikasi</th>
+                          <th style={{ width: '5%', textAlign: 'center' }}>Qty</th>
+                          <th style={{ width: '6%', textAlign: 'center' }}>Satuan</th>
+                          <th style={{ width: '13%' }}>Garansi</th>
+                          <th style={{ width: '12%', textAlign: 'right' }}>Harga (Rp)</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {quoteData.items.map((item, i) => (
-                          <tr key={item.id || i}>
-                            <td style={{ textAlign: 'center', fontWeight: 600 }}>{i + 1}</td>
-                            <td>
-                              <strong style={{ display: 'block', color: '#031f45', fontSize: '9.5px', marginBottom: '2px' }}>
-                                {item.code}
-                              </strong>
-                            </td>
-                            <td style={{ whiteSpace: 'pre-line', fontSize: '9px', color: '#334155' }}>
-                              {item.desc}
-                            </td>
-                            <td style={{ textAlign: 'center', fontWeight: 600 }}>
-                              {item.qty} {item.unit}
-                            </td>
-                            <td style={{ textAlign: 'right' }}>
-                              {item.unitPrice === 0 ? 'Rp —' : formatRupiah(item.unitPrice)}
-                            </td>
-                            <td style={{ textAlign: 'right', fontWeight: 600 }}>
-                              {item.unitPrice === 0 ? 'Rp —' : formatRupiah(item.qty * item.unitPrice)}
-                            </td>
-                            <td style={{ fontSize: '8.5px', color: '#475569', paddingLeft: '6px' }}>
-                              {item.notes}
-                            </td>
-                          </tr>
-                        ))}
+                        {(() => {
+                          let runningNo = 1;
+                          return currentSections.map((sec) => (
+                            <Fragment key={sec.code}>
+                              <tr className="p3-sph-cat-row">
+                                <td style={{ textAlign: 'center', fontWeight: 'bold' }}>{sec.code}</td>
+                                <td style={{ fontWeight: 'bold' }}>{sec.title}</td>
+                                <td colSpan={4}></td>
+                                <td style={{ textAlign: 'right', fontWeight: 'bold' }}>{sec.priceText}</td>
+                              </tr>
+                              {sec.items.map((it, itIdx) => {
+                                const itemNo = runningNo++;
+                                return (
+                                  <tr key={`${sec.code}_${itIdx}`} className="p3-sph-item-row">
+                                    <td style={{ textAlign: 'center' }}>{itemNo}</td>
+                                    <td className="p3-cell-item">{it.item}</td>
+                                    <td className="p3-cell-spec">{it.spec}</td>
+                                    <td style={{ textAlign: 'center' }}>{it.qty}</td>
+                                    <td style={{ textAlign: 'center' }}>{it.unit}</td>
+                                    <td className="p3-cell-warranty">{it.warranty}</td>
+                                    <td style={{ textAlign: 'right' }}>{it.priceText || ''}</td>
+                                  </tr>
+                                );
+                              })}
+                            </Fragment>
+                          ));
+                        })()}
                       </tbody>
                     </table>
 
-                    {/* Summary Block - Compact & Right-Aligned Beneath Table */}
-                    <div className="p3-summary-container">
-                      <div className="p3-pdf-summary-box">
-                        <div className="p3-summary-row">
-                          <span className="p3-summary-lbl">Subtotal</span>
-                          <span className="p3-summary-val">{formatRupiah(subtotal)}</span>
-                        </div>
-                        {discountRate > 0 && (
-                          <>
-                            <div className="p3-summary-row is-discount">
-                              <span className="p3-summary-lbl" style={{ color: '#b91c1c' }}>
-                                Diskon Khusus ({discountRate}%)
-                              </span>
-                              <span className="p3-summary-val" style={{ color: '#b91c1c' }}>
-                                - {formatRupiah(discountAmount)}
-                              </span>
-                            </div>
-                            <div className="p3-summary-row">
-                              <span className="p3-summary-lbl">Dasar Pengenaan Pajak (DPP)</span>
-                              <span className="p3-summary-val">{formatRupiah(subtotalAfterDiscount)}</span>
-                            </div>
-                          </>
-                        )}
-                        {includePpn && (
-                          <div className="p3-summary-row">
-                            <span className="p3-summary-lbl">Pajak Pertambahan Nilai (PPN 11%)</span>
-                            <span className="p3-summary-val">{formatRupiah(ppn)}</span>
-                          </div>
-                        )}
-                        <div className="p3-summary-total-bar">
-                          <span className="p3-total-lbl">TOTAL</span>
-                          <span className="p3-total-val">{formatRupiah(grandTotal)}</span>
-                        </div>
-                      </div>
+                    {/* Ringkasan Nilai Investasi (Tabel di Sisi Kanan Bawah Tabel BOQ) */}
+                    <div className="p3-sph-summary-wrap">
+                      <table className="p3-sph-summary-table">
+                        <tbody>
+                          <tr>
+                            <td className="p3-sum-label">Nilai dasar / paket</td>
+                            <td className="p3-sum-num">{formatRupiah(currentUnitBasePrice)}</td>
+                          </tr>
+                          <tr>
+                            <td className="p3-sum-label">PPN 11%</td>
+                            <td className="p3-sum-num">{formatRupiah(currentUnitPpn)}</td>
+                          </tr>
+                          <tr>
+                            <td className="p3-sum-label">Total / paket</td>
+                            <td className="p3-sum-num">{formatRupiah(currentUnitTotal)}</td>
+                          </tr>
+                          <tr>
+                            <td className="p3-sum-label">Jumlah paket</td>
+                            <td className="p3-sum-num">{packageCount} paket</td>
+                          </tr>
+                          <tr className="p3-sum-grand-row">
+                            <td className="p3-sum-label grand">TOTAL NILAI PENAWARAN</td>
+                            <td className="p3-sum-num grand">{formatRupiah(currentGrandTotal)}</td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
                   </div>
 
-                  {/* Bottom Section: Notes & Terms + Official Authorized Signatory */}
-                  <div className="p3-bottom-section">
-                    {/* Notes & Terms */}
-                    <div className="p3-pdf-notes-section">
-                      <div className="p3-pdf-notes-title">NOTES & TERMS</div>
-                      <ol className="p3-pdf-notes-list">
-                        {quoteData.notes.map((note, idx) => (
-                          <li key={idx}>{note}</li>
+                  {/* Garis Pemisah & Spasi setelah Total Nilai Penawaran */}
+                  <div className="p3-sph-section-divider" />
+
+                  {/* Bottom Section: Ketentuan + Tanda Tangan & Emblem Resmi */}
+                  <div className="p3-sph-bottom-row">
+                    {/* Ketentuan Penawaran & Kalimat Penutup */}
+                    <div className="p3-sph-terms-box">
+                      <div className="p3-sph-terms-title">Ketentuan:</div>
+                      <ol className="p3-sph-terms-list">
+                        {termsList.map((t, idx) => (
+                          <li key={idx}>{t}</li>
                         ))}
                       </ol>
+                      <p className="p3-sph-closing-text">
+                        Demikian penawaran ini kami sampaikan. Atas perhatian dan kerja samanya kami ucapkan terima kasih.
+                      </p>
                     </div>
 
-                    {/* Authorized Signatory Block (Penandatangan Resmi) */}
-                    <div className="p3-pdf-signatory-box">
-                      <div className="p3-sign-lead">Hormat kami,</div>
-                      <div className="p3-sign-company">
-                        {quoteData.signatory?.company || 'PT. SUNBLIX ENERGI INDONESIA'}
-                      </div>
-                      <div className="p3-sign-space">
+                    {/* Blok Penandatangan: Tanda Tangan Warsa di Belakang Emblem SUNBLIX & Account Executive */}
+                    <div className="p3-sph-sign-box">
+                      <div className="p3-sph-sign-lead">Hormat kami,</div>
+                      <div className="p3-sph-sign-company">{quoteData.signatory?.company || 'PT SUNBLIX ENERGI INDONESIA'}</div>
+
+                      {/* Tanda Tangan di Belakang Emblem SUNBLIX */}
+                      <div className="p3-sph-signature-wrap">
+                        {/* 1. Tanda tangan Warsa di layer belakang (z-index: 1) */}
+                        <img
+                          src="/asset/warsa_signature.png"
+                          alt="Tanda Tangan Warsa"
+                          className="p3-sph-signature-img"
+                        />
+                        {/* 2. Emblem Resmi SUNBLIX di layer depan (z-index: 2) */}
                         <img
                           src="/asset/sunblix_emblem_hq.png"
-                          alt="SUNBLIX Stamp"
-                          className="p3-sign-stamp-img"
+                          alt="SUNBLIX Stamp Emblem"
+                          className="p3-sph-emblem-img"
                         />
                       </div>
-                      <div className="p3-sign-person">
-                        <div className="p3-sign-name">{quoteData.signatory?.name || 'Warsa'}</div>
-                        <div className="p3-sign-title">{quoteData.signatory?.title || 'Authorized Representative'}</div>
+
+                      <div className="p3-sph-sign-person">
+                        <div className="p3-sph-sign-name">{quoteData.signatory?.name || 'Warsa'}</div>
+                        <div className="p3-sph-sign-title">{quoteData.signatory?.title || 'Account Executive'}</div>
                       </div>
                     </div>
                   </div>
+
+                  {/* Footer Garis Batas Bawah (Tanpa Teks) */}
+                  <div className="p3-sph-footer" />
                 </div>
               </section>
             );

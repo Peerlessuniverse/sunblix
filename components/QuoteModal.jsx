@@ -70,12 +70,16 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
       return;
     }
 
-    const sysName = initialData?.sysName || 'SUNBLIX Residential Premium';
-    const powerKwp = initialData?.powerKwp ? initialData.powerKwp + ' kWp' : 'Custom kWp';
-    const panels = initialData?.panels ? initialData.panels + ' Unit Modul' : 'Tier-1 High Efficiency';
-    const areaM2 = initialData?.areaM2 ? initialData.areaM2 + ' m²' : '30-50 m²';
-    const inverterKw = initialData?.inverterKw ? initialData.inverterKw + ' kW' : 'Smart Inverter';
-    const monthlySavings = initialData?.monthlySavings ? 'Rp ' + Number(initialData.monthlySavings).toLocaleString('id-ID') : 'Rp 2.000.000';
+    const sysName = initialData?.sysName || 'SUNBLIX 7.02 Hybrid';
+    const systemType = initialData?.systemType || (initialData?.systemTypeId === 'ongrid' ? 'On-Grid (Hemat Siang Hari)' : 'Hybrid (Smart BESS Backup)');
+    const powerKwp = initialData?.kwp ? initialData.kwp + ' kWp' : (initialData?.powerKwp ? initialData.powerKwp + ' kWp' : '7.02 kWp');
+    const panels = initialData?.panels ? initialData.panels + ' Unit Modul (Astronergy 585Wp)' : '12 Unit Modul (Astronergy 585Wp)';
+    const areaM2 = initialData?.area || (initialData?.areaM2 ? initialData.areaM2 + ' m²' : '39 m²');
+    const inverterKw = initialData?.inverter ? `${initialData.inverter} (${initialData?.inverterDesc || 'Deye Smart Inverter'})` : (initialData?.inverterKw ? initialData.inverterKw + ' kW' : 'Deye 6 kW Smart Inverter');
+    const batteryCap = initialData?.battery || (initialData?.batteryCap || (initialData?.systemTypeId === 'ongrid' ? 'On-Grid (Tanpa Baterai)' : '5.10 kWh LiFePO4 (usable 4.08 kWh)'));
+    const estInvestment = initialData?.estInvestment ? 'Rp ' + Number(initialData.estInvestment).toLocaleString('id-ID') : (initialData?.investment ? 'Rp ' + Number(initialData.investment).toLocaleString('id-ID') : 'Rp 177.200.000');
+    const paybackYears = initialData?.paybackYears ? `${initialData.paybackYears} Tahun` : '~5.2 Tahun';
+    const monthlySavings = initialData?.estSavings ? 'Rp ' + Number(initialData.estSavings).toLocaleString('id-ID') : (initialData?.monthlySavings ? 'Rp ' + Number(initialData.monthlySavings).toLocaleString('id-ID') : 'Rp 2.000.000');
     const savings25y = initialData?.savings25y || 'Rp 1,2 Milyar';
     const co2Kg = initialData?.co2Kg ? Number(initialData.co2Kg).toLocaleString('id-ID') : '450';
     const notesBlock = formData.notes ? `
@@ -528,14 +532,29 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
         <td>Paket Siap Pakai (All-in engineering & instalasi)</td>
       </tr>
       <tr>
+        <td><strong>Konfigurasi Sistem</strong></td>
+        <td><strong>${systemType}</strong></td>
+        <td>Sesuai profil beban dan proteksi cadangan energi</td>
+      </tr>
+      <tr>
         <td><strong>Kapasitas Daya Sistem</strong></td>
         <td><strong>${powerKwp}</strong></td>
-        <td>Optimal untuk menyerap beban konsumsi siang hari</td>
+        <td>Optimal untuk menyerap beban konsumsi siang & malam</td>
       </tr>
       <tr>
         <td><strong>Modul Surya (PV Panels)</strong></td>
         <td>${panels}</td>
-        <td>Monocrystalline N-Type Half-Cell High Output</td>
+        <td>Astronergy N-Type TOPCon Bifacial 585 Wp High Output</td>
+      </tr>
+      <tr>
+        <td><strong>Smart Solar Inverter</strong></td>
+        <td>${inverterKw}</td>
+        <td>Efisiensi 98.6% + Dual MPPT + Proteksi Petir</td>
+      </tr>
+      <tr>
+        <td><strong>Baterai Penyimpanan (BESS)</strong></td>
+        <td><strong>${batteryCap}</strong></td>
+        <td>LiFePO4 51.2V + Smart BMS Protection</td>
       </tr>
       <tr>
         <td><strong>Kebutuhan Luas Atap</strong></td>
@@ -543,9 +562,14 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
         <td>Struktur aluminium anodized anti-korosi SNI</td>
       </tr>
       <tr>
-        <td><strong>Smart Solar Inverter</strong></td>
-        <td>${inverterKw} On-Grid / Hybrid</td>
-        <td>Efisiensi 98.6% + Dual MPPT + Proteksi Petir</td>
+        <td><strong>Estimasi Nilai Paket (SPH)</strong></td>
+        <td><strong>~${estInvestment}</strong></td>
+        <td>DPP SPH Resmi (Mode HPP A Supplier + Jasa Pasang)</td>
+      </tr>
+      <tr>
+        <td><strong>Estimasi Balik Modal (BEP)</strong></td>
+        <td><strong>~${paybackYears}</strong></td>
+        <td>Berdasarkan proyeksi penghematan akumulatif</td>
       </tr>
       <tr>
         <td><strong>Aplikasi Monitoring</strong></td>
@@ -560,6 +584,11 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
       <div class="highlight-label">Potensi Penghematan Listrik</div>
       <div class="highlight-val">~${monthlySavings} / Bulan</div>
       <div class="highlight-sub">Estimasi Akumulasi 25 Tahun: ~${savings25y}</div>
+    </div>
+    <div style="text-align: center; border-left: 1px dashed rgba(2, 132, 199, 0.3); border-right: 1px dashed rgba(2, 132, 199, 0.3); padding: 0 14px;">
+      <div class="highlight-label" style="color: #0369a1;">Estimasi Nilai Paket</div>
+      <div class="highlight-val" style="color: #0284c7;">~${estInvestment}</div>
+      <div class="highlight-sub">Balik Modal (BEP): ~${paybackYears}</div>
     </div>
     <div style="text-align: right;">
       <div style="font-size: 11px; font-weight: 700; color: #166534; text-transform: uppercase;">Dampak Lingkungan</div>
@@ -705,6 +734,44 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
                 Dapatkan estimasi teknis, analisis ROI, dan proposal resmi Siap Pakai langsung ke email dan WhatsApp Anda.
               </p>
             </div>
+
+            {initialData && (
+              <div
+                style={{
+                  background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
+                  border: '1.5px solid #bae6fd',
+                  borderRadius: '12px',
+                  padding: '12px 16px',
+                  marginBottom: '16px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <div>
+                  <div style={{ fontSize: '10.5px', color: '#0369a1', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    Paket Rekomendasi Terpilih
+                  </div>
+                  <div style={{ fontSize: '15px', fontWeight: '850', color: '#031f45', marginTop: '2px' }}>
+                    {initialData.sysName || 'SUNBLIX Solar Rooftop'} ({initialData.kwp || initialData.powerKwp || ''} kWp)
+                  </div>
+                  <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>
+                    {initialData.battery || initialData.batteryCap || 'Sistem Siap Pakai'}
+                  </div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: '10.5px', color: '#0369a1', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    Estimasi Investasi SPH
+                  </div>
+                  <div style={{ fontSize: '15px', fontWeight: '850', color: '#0284c7', marginTop: '2px' }}>
+                    {initialData.estInvestment ? 'Rp ' + Number(initialData.estInvestment).toLocaleString('id-ID') : (initialData.investment ? 'Rp ' + Number(initialData.investment).toLocaleString('id-ID') : '-')}
+                  </div>
+                  <div style={{ fontSize: '11px', color: '#166534', fontWeight: '700', marginTop: '2px' }}>
+                    Balik Modal ~{initialData.paybackYears ? `${initialData.paybackYears} Thn` : '5.2 Thn'}
+                  </div>
+                </div>
+              </div>
+            )}
 
             {errorMsg && (
               <div

@@ -56,6 +56,7 @@ const PRESETS = {
             spec: 'SBX-PV-585-ABF — Panel Surya N-Type TOPCon Bifacial 585 Wp · Astronergy CHSM72N(DG)/F-BH',
             qty: 12,
             unit: 'Pcs',
+            unitPrice: 2250000,
             warranty: '12 thn (ketentuan paket)',
             priceText: '',
           },
@@ -65,6 +66,7 @@ const PRESETS = {
             spec: 'SBX-INV-HY1L-6K-S5 — Inverter Hybrid 1 Fasa 6 kW (baterai 48 V) · Deye SUN-6K-SG05LP1',
             qty: 1,
             unit: 'Unit',
+            unitPrice: 24500000,
             warranty: '5 thn (ketentuan paket)',
             priceText: '',
           },
@@ -74,6 +76,7 @@ const PRESETS = {
             spec: 'SBX-BAT-L051-DG05 — Baterai LiFePO4 51,2 V 5,1 kWh · Deye SE-G5.1',
             qty: 1,
             unit: 'Unit',
+            unitPrice: 20400000,
             warranty: '5 thn (ketentuan paket)',
             priceText: '',
           },
@@ -83,6 +86,7 @@ const PRESETS = {
             spec: 'SBX-MTG-LFEET + SBX-MTG-RAIL-3600 — Rail aluminium, bracket l feet, clamp & grounding modul',
             qty: 1,
             unit: 'Set',
+            unitPrice: 16800000,
             warranty: 'Bracket 5 thn (ketentuan paket)',
             priceText: '',
           },
@@ -99,6 +103,7 @@ const PRESETS = {
             spec: 'Kabel solar PV (DC), kabel AC & kabel baterai',
             qty: 1,
             unit: 'Lot',
+            unitPrice: 4500000,
             warranty: 'SUNBLIX 1 thn',
             priceText: '',
           },
@@ -108,6 +113,7 @@ const PRESETS = {
             spec: 'SPD DC/AC, MCB/MCCB, proteksi baterai & grounding',
             qty: 1,
             unit: 'Lot',
+            unitPrice: 5800000,
             warranty: 'SUNBLIX 1 thn',
             priceText: '',
           },
@@ -117,6 +123,7 @@ const PRESETS = {
             spec: 'Conduit, cable tray, terminal & bulk material',
             qty: 1,
             unit: 'Lot',
+            unitPrice: 2500000,
             warranty: 'SUNBLIX 1 thn',
             priceText: '',
           },
@@ -133,6 +140,7 @@ const PRESETS = {
             spec: 'Pemasangan mounting & panel surya',
             qty: 1,
             unit: 'Lot',
+            unitPrice: 6500000,
             warranty: 'SUNBLIX 1 thn',
             priceText: '',
           },
@@ -142,6 +150,7 @@ const PRESETS = {
             spec: 'Wiring DC/AC, pemasangan inverter, baterai & panel proteksi',
             qty: 1,
             unit: 'Lot',
+            unitPrice: 6000000,
             warranty: 'SUNBLIX 1 thn',
             priceText: '',
           },
@@ -151,6 +160,7 @@ const PRESETS = {
             spec: 'Uji sistem, setting inverter & aktivasi akun monitoring',
             qty: 1,
             unit: 'Lot',
+            unitPrice: 3000000,
             warranty: '-',
             priceText: '',
           },
@@ -167,6 +177,7 @@ const PRESETS = {
             spec: 'Training pengguna, akomodasi tim & administrasi proyek',
             qty: 1,
             unit: 'Lot',
+            unitPrice: 2500000,
             warranty: '-',
             priceText: '',
           },
@@ -183,6 +194,7 @@ const PRESETS = {
             spec: 'Pengiriman material ke 12 lokasi pos (belum diinformasikan) (sesuai biaya aktual)',
             qty: 1,
             unit: 'Lot',
+            unitPrice: 2500000,
             warranty: '-',
             priceText: '',
           },
@@ -788,136 +800,189 @@ function BrochureGeneratorInner() {
     setQuoteData({ ...quoteData, items: updated });
   };
 
-  // Helper to ensure all 5 official SPH sections (A s/d E) exist
+  // Helper to ensure all 5 official SPH sections (A s/d E) exist with database unit prices
   const ensureSections = (data) => {
-    if (data?.sections && Array.isArray(data.sections) && data.sections.length >= 5) {
-      return data.sections;
-    }
-    return [
-      {
-        code: 'A',
-        title: 'MATERIAL UTAMA',
-        priceText: data?.unitBasePrice ? `Rp ${Number(data.unitBasePrice).toLocaleString('id-ID')}` : 'Rp 177.200.000',
-        items: [
+    const DEFAULT_ITEM_PRICES = {
+      'Panel surya (PV module)': 2250000,
+      'Inverter': 24500000,
+      'Inverter hybrid': 24500000,
+      'Baterai penyimpanan energi (BESS)': 20400000,
+      'Baterai lithium (ESS)': 20400000,
+      'Struktur mounting': 16800000,
+      'Mounting & rel panel': 16800000,
+      'Kabel daya PLTS': 4500000,
+      'Kabel DC & AC': 4500000,
+      'Panel proteksi': 5800000,
+      'Panel proteksi DC & AC': 5800000,
+      'Aksesori & material kecil': 2500000,
+      'Instalasi mekanikal': 6500000,
+      'Instalasi elektrikal': 6000000,
+      'Testing & commissioning': 3000000,
+      'Training & dukungan proyek': 2500000,
+      'Pengiriman material': 2500000,
+    };
+
+    const rawSections = (data?.sections && Array.isArray(data.sections) && data.sections.length >= 5)
+      ? data.sections
+      : [
           {
-            item: 'Panel surya (PV module)',
-            spec: 'SBX-PV-585-ABF — Panel Surya N-Type TOPCon Bifacial 585 Wp · Astronergy CHSM72N(DG)/F-BH',
-            qty: 12,
-            unit: 'Pcs',
-            warranty: '12 thn (ketentuan paket)',
-            priceText: '',
+            code: 'A',
+            title: 'MATERIAL UTAMA',
+            priceText: data?.unitBasePrice ? `Rp ${Number(data.unitBasePrice).toLocaleString('id-ID')}` : 'Rp 177.200.000',
+            items: [
+              {
+                item: 'Panel surya (PV module)',
+                spec: 'SBX-PV-585-ABF — Panel Surya N-Type TOPCon Bifacial 585 Wp · Astronergy CHSM72N(DG)/F-BH',
+                qty: 12,
+                unit: 'Pcs',
+                unitPrice: 2250000,
+                warranty: '12 thn (ketentuan paket)',
+                priceText: '',
+              },
+              {
+                item: 'Inverter hybrid',
+                spec: 'SBX-INV-HY1L-6K-S5 — Inverter Hybrid 1 Fasa 6 kW (baterai 48 V) · Deye SUN-6K-SG05LP1',
+                qty: 1,
+                unit: 'Unit',
+                unitPrice: 24500000,
+                warranty: '5 thn (ketentuan paket)',
+                priceText: '',
+              },
+              {
+                item: 'Baterai lithium (ESS)',
+                spec: 'SBX-BAT-L051-DG05 — Baterai LiFePO4 51,2 V 5,1 kWh · Deye SE-G5.1',
+                qty: 1,
+                unit: 'Unit',
+                unitPrice: 20400000,
+                warranty: '5 thn (ketentuan paket)',
+                priceText: '',
+              },
+              {
+                item: 'Struktur mounting',
+                spec: 'SBX-MTG-LFEET + SBX-MTG-RAIL-3600 — Rail aluminium, bracket l feet, clamp & grounding modul',
+                qty: 1,
+                unit: 'Set',
+                unitPrice: 16800000,
+                warranty: 'Bracket 5 thn (ketentuan paket)',
+                priceText: '',
+              },
+            ],
           },
           {
-            item: 'Inverter hybrid',
-            spec: 'SBX-INV-HY1L-6K-S5 — Inverter Hybrid 1 Fasa 6 kW (baterai 48 V) · Deye SUN-6K-SG05LP1',
-            qty: 1,
-            unit: 'Unit',
-            warranty: '5 thn (ketentuan paket)',
-            priceText: '',
+            code: 'B',
+            title: 'MATERIAL PENDUKUNG',
+            priceText: 'Termasuk',
+            items: [
+              {
+                item: 'Kabel daya PLTS',
+                spec: 'Kabel solar PV (DC), kabel AC & kabel baterai',
+                qty: 1,
+                unit: 'Lot',
+                unitPrice: 4500000,
+                warranty: 'SUNBLIX 1 thn',
+                priceText: '',
+              },
+              {
+                item: 'Panel proteksi',
+                spec: 'SPD DC/AC, MCB/MCCB, proteksi baterai & grounding',
+                qty: 1,
+                unit: 'Lot',
+                unitPrice: 5800000,
+                warranty: 'SUNBLIX 1 thn',
+                priceText: '',
+              },
+              {
+                item: 'Aksesori & material kecil',
+                spec: 'Conduit, cable tray, terminal & bulk material',
+                qty: 1,
+                unit: 'Lot',
+                unitPrice: 2500000,
+                warranty: 'SUNBLIX 1 thn',
+                priceText: '',
+              },
+            ],
           },
           {
-            item: 'Baterai lithium (ESS)',
-            spec: 'SBX-BAT-L051-DG05 — Baterai LiFePO4 51,2 V 5,1 kWh · Deye SE-G5.1',
-            qty: 1,
-            unit: 'Unit',
-            warranty: '5 thn (ketentuan paket)',
-            priceText: '',
-          },
-        ],
-      },
-      {
-        code: 'B',
-        title: 'MATERIAL PENDUKUNG',
-        priceText: 'Termasuk',
-        items: [
-          {
-            item: 'Mounting & rel panel',
-            spec: 'Rail aluminium, bracket L feet, clamp & grounding modul',
-            qty: 1,
-            unit: 'Set',
-            warranty: '5 thn',
-            priceText: '',
-          },
-          {
-            item: 'Kabel DC & AC',
-            spec: 'Kabel surya DC 1x4 mm² (±60 m) & kabel AC NYYHY (±15 m)',
-            qty: 1,
-            unit: 'Lot',
-            warranty: '-',
-            priceText: '',
-          },
-          {
-            item: 'Panel proteksi DC & AC',
-            spec: 'Box panel, DC MCB, AC MCB, DC SPD, AC SPD, grounding kit',
-            qty: 1,
-            unit: 'Set',
-            warranty: 'SUNBLIX 1 thn',
-            priceText: '',
-          },
-        ],
-      },
-      {
-        code: 'C',
-        title: 'INSTALASI & COMMISSIONING',
-        priceText: 'Termasuk',
-        items: [
-          {
-            item: 'Instalasi mekanikal',
-            spec: 'Pemasangan mounting & panel surya standar K3',
-            qty: 1,
-            unit: 'Lot',
-            warranty: 'SUNBLIX 1 thn',
-            priceText: '',
+            code: 'C',
+            title: 'INSTALASI & COMMISSIONING',
+            priceText: 'Termasuk',
+            items: [
+              {
+                item: 'Instalasi mekanikal',
+                spec: 'Pemasangan mounting & panel surya standar K3',
+                qty: 1,
+                unit: 'Lot',
+                unitPrice: 6500000,
+                warranty: 'SUNBLIX 1 thn',
+                priceText: '',
+              },
+              {
+                item: 'Instalasi elektrikal',
+                spec: 'Wiring DC/AC, pemasangan inverter, baterai & panel proteksi',
+                qty: 1,
+                unit: 'Lot',
+                unitPrice: 6000000,
+                warranty: 'SUNBLIX 1 thn',
+                priceText: '',
+              },
+              {
+                item: 'Testing & commissioning',
+                spec: 'Uji sistem, setting inverter & aktivasi akun monitoring',
+                qty: 1,
+                unit: 'Lot',
+                unitPrice: 3000000,
+                warranty: '-',
+                priceText: '',
+              },
+            ],
           },
           {
-            item: 'Instalasi elektrikal',
-            spec: 'Wiring DC/AC, pemasangan inverter, baterai & panel proteksi',
-            qty: 1,
-            unit: 'Lot',
-            warranty: 'SUNBLIX 1 thn',
-            priceText: '',
+            code: 'D',
+            title: 'PEKERJAAN TAMBAHAN',
+            priceText: '-',
+            items: [
+              {
+                item: 'Training & dukungan proyek',
+                spec: 'Training pengguna, akomodasi tim & administrasi proyek',
+                qty: 1,
+                unit: 'Lot',
+                unitPrice: 2500000,
+                warranty: '-',
+                priceText: '',
+              },
+            ],
           },
           {
-            item: 'Testing & commissioning',
-            spec: 'Uji sistem, setting inverter & aktivasi akun monitoring',
-            qty: 1,
-            unit: 'Lot',
-            warranty: '-',
-            priceText: '',
+            code: 'E',
+            title: 'PENGIRIMAN',
+            priceText: '-',
+            items: [
+              {
+                item: 'Pengiriman material',
+                spec: 'Pengiriman material ke lokasi site proyek (sesuai biaya aktual)',
+                qty: 1,
+                unit: 'Lot',
+                unitPrice: 2500000,
+                warranty: '-',
+                priceText: '',
+              },
+            ],
           },
-        ],
-      },
-      {
-        code: 'D',
-        title: 'PEKERJAAN TAMBAHAN',
-        priceText: '-',
-        items: [
-          {
-            item: 'Training & dukungan proyek',
-            spec: 'Training pengguna, akomodasi tim & administrasi proyek',
-            qty: 1,
-            unit: 'Lot',
-            warranty: '-',
-            priceText: '',
-          },
-        ],
-      },
-      {
-        code: 'E',
-        title: 'PENGIRIMAN',
-        priceText: '-',
-        items: [
-          {
-            item: 'Pengiriman material',
-            spec: 'Pengiriman material ke lokasi site proyek (sesuai biaya aktual)',
-            qty: 1,
-            unit: 'Lot',
-            warranty: '-',
-            priceText: '',
-          },
-        ],
-      },
-    ];
+        ];
+
+    return rawSections.map((sec) => ({
+      ...sec,
+      items: (sec.items || []).map((it) => {
+        if (it.unitPrice !== undefined && it.unitPrice !== null && it.unitPrice !== '' && it.unitPrice !== 0) {
+          return it;
+        }
+        const fallback = DEFAULT_ITEM_PRICES[it.item] || 0;
+        return {
+          ...it,
+          unitPrice: it.unitPrice || fallback,
+        };
+      }),
+    }));
   };
 
   // Section (A s/d E) BOQ Handlers for Account Executive Customization
@@ -934,9 +999,15 @@ function BrochureGeneratorInner() {
     const updated = currentSecs.map((sec) => {
       if (sec.code !== secCode) return sec;
       const newItems = [...sec.items];
+      let val = value;
+      if (field === 'qty') {
+        val = Number(value) || 0;
+      } else if (field === 'unitPrice') {
+        val = value === '' ? 0 : (isNaN(Number(value)) ? parsePriceNumber(value) : Number(value));
+      }
       newItems[itemIndex] = {
         ...newItems[itemIndex],
-        [field]: field === 'qty' ? (Number(value) || 0) : value,
+        [field]: val,
       };
       return { ...sec, items: newItems };
     });
@@ -953,6 +1024,7 @@ function BrochureGeneratorInner() {
             spec: template.spec,
             qty: template.qty || 1,
             unit: template.unit || 'Unit',
+            unitPrice: template.unitPrice || 0,
             warranty: template.warranty || '-',
             priceText: template.priceText || '',
           }
@@ -961,6 +1033,7 @@ function BrochureGeneratorInner() {
             spec: 'Spesifikasi detail material / jasa...',
             qty: 1,
             unit: 'Pcs',
+            unitPrice: 0,
             warranty: '-',
             priceText: '',
           };
@@ -1712,7 +1785,7 @@ function BrochureGeneratorInner() {
                               />
                             </div>
 
-                            <div className="form-row-4">
+                            <div className="form-row-5">
                               <div className="form-group" style={{ marginBottom: 0 }}>
                                 <label className="form-label">Qty</label>
                                 <input
@@ -1736,6 +1809,19 @@ function BrochureGeneratorInner() {
                               </div>
 
                               <div className="form-group" style={{ marginBottom: 0 }}>
+                                <label className="form-label">Harga Satuan (Rp)</label>
+                                <input
+                                  type="number"
+                                  min="0"
+                                  step="50000"
+                                  className="form-input"
+                                  value={it.unitPrice !== undefined && it.unitPrice !== null ? it.unitPrice : ''}
+                                  placeholder="Contoh: 2250000"
+                                  onChange={(e) => handleSectionItemChange(sec.code, itemIdx, 'unitPrice', e.target.value)}
+                                />
+                              </div>
+
+                              <div className="form-group" style={{ marginBottom: 0 }}>
                                 <label className="form-label">Garansi</label>
                                 <input
                                   type="text"
@@ -1747,7 +1833,7 @@ function BrochureGeneratorInner() {
                               </div>
 
                               <div className="form-group" style={{ marginBottom: 0 }}>
-                                <label className="form-label">Harga (Opsional)</label>
+                                <label className="form-label">Harga Total (Opsional)</label>
                                 <input
                                   type="text"
                                   className="form-input"
@@ -2637,11 +2723,12 @@ function BrochureGeneratorInner() {
                       <thead>
                         <tr>
                           <th style={{ width: '4%', textAlign: 'center' }}>No</th>
-                          <th style={{ width: '22%' }}>Item</th>
-                          <th style={{ width: '38%' }}>Spesifikasi</th>
-                          <th style={{ width: '5%', textAlign: 'center' }}>Qty</th>
-                          <th style={{ width: '6%', textAlign: 'center' }}>Satuan</th>
-                          <th style={{ width: '13%' }}>Garansi</th>
+                          <th style={{ width: '19%' }}>Item</th>
+                          <th style={{ width: '32%' }}>Spesifikasi</th>
+                          <th style={{ width: '4%', textAlign: 'center' }}>Qty</th>
+                          <th style={{ width: '5%', textAlign: 'center' }}>Satuan</th>
+                          <th style={{ width: '13%', textAlign: 'right' }}>Harga Satuan (Rp)</th>
+                          <th style={{ width: '11%' }}>Garansi</th>
                           <th style={{ width: '12%', textAlign: 'right' }}>Harga (Rp)</th>
                         </tr>
                       </thead>
@@ -2653,7 +2740,7 @@ function BrochureGeneratorInner() {
                               <tr className="p3-sph-cat-row">
                                 <td style={{ textAlign: 'center', fontWeight: 'bold' }}>{sec.code}</td>
                                 <td style={{ fontWeight: 'bold' }}>{sec.title}</td>
-                                <td colSpan={4}></td>
+                                <td colSpan={5}></td>
                                 <td style={{ textAlign: 'right', fontWeight: 'bold' }}>
                                   {(() => {
                                     if (sec.priceText && sec.priceText !== '-' && sec.priceText !== '') {
@@ -2674,8 +2761,11 @@ function BrochureGeneratorInner() {
                                     <td className="p3-cell-spec">{it.spec}</td>
                                     <td style={{ textAlign: 'center' }}>{it.qty}</td>
                                     <td style={{ textAlign: 'center' }}>{it.unit}</td>
+                                    <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }} className="p3-cell-unitprice">
+                                      {it.unitPrice ? (typeof it.unitPrice === 'number' ? formatRupiah(it.unitPrice) : it.unitPrice) : (it.unitPriceText || '-')}
+                                    </td>
                                     <td className="p3-cell-warranty">{it.warranty}</td>
-                                    <td style={{ textAlign: 'right' }}>{it.priceText || ''}</td>
+                                    <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>{it.priceText || ''}</td>
                                   </tr>
                                 );
                               })}

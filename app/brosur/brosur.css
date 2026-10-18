@@ -2933,6 +2933,14 @@
   color: #475569;
 }
 
+.p3-cell-unitprice {
+  font-size: 7.5px;
+  font-weight: 600;
+  color: #031f45;
+  text-align: right;
+  white-space: nowrap;
+}
+
 /* Financial Summary Block (Right Aligned) */
 .p3-sph-summary-wrap {
   display: flex;
@@ -3342,6 +3350,25 @@
 
 @media (max-width: 640px) {
   .form-row-4 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* 5 Column Row for Qty, Satuan, Harga Satuan, Garansi, Harga Total */
+.form-row-5 {
+  display: grid;
+  grid-template-columns: 0.7fr 0.85fr 1.8fr 1.05fr 1.3fr;
+  gap: 5px;
+  margin-top: 6px;
+}
+
+.form-row-5 .form-input {
+  padding: 6px 5px;
+  font-size: 11px;
+}
+
+@media (max-width: 640px) {
+  .form-row-5 {
     grid-template-columns: 1fr 1fr;
   }
 }

@@ -16,6 +16,34 @@ import {
 } from './sunblixCatalog';
 
 // -----------------------------------------------------------------------------
+// HELPER: Smart Image URL Normalizer (Google Drive, Dropbox, Imgur, direct URL)
+// -----------------------------------------------------------------------------
+export const normalizeImageUrl = (rawUrl) => {
+  if (!rawUrl || typeof rawUrl !== 'string') return '';
+  let url = rawUrl.trim().replace(/^["']|["']$/g, '');
+  if (!url) return '';
+
+  // Google Drive share link -> Direct image URL
+  const gdriveMatch = url.match(/drive\.google\.com\/(?:file\/d\/|open\?id=)([a-zA-Z0-9_-]+)/);
+  if (gdriveMatch && gdriveMatch[1]) {
+    return `https://lh3.googleusercontent.com/d/${gdriveMatch[1]}`;
+  }
+
+  // Dropbox share link -> Direct image URL
+  if (url.includes('dropbox.com') && url.includes('dl=0')) {
+    return url.replace('dl=0', 'raw=1');
+  }
+
+  // Imgur page link -> Direct image URL
+  const imgurMatch = url.match(/imgur\.com\/([a-zA-Z0-9]+)$/);
+  if (imgurMatch && imgurMatch[1]) {
+    return `https://i.imgur.com/${imgurMatch[1]}.jpg`;
+  }
+
+  return url;
+};
+
+// -----------------------------------------------------------------------------
 // DEFAULT DATA PRESETS
 // -----------------------------------------------------------------------------
 const PRESETS = {
@@ -1085,12 +1113,32 @@ function BrochureGeneratorInner() {
     setQuoteData((prev) => {
       const currentPorts = prev.portfolios || DEFAULT_PORTFOLIOS;
       const updated = [...currentPorts];
+      let finalValue = value;
+      if (field === 'imageUrl' && typeof value === 'string') {
+        finalValue = normalizeImageUrl(value);
+      }
       updated[index] = {
         ...updated[index],
-        [field]: value,
+        [field]: finalValue,
       };
       return { ...prev, portfolios: updated };
     });
+  };
+
+  const handlePortfolioFileUpload = (index, file) => {
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      alert('Format file tidak didukung. Mohon pilih file gambar (.jpg, .png, .webp, .jpeg).');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result;
+      if (dataUrl) {
+        handlePortfolioChange(index, 'imageUrl', dataUrl);
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   const handlePortfolioStatChange = (portIndex, statIndex, field, value) => {
@@ -1218,17 +1266,36 @@ function BrochureGeneratorInner() {
   }, [subtotalAfterDiscount, ppn]);
 
   // Actions
-  const handlePrint = () => {
-    // Pastikan tab preview aktif di mobile dan semua halaman (1, 2, 3) ter-render di DOM
+  const handlePrint = async () => {
+    // Pastikan tab preview aktif di mobile dan semua halaman ter-render di DOM
     if (mobileTab !== 'preview') {
       setMobileTab('preview');
     }
     setActivePage('all');
 
-    // Beri waktu 200ms agar DOM selesai diperbarui sebelum memicu dialog cetak
+    // Beri waktu agar DOM selesai me-render semua sheet A4
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    // Tunggu semua gambar kartu portofolio dan dokumen selesai dimuat sebelum memicu print
+    if (typeof document !== 'undefined') {
+      const allImages = Array.from(document.querySelectorAll('.a4-sheet img'));
+      if (allImages.length > 0) {
+        await Promise.all(
+          allImages.map((img) => {
+            if (img.complete && img.naturalHeight !== 0) return Promise.resolve();
+            return new Promise((resolve) => {
+              img.onload = resolve;
+              img.onerror = resolve;
+              setTimeout(resolve, 1500); // safety fallback
+            });
+          })
+        );
+      }
+    }
+
     setTimeout(() => {
       window.print();
-    }, 200);
+    }, 150);
   };
 
   const handleShareWhatsApp = () => {
@@ -2213,7 +2280,7 @@ function BrochureGeneratorInner() {
                     />
                   </div>
 
-                  {/* FORM AMBIL FOTO VIA LINK & PILIHAN PRESET */}
+                  {/* FORM AMBIL FOTO VIA LINK & PILIHAN PRESET & UPLOAD FILE */}
                   <div className="portfolio-photo-box">
                     <label className="form-label" style={{ color: 'var(--sbx-primary-soft)', marginBottom: 4 }}>
                       🖼️ Link Foto Proyek (URL / Path Gambar):
@@ -2225,8 +2292,50 @@ function BrochureGeneratorInner() {
                         className="form-input"
                         value={port.imageUrl || ''}
                         onChange={(e) => handlePortfolioChange(portIdx, 'imageUrl', e.target.value)}
-                        placeholder="Masukkan URL foto (contoh: https://... atau /asset/...)"
+                        placeholder="Masukkan URL foto (contoh: https://... atau /asset/... atau Google Drive link)"
                       />
+                    </div>
+
+                    <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginBottom: 8, flexWrap: 'wrap' }}>
+                      <label
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: 5,
+                          padding: '5px 10px',
+                          background: 'rgba(2, 132, 199, 0.15)',
+                          border: '1px solid rgba(56, 189, 248, 0.4)',
+                          color: '#38bdf8',
+                          borderRadius: 5,
+                          fontSize: '11px',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                        }}
+                      >
+                        📁 Upload Foto dari Komputer
+                        <input
+                          type="file"
+                          accept="image/*"
+                          style={{ display: 'none' }}
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) handlePortfolioFileUpload(portIdx, file);
+                            e.target.value = '';
+                          }}
+                        />
+                      </label>
+
+                      {port.imageUrl && (
+                        <button
+                          type="button"
+                          className="btn-reset-sph-cat"
+                          style={{ fontSize: '10.5px', padding: '4px 8px' }}
+                          onClick={() => handlePortfolioChange(portIdx, 'imageUrl', '/asset/sunlight_house.jpg')}
+                          title="Kembalikan ke foto bawaan"
+                        >
+                          ↺ Reset Foto
+                        </button>
+                      )}
                     </div>
 
                     <div style={{ marginBottom: 8 }}>
@@ -2257,14 +2366,20 @@ function BrochureGeneratorInner() {
                       <div className="thumb-preview-label">Preview Foto:</div>
                       <div className="thumb-preview-frame">
                         <img
-                          src={port.imageUrl || '/asset/sunlight_house.jpg'}
+                          key={port.imageUrl || `thumb-${portIdx}`}
+                          src={normalizeImageUrl(port.imageUrl) || '/asset/sunlight_house.jpg'}
                           alt={port.title}
+                          referrerPolicy="no-referrer"
                           onError={(e) => {
-                            e.target.src = '/asset/sunlight_house.jpg';
+                            if (e.target.src && !e.target.src.includes('sunlight_house.jpg')) {
+                              e.target.src = '/asset/sunlight_house.jpg';
+                            }
                           }}
                           className="thumb-preview-img"
                         />
-                        <span className="thumb-preview-badge">Link Foto Aktif</span>
+                        <span className="thumb-preview-badge">
+                          {port.imageUrl?.startsWith('data:') ? 'Foto Terupload' : 'Foto Aktif'}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -3235,11 +3350,16 @@ function BrochureGeneratorInner() {
                             <div key={proj.id || globalIdx} className="p4-card">
                               <div className="p4-card-img-wrap">
                                 <img
-                                  src={proj.imageUrl || '/asset/sunlight_house.jpg'}
+                                  key={proj.imageUrl || `card-img-${globalIdx}`}
+                                  src={normalizeImageUrl(proj.imageUrl) || '/asset/sunlight_house.jpg'}
                                   alt={proj.title}
                                   className="p4-card-img"
+                                  referrerPolicy="no-referrer"
+                                  loading="eager"
                                   onError={(e) => {
-                                    e.target.src = '/asset/sunlight_house.jpg';
+                                    if (e.target.src && !e.target.src.includes('sunlight_house.jpg')) {
+                                      e.target.src = '/asset/sunlight_house.jpg';
+                                    }
                                   }}
                                 />
                                 <div className="p4-card-category-badge">{proj.category || 'Solar Project'}</div>

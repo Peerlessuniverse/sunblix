@@ -3865,6 +3865,7 @@
 .p4-portfolio-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: 1fr;
   gap: 10px 12px;
   margin-top: 5px;
   margin-bottom: 6px;
@@ -3880,6 +3881,166 @@
   box-shadow: 0 1px 3px rgba(3, 31, 69, 0.04);
   page-break-inside: avoid;
   break-inside: avoid;
+  min-height: 220px;
+  height: 100%;
+}
+
+/* Mode Foto Saja (Hanya Tampil Foto Utuh & Logo Sunblix di Kiri Atas) */
+.p4-card.is-photo-only {
+  background: #090d16;
+  border: 1px solid #cbd5e1;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.p4-photo-only-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #090d16;
+  overflow: hidden;
+}
+
+/* Ambient blurred reflection backdrop untuk menjaga proporsi asli foto (Vertikal / Timemark / Horisontal / 1:1) tanpa terpotong */
+.p4-photo-ambient-bg {
+  position: absolute;
+  inset: -15px;
+  width: calc(100% + 30px);
+  height: calc(100% + 30px);
+  object-fit: cover;
+  filter: blur(18px) brightness(0.48) saturate(1.2);
+  opacity: 0.9;
+  transform: scale(1.12);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Foto Dokumentasi Utama */
+.p4-photo-main-img {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.p4-photo-main-img.is-contain {
+  object-fit: contain;
+}
+
+.p4-photo-main-img.is-cover {
+  object-fit: cover;
+}
+
+/* Logo SUNBLIX Resmi di Pojok Kiri Atas */
+.p4-photo-only-logo-wrap {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.94);
+  padding: 4px 8px;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(6px);
+  pointer-events: none;
+}
+
+.p4-photo-only-logo {
+  height: 19px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* Sidebar styling for mode bar and fit toggle */
+.portfolio-mode-bar {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-mode-quick {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-mode-quick:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.btn-mode-quick.is-active {
+  background: rgba(2, 132, 199, 0.15);
+  border-color: #38bdf8;
+  color: #0284c7;
+}
+
+.p4-photo-only-tag {
+  background: #0284c7;
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 1.5px 5px;
+  border-radius: 3px;
+  letter-spacing: 0.3px;
+}
+
+.portfolio-fit-mode-row {
+  margin: 6px 0 8px;
+  padding: 6px 8px;
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.fit-toggle-group {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.btn-fit-toggle {
+  flex: 1;
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #94a3b8;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 5px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s ease;
+}
+
+.btn-fit-toggle:hover {
+  background: #334155;
+  color: #f8fafc;
+}
+
+.btn-fit-toggle.active {
+  background: #0284c7;
+  border-color: #38bdf8;
+  color: #ffffff;
+  font-weight: 700;
 }
 
 .p4-card-img-wrap {
@@ -4246,5 +4407,14 @@
   .a4-sheet:last-child {
     page-break-after: avoid !important;
     break-after: avoid !important;
+  }
+
+  .p4-card.is-photo-only,
+  .p4-photo-only-container,
+  .p4-photo-only-logo-wrap,
+  .p4-photo-ambient-bg,
+  .p4-photo-main-img {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 }

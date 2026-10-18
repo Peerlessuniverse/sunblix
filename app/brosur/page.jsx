@@ -1141,6 +1141,50 @@ function BrochureGeneratorInner() {
     reader.readAsDataURL(file);
   };
 
+  const handlePortfolioClearText = (index) => {
+    setQuoteData((prev) => {
+      const currentPorts = prev.portfolios || DEFAULT_PORTFOLIOS;
+      const updated = [...currentPorts];
+      updated[index] = {
+        ...updated[index],
+        title: '',
+        client: '',
+        location: '',
+        category: '',
+        year: '',
+        specs: '',
+        desc: '',
+        stats: [],
+        photoOnly: true,
+      };
+      return { ...prev, portfolios: updated };
+    });
+  };
+
+  const handlePortfolioRestoreText = (index) => {
+    setQuoteData((prev) => {
+      const currentPorts = prev.portfolios || DEFAULT_PORTFOLIOS;
+      const updated = [...currentPorts];
+      updated[index] = {
+        ...updated[index],
+        title: `Projek PLTS Portofolio #${index + 1}`,
+        client: 'PT Rekanan Mitra Energi',
+        location: 'Jakarta / Tangerang',
+        category: 'Commercial Rooftop',
+        year: '2026',
+        specs: 'Panel Surya Tier-1 · Smart Hybrid Inverter · BESS',
+        desc: 'Dokumentasi implementasi sistem tenaga surya terintegrasi dengan pemantauan performa real-time.',
+        stats: [
+          { label: 'Kapasitas', value: '15 kWp' },
+          { label: 'Est. Hemat', value: 'Rp 35 Jt/th' },
+          { label: 'Garansi', value: '25 Tahun' },
+        ],
+        photoOnly: false,
+      };
+      return { ...prev, portfolios: updated };
+    });
+  };
+
   const handlePortfolioStatChange = (portIndex, statIndex, field, value) => {
     setQuoteData((prev) => {
       const currentPorts = prev.portfolios || DEFAULT_PORTFOLIOS;
@@ -2188,9 +2232,16 @@ function BrochureGeneratorInner() {
                   className="portfolio-item-card"
                 >
                   <div className="sph-item-header">
-                    <span className="sph-item-num">
-                      #{portIdx + 1} • {port.title}
-                    </span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                      <span className="sph-item-num">
+                        #{portIdx + 1} • {port.title || '(Mode Foto Saja)'}
+                      </span>
+                      {(!port.title && !port.client && !port.specs && !port.desc) && (
+                        <span className="p4-photo-only-tag">
+                          ⚡ Foto Saja
+                        </span>
+                      )}
+                    </div>
                     <button
                       type="button"
                       className="btn-remove-sph-item"
@@ -2199,6 +2250,28 @@ function BrochureGeneratorInner() {
                     >
                       ✕ Hapus
                     </button>
+                  </div>
+
+                  {/* Mode Cepat: Tampilkan Foto Saja atau Pulihkan Form */}
+                  <div className="portfolio-mode-bar">
+                    <button
+                      type="button"
+                      className={`btn-mode-quick ${(!port.title && !port.client && !port.specs && !port.desc) ? 'is-active' : ''}`}
+                      onClick={() => handlePortfolioClearText(portIdx)}
+                      title="Hapus semua teks isian agar kotak preview hanya menampilkan foto utuh & logo Sunblix di pojok kiri atas"
+                    >
+                      ⚡ Mode Foto Saja (Kosongkan Form)
+                    </button>
+                    {(!port.title && !port.client && !port.specs && !port.desc) && (
+                      <button
+                        type="button"
+                        className="btn-mode-quick"
+                        onClick={() => handlePortfolioRestoreText(portIdx)}
+                        title="Isi kembali form dengan contoh keterangan projek"
+                      >
+                        ↺ Pulihkan Keterangan Teks
+                      </button>
+                    )}
                   </div>
 
                   <div className="form-group" style={{ marginBottom: 6 }}>
@@ -2359,6 +2432,31 @@ function BrochureGeneratorInner() {
                           </option>
                         ))}
                       </select>
+                    </div>
+
+                    {/* Pilihan Fit Mode Foto: Pas Utuh (Contain) atau Penuh Kotak (Cover) */}
+                    <div className="portfolio-fit-mode-row">
+                      <span className="form-label" style={{ fontSize: '10px', color: '#94a3b8', margin: 0 }}>
+                        Format Tampilan Foto (Optimalisasi Aspek Rasio):
+                      </span>
+                      <div className="fit-toggle-group">
+                        <button
+                          type="button"
+                          className={`btn-fit-toggle ${(port.fitMode || 'contain') === 'contain' ? 'active' : ''}`}
+                          onClick={() => handlePortfolioChange(portIdx, 'fitMode', 'contain')}
+                          title="Tampilkan foto utuh tanpa terpotong (Sangat cocok untuk foto vertikal / Timemark / 1:1)"
+                        >
+                          📐 Pas Utuh (Contain — Rekomendasi Timemark)
+                        </button>
+                        <button
+                          type="button"
+                          className={`btn-fit-toggle ${port.fitMode === 'cover' ? 'active' : ''}`}
+                          onClick={() => handlePortfolioChange(portIdx, 'fitMode', 'cover')}
+                          title="Tampilkan foto memenuhi seluruh kotak (Cover)"
+                        >
+                          ⬛ Penuh Kotak (Cover)
+                        </button>
+                      </div>
                     </div>
 
                     {/* Preview Thumbnail */}
@@ -3346,6 +3444,63 @@ function BrochureGeneratorInner() {
                       <div className="p4-portfolio-grid">
                         {chunk.map((proj, pIdx) => {
                           const globalIdx = chunkIdx * 6 + pIdx;
+                          const hasText = Boolean(
+                            (proj.title && proj.title.trim()) ||
+                            (proj.client && proj.client.trim()) ||
+                            (proj.location && proj.location.trim()) ||
+                            (proj.category && proj.category.trim()) ||
+                            (proj.year && proj.year.trim()) ||
+                            (proj.specs && proj.specs.trim()) ||
+                            (proj.desc && proj.desc.trim()) ||
+                            (proj.stats && proj.stats.some((s) => (s.label && s.label.trim()) || (s.value && s.value.trim())))
+                          );
+                          const isPhotoOnly = proj.photoOnly || !hasText;
+                          const fitMode = proj.fitMode || 'contain';
+                          const imgUrl = normalizeImageUrl(proj.imageUrl) || '/asset/sunlight_house.jpg';
+
+                          if (isPhotoOnly) {
+                            return (
+                              <div key={proj.id || globalIdx} className="p4-card is-photo-only">
+                                <div className="p4-photo-only-container">
+                                  {/* Logo SUNBLIX di Sisi Kiri Atas persis seperti unggahan */}
+                                  <div className="p4-photo-only-logo-wrap">
+                                    <img
+                                      src="/asset/logo.png"
+                                      alt="SUNBLIX"
+                                      className="p4-photo-only-logo"
+                                    />
+                                  </div>
+
+                                  {/* Ambient blurred backdrop untuk menjaga proporsi foto asli (Vertikal / Timemark / Horisontal / 1:1) tanpa terpotong */}
+                                  {fitMode === 'contain' && (
+                                    <img
+                                      src={imgUrl}
+                                      alt=""
+                                      className="p4-photo-ambient-bg"
+                                      aria-hidden="true"
+                                      referrerPolicy="no-referrer"
+                                    />
+                                  )}
+
+                                  {/* Foto Utama Tampil Utuh Sesuai Aslinya */}
+                                  <img
+                                    key={proj.imageUrl || `card-photo-${globalIdx}`}
+                                    src={imgUrl}
+                                    alt="Dokumentasi Portofolio SUNBLIX"
+                                    className={`p4-photo-main-img is-${fitMode}`}
+                                    referrerPolicy="no-referrer"
+                                    loading="eager"
+                                    onError={(e) => {
+                                      if (e.target.src && !e.target.src.includes('sunlight_house.jpg')) {
+                                        e.target.src = '/asset/sunlight_house.jpg';
+                                      }
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                            );
+                          }
+
                           return (
                             <div key={proj.id || globalIdx} className="p4-card">
                               <div className="p4-card-img-wrap">

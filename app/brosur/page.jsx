@@ -10,6 +10,8 @@ import {
   COMPONENT_TEMPLATES,
   SUNBLIX_TERMS_2026,
   SUNBLIX_SECTION_CATALOG,
+  DEFAULT_PORTFOLIOS,
+  SAMPLE_PORTFOLIO_IMAGES,
   getPresetFromPackage,
 } from './sunblixCatalog';
 
@@ -222,6 +224,7 @@ const PRESETS = {
       title: 'Account Executive',
       company: 'PT SUNBLIX ENERGI INDONESIA',
     },
+    portfolios: DEFAULT_PORTFOLIOS,
   },
 
   sph001: {
@@ -299,6 +302,7 @@ const PRESETS = {
       title: 'Account Executive',
       company: 'PT. SUNBLIX ENERGI INDONESIA',
     },
+    portfolios: DEFAULT_PORTFOLIOS,
   },
 
   res468: {
@@ -651,6 +655,7 @@ function BrochureGeneratorInner() {
     // Allow URL params override
     return {
       ...base,
+      portfolios: base.portfolios || DEFAULT_PORTFOLIOS,
       sphCode: searchParams.get('sph') || base.sphCode || 'SPH 002',
       customer: searchParams.get('customer') || base.customer,
       project: searchParams.get('project') || base.project,
@@ -660,7 +665,7 @@ function BrochureGeneratorInner() {
   });
 
   // UI state
-  const [activePage, setActivePage] = useState('all'); // 'all', '1', '2', '3'
+  const [activePage, setActivePage] = useState('all'); // 'all', '1', '2', '3', '4'
   const [zoomScale, setZoomScale] = useState(1);
   const [includePpn, setIncludePpn] = useState(true);
   const [copiedMsg, setCopiedMsg] = useState(false);
@@ -672,6 +677,7 @@ function BrochureGeneratorInner() {
     { id: '1', title: 'Halaman 1: Cover & Hero PLTS', shortTitle: 'Hal 1: Cover', icon: '☀️', enabled: true },
     { id: '2', title: 'Halaman 2: Spesifikasi & Paket', shortTitle: 'Hal 2: Spesifikasi', icon: '⚙️', enabled: true },
     { id: '3', title: 'Halaman 3: SPH Penawaran Harga', shortTitle: 'Hal 3: SPH Quote', icon: '📊', enabled: true },
+    { id: '4', title: 'Halaman 4: Portofolio Projek', shortTitle: 'Hal 4: Portofolio', icon: '📁', enabled: true },
   ];
   const [pagesOrder, setPagesOrder] = useState(DEFAULT_PAGES);
 
@@ -721,7 +727,11 @@ function BrochureGeneratorInner() {
   const handleSelectPreset = (key) => {
     setActivePreset(key);
     if (PRESETS[key]) {
-      setQuoteData(JSON.parse(JSON.stringify(PRESETS[key])));
+      const data = JSON.parse(JSON.stringify(PRESETS[key]));
+      if (!data.portfolios || data.portfolios.length === 0) {
+        data.portfolios = DEFAULT_PORTFOLIOS;
+      }
+      setQuoteData(data);
     }
   };
 
@@ -736,6 +746,7 @@ function BrochureGeneratorInner() {
         quoteData.sphCode || 'SPH 001',
         quoteData.customer || 'Bapak/Ibu Pelanggan'
       );
+      newPreset.portfolios = quoteData.portfolios || DEFAULT_PORTFOLIOS;
       setQuoteData(newPreset);
     }
   };
@@ -1067,6 +1078,70 @@ function BrochureGeneratorInner() {
       handleSectionAddItem(secCode, catOptions[optIdx]);
     }
     e.target.value = '';
+  };
+
+  // Portfolio Handlers (Halaman 4: Portofolio Projek)
+  const handlePortfolioChange = (index, field, value) => {
+    setQuoteData((prev) => {
+      const currentPorts = prev.portfolios || DEFAULT_PORTFOLIOS;
+      const updated = [...currentPorts];
+      updated[index] = {
+        ...updated[index],
+        [field]: value,
+      };
+      return { ...prev, portfolios: updated };
+    });
+  };
+
+  const handlePortfolioStatChange = (portIndex, statIndex, field, value) => {
+    setQuoteData((prev) => {
+      const currentPorts = prev.portfolios || DEFAULT_PORTFOLIOS;
+      const updated = [...currentPorts];
+      const target = { ...updated[portIndex] };
+      const stats = [...(target.stats || [])];
+      stats[statIndex] = {
+        ...stats[statIndex],
+        [field]: value,
+      };
+      target.stats = stats;
+      updated[portIndex] = target;
+      return { ...prev, portfolios: updated };
+    });
+  };
+
+  const handlePortfolioAdd = () => {
+    setQuoteData((prev) => {
+      const currentPorts = prev.portfolios || DEFAULT_PORTFOLIOS;
+      const newPort = {
+        id: `port_${Date.now()}`,
+        title: 'PLTS Rooftop Sistem Baru',
+        client: 'Klien Proyek Baru',
+        location: 'Indonesia',
+        category: 'Commercial / Residential',
+        specs: 'Panel Surya Tier-1 · Inverter Smart Hybrid · BESS Lithium',
+        year: new Date().getFullYear().toString(),
+        desc: 'Deskripsi detail instalasi sistem PLTS terintegrasi dan performa penghematan energi...',
+        imageUrl: '/asset/sunlight_house.jpg',
+        stats: [
+          { label: 'Kapasitas', value: '10 kWp' },
+          { label: 'Produksi', value: '~1.000 kWh/bln' },
+          { label: 'Garansi', value: '25 Tahun' },
+        ],
+      };
+      return { ...prev, portfolios: [...currentPorts, newPort] };
+    });
+  };
+
+  const handlePortfolioRemove = (index) => {
+    setQuoteData((prev) => {
+      const currentPorts = prev.portfolios || DEFAULT_PORTFOLIOS;
+      if (currentPorts.length <= 1) {
+        alert('Minimal harus terdapat 1 projek dalam halaman portofolio.');
+        return prev;
+      }
+      const updated = currentPorts.filter((_, i) => i !== index);
+      return { ...prev, portfolios: updated };
+    });
   };
 
   // Parser for currency and numeric text values (e.g. "Rp 177.200.000", "5.000.000", 5000000)
@@ -1999,6 +2074,214 @@ function BrochureGeneratorInner() {
             </p>
           </div>
 
+          {/* SECTION 6: PORTOFOLIO PROJEK (HALAMAN 4) */}
+          <div className="sidebar-section">
+            <div className="sidebar-section-title">
+              <span>📁</span>
+              <span>Portofolio Projek (Halaman 4)</span>
+              <span className="sph-cat-count-badge" style={{ marginLeft: 'auto' }}>
+                {(quoteData.portfolios || DEFAULT_PORTFOLIOS).length} Projek
+              </span>
+            </div>
+
+            <p className="section-hint-text">
+              Kelola dokumentasi portofolio proyek yang telah dikerjakan oleh SUNBLIX. Anda dapat mengubah foto via link URL atau memilih dari galeri referensi proyek.
+            </p>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 10 }}>
+              <button
+                type="button"
+                className="btn-add-section-item"
+                onClick={handlePortfolioAdd}
+                title="Tambah kartu projek portofolio baru"
+              >
+                + Tambah Projek Portofolio
+              </button>
+            </div>
+
+            <div className="portfolio-editor-list">
+              {(quoteData.portfolios || DEFAULT_PORTFOLIOS).map((port, portIdx) => (
+                <div key={port.id || portIdx} className="portfolio-item-card">
+                  <div className="sph-item-header">
+                    <span className="sph-item-num">
+                      #{portIdx + 1} • {port.title}
+                    </span>
+                    <button
+                      type="button"
+                      className="btn-remove-sph-item"
+                      onClick={() => handlePortfolioRemove(portIdx)}
+                      title="Hapus projek ini dari portofolio"
+                    >
+                      ✕ Hapus
+                    </button>
+                  </div>
+
+                  <div className="form-group" style={{ marginBottom: 6 }}>
+                    <label className="form-label">Judul Proyek</label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={port.title}
+                      onChange={(e) => handlePortfolioChange(portIdx, 'title', e.target.value)}
+                      placeholder="Contoh: PLTS Hybrid 7,02 kWp — Pos Pengamanan"
+                    />
+                  </div>
+
+                  <div className="form-row-2" style={{ marginBottom: 6 }}>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Nama Klien / Instansi</label>
+                      <input
+                        type="text"
+                        className="form-input"
+                        value={port.client}
+                        onChange={(e) => handlePortfolioChange(portIdx, 'client', e.target.value)}
+                        placeholder="Contoh: PT Marga Bara Jaya"
+                      />
+                    </div>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Lokasi Proyek</label>
+                      <input
+                        type="text"
+                        className="form-input"
+                        value={port.location}
+                        onChange={(e) => handlePortfolioChange(portIdx, 'location', e.target.value)}
+                        placeholder="Contoh: Sumatera Selatan"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-row-2" style={{ marginBottom: 6 }}>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Kategori Proyek</label>
+                      <input
+                        type="text"
+                        className="form-input"
+                        value={port.category}
+                        onChange={(e) => handlePortfolioChange(portIdx, 'category', e.target.value)}
+                        placeholder="Industrial / Commercial / Residential"
+                      />
+                    </div>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Tahun Pelaksanaan</label>
+                      <input
+                        type="text"
+                        className="form-input"
+                        value={port.year}
+                        onChange={(e) => handlePortfolioChange(portIdx, 'year', e.target.value)}
+                        placeholder="Contoh: 2026"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group" style={{ marginBottom: 6 }}>
+                    <label className="form-label">Spesifikasi Sistem & Komponen</label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={port.specs}
+                      onChange={(e) => handlePortfolioChange(portIdx, 'specs', e.target.value)}
+                      placeholder="Contoh: 12x 585 Wp Bifacial · Inverter 6 kW · Baterai 5.12 kWh"
+                    />
+                  </div>
+
+                  <div className="form-group" style={{ marginBottom: 8 }}>
+                    <label className="form-label">Deskripsi Ringkas Proyek</label>
+                    <textarea
+                      rows={2}
+                      className="form-textarea"
+                      value={port.desc}
+                      onChange={(e) => handlePortfolioChange(portIdx, 'desc', e.target.value)}
+                      placeholder="Uraian manfaat dan keunggulan sistem yang terpasang..."
+                    />
+                  </div>
+
+                  {/* FORM AMBIL FOTO VIA LINK & PILIHAN PRESET */}
+                  <div className="portfolio-photo-box">
+                    <label className="form-label" style={{ color: 'var(--sbx-primary-soft)', marginBottom: 4 }}>
+                      🖼️ Link Foto Proyek (URL / Path Gambar):
+                    </label>
+
+                    <div style={{ display: 'flex', gap: 6, marginBottom: 6 }}>
+                      <input
+                        type="text"
+                        className="form-input"
+                        value={port.imageUrl || ''}
+                        onChange={(e) => handlePortfolioChange(portIdx, 'imageUrl', e.target.value)}
+                        placeholder="Masukkan URL foto (contoh: https://... atau /asset/...)"
+                      />
+                    </div>
+
+                    <div style={{ marginBottom: 8 }}>
+                      <label className="form-label" style={{ fontSize: '10px', textTransform: 'none', color: '#94a3b8', marginBottom: 2 }}>
+                        Atau Pilih Foto Referensi Resmi SUNBLIX:
+                      </label>
+                      <select
+                        className="form-select"
+                        style={{ fontSize: '11px', padding: '5px 8px' }}
+                        value=""
+                        onChange={(e) => {
+                          if (e.target.value) {
+                            handlePortfolioChange(portIdx, 'imageUrl', e.target.value);
+                          }
+                        }}
+                      >
+                        <option value="">-- Pilih dari Galeri Foto SUNBLIX --</option>
+                        {SAMPLE_PORTFOLIO_IMAGES.map((img, imgIdx) => (
+                          <option key={imgIdx} value={img.url}>
+                            {img.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Preview Thumbnail */}
+                    <div className="portfolio-thumb-preview">
+                      <div className="thumb-preview-label">Preview Foto:</div>
+                      <div className="thumb-preview-frame">
+                        <img
+                          src={port.imageUrl || '/asset/sunlight_house.jpg'}
+                          alt={port.title}
+                          onError={(e) => {
+                            e.target.src = '/asset/sunlight_house.jpg';
+                          }}
+                          className="thumb-preview-img"
+                        />
+                        <span className="thumb-preview-badge">Link Foto Aktif</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Parameter Highlight (Stats 1, 2, 3) */}
+                  <div className="portfolio-stats-editor" style={{ marginTop: 8 }}>
+                    <label className="form-label" style={{ fontSize: '10.5px' }}>
+                      Highlight Parameter (3 Metrik Ringkas):
+                    </label>
+                    <div className="form-row-3-stats">
+                      {(port.stats || []).map((st, stIdx) => (
+                        <div key={stIdx} className="stat-edit-col">
+                          <input
+                            type="text"
+                            className="form-input stat-edit-lbl"
+                            value={st.label}
+                            onChange={(e) => handlePortfolioStatChange(portIdx, stIdx, 'label', e.target.value)}
+                            placeholder="Label"
+                          />
+                          <input
+                            type="text"
+                            className="form-input stat-edit-val"
+                            value={st.value}
+                            onChange={(e) => handlePortfolioStatChange(portIdx, stIdx, 'value', e.target.value)}
+                            placeholder="Nilai"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* MOBILE GO-TO-PREVIEW BUTTON */}
           <div className="mobile-action-card print-hide">
             <button
@@ -2859,6 +3142,117 @@ function BrochureGeneratorInner() {
 
                   {/* Footer Garis Batas Bawah (Tanpa Teks) */}
                   <div className="p3-sph-footer" />
+                </div>
+              </section>
+            );
+          }
+
+          if (page.id === '4') {
+            const portfoliosList = quoteData.portfolios || DEFAULT_PORTFOLIOS;
+            return (
+              <section key="page4" className="a4-sheet" id="brosurPage4">
+                <div className="p4-portfolio-document">
+                  {/* Top Flow Header */}
+                  <div>
+                    {/* Kop Surat Resmi PT SUNBLIX ENERGI INDONESIA */}
+                    <SunblixKopSurat docNo={quoteData.docNo} hideDocNumber={true} />
+
+                    {/* Header Halaman Portofolio */}
+                    <div className="p4-portfolio-header">
+                      <div className="p4-header-top">
+                        <span className="p4-header-badge">PORTFOLIO & TRACK RECORD</span>
+                        <span className="p4-header-docno">{quoteData.docNo || 'SBX/SPH/X/2026/001'}</span>
+                      </div>
+                      <h2 className="p4-portfolio-title">REKAM JEJAK & PORTOFOLIO PROYEK</h2>
+                      <p className="p4-portfolio-subtitle">
+                        Dokumentasi implementasi Pembangkit Listrik Tenaga Surya (PLTS) dan Battery Energy Storage System (BESS) terintegrasi yang telah terpasang dan beroperasi andal.
+                      </p>
+                    </div>
+
+                    {/* Grid Kartu Portofolio (2x2 Layout Pas di Lembar A4) */}
+                    <div className="p4-portfolio-grid">
+                      {portfoliosList.slice(0, 4).map((proj, pIdx) => (
+                        <div key={proj.id || pIdx} className="p4-card">
+                          <div className="p4-card-img-wrap">
+                            <img
+                              src={proj.imageUrl || '/asset/sunlight_house.jpg'}
+                              alt={proj.title}
+                              className="p4-card-img"
+                              onError={(e) => {
+                                e.target.src = '/asset/sunlight_house.jpg';
+                              }}
+                            />
+                            <div className="p4-card-category-badge">{proj.category || 'Solar Project'}</div>
+                            <div className="p4-card-year-badge">{proj.year || '2026'}</div>
+                          </div>
+
+                          <div className="p4-card-body">
+                            <h3 className="p4-card-title">{proj.title}</h3>
+
+                            <div className="p4-card-meta">
+                              <span className="p4-meta-client">
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2.5" style={{ marginRight: 3, verticalAlign: 'middle' }}>
+                                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                  <circle cx="12" cy="7" r="4" />
+                                </svg>
+                                {proj.client}
+                              </span>
+                              <span className="p4-meta-sep">•</span>
+                              <span className="p4-meta-loc">
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2.5" style={{ marginRight: 3, verticalAlign: 'middle' }}>
+                                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                                  <circle cx="12" cy="10" r="3" />
+                                </svg>
+                                {proj.location}
+                              </span>
+                            </div>
+
+                            <div className="p4-card-specs-bar">
+                              <span className="p4-specs-icon">⚡</span>
+                              <span className="p4-specs-text">{proj.specs}</span>
+                            </div>
+
+                            <p className="p4-card-desc">{proj.desc}</p>
+
+                            {/* 3 Metric Pills */}
+                            {proj.stats && proj.stats.length > 0 && (
+                              <div className="p4-card-stats-row">
+                                {proj.stats.map((st, stIdx) => (
+                                  <div key={stIdx} className="p4-stat-pill">
+                                    <span className="p4-stat-lbl">{st.label}</span>
+                                    <strong className="p4-stat-val">{st.value}</strong>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Bottom Trust Strip & Footer */}
+                  <div className="p4-bottom-container">
+                    <div className="p4-trust-strip">
+                      <div className="p4-trust-item">
+                        <span className="p4-trust-icon">🛡️</span>
+                        <span>Garansi Resmi Pabrikan s/d 25 Tahun</span>
+                      </div>
+                      <div className="p4-trust-sep">|</div>
+                      <div className="p4-trust-item">
+                        <span className="p4-trust-icon">⚙️</span>
+                        <span>Tim EPC Bersertifikat K3 & Standar PUIL</span>
+                      </div>
+                      <div className="p4-trust-sep">|</div>
+                      <div className="p4-trust-item">
+                        <span className="p4-trust-icon">📱</span>
+                        <span>24/7 Smart Cloud IoT Monitoring</span>
+                      </div>
+                    </div>
+
+                    {/* Footer Garis Batas Bawah Sesuai Standar Brosur */}
+                    <div className="p4-portfolio-footer" />
+                  </div>
                 </div>
               </section>
             );

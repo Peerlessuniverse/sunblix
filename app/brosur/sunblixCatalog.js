@@ -913,3 +913,85 @@ export const SUNBLIX_SECTION_CATALOG = {
     ],
   },
 };
+
+// -----------------------------------------------------------------------------
+// SAMPLE PORTFOLIO IMAGES & DEFAULT PORTFOLIO PROJECTS (FOR PAGE 4)
+// PT SUNBLIX ENERGI INDONESIA
+// -----------------------------------------------------------------------------
+export const SAMPLE_PORTFOLIO_IMAGES = [
+  { label: 'Rooftop Residential Luxury (Bintaro)', url: '/asset/sunlight_house.jpg' },
+  { label: 'Industrial & Commercial Rooftop (Cikarang)', url: '/asset/how_hero.jpg' },
+  { label: 'Pemasangan Modul Surya Rooftop K3', url: '/asset/how_step4.jpg' },
+  { label: 'Instalasi Inverter & Power Unit', url: '/asset/how_step5.jpg' },
+  { label: 'Perakitan Struktur Mounting & Wiring', url: '/asset/how_step3.jpg' },
+  { label: 'Inspeksi & Site Engineering Survey', url: '/asset/how_step1.jpg' },
+  { label: 'Sistem Hybrid Pro (Inverter + Baterai)', url: '/asset/product_pro.jpg' },
+  { label: 'Sistem Hybrid Standard+ Terintegrasi', url: '/asset/product_standard.jpg' },
+];
+
+export const DEFAULT_PORTFOLIOS = [
+  {
+    id: 'port_1',
+    title: 'PLTS Hybrid 7,02 kWp — Pos Pengamanan Terpadu',
+    client: 'PT Marga Bara Jaya',
+    location: 'Sumatera Selatan',
+    category: 'Industrial / Remote Post',
+    specs: '12x Astronergy 585 Wp Bifacial · Inverter Deye 6 kW · Battery 5.12 kWh LiFePO4',
+    year: '2026',
+    desc: 'Instalasi PLTS hybrid mandiri 24/7 untuk 12 pos keamanan di area operasional terpencil dengan zero-downtime tanpa ketergantungan genset.',
+    imageUrl: '/asset/sunlight_house.jpg',
+    stats: [
+      { label: 'Kapasitas', value: '7,02 kWp' },
+      { label: 'Produksi', value: '~711 kWh/bln' },
+      { label: 'Reduksi CO2', value: '772 kg/bln' },
+    ],
+  },
+  {
+    id: 'port_2',
+    title: 'PLTS Rooftop Komersial 14,04 kWp (3-Phase)',
+    client: 'Gudang Logistik & Workshop Terpadu',
+    location: 'Cikarang, Jawa Barat',
+    category: 'Commercial & Warehouse',
+    specs: '24x LONGI 585 Wp · Inverter Deye 12 kW 3P · Battery 10.24 kWh LiFePO4',
+    year: '2025',
+    desc: 'Efisiensi beban puncak operasional siang hari dan suplai darurat saat pemadaman jaringan industri dengan backup instan <10 ms.',
+    imageUrl: '/asset/how_hero.jpg',
+    stats: [
+      { label: 'Kapasitas', value: '14,04 kWp' },
+      { label: 'Penghematan', value: 'Rp 2,5 Jt/bln' },
+      { label: 'Garansi', value: '25 Tahun' },
+    ],
+  },
+  {
+    id: 'port_3',
+    title: 'PLTS Residential Mewah 9,36 kWp Smart Hybrid',
+    client: 'Villa & Hunian Modern Premium',
+    location: 'Bintaro, Tangerang Selatan',
+    category: 'Residential Luxury',
+    specs: '16x Trina Solar 720 Wp Vertex N · Inverter 8 kW · BESS 10.24 kWh Wall-Mounted',
+    year: '2025',
+    desc: 'Sistem solar atap estetis arsitektural dengan integrasi cloud monitoring IoT smartphone dan proteksi anti-petir terpadu.',
+    imageUrl: '/asset/how_step4.jpg',
+    stats: [
+      { label: 'Kapasitas', value: '9,36 kWp' },
+      { label: 'Produksi', value: '~1.170 kWh/bln' },
+      { label: 'Self Consumption', value: '92%' },
+    ],
+  },
+  {
+    id: 'port_4',
+    title: 'Sistem BESS & Microgrid Hybrid Off-Grid 10 kW',
+    client: 'Eco-Resort & Pusat Konservasi Alam',
+    location: 'Pulau Pari, Kepulauan Seribu',
+    category: 'Eco-Resort / Island Microgrid',
+    specs: '18x Bifacial 585 Wp · Deye 10 kW 3-Phase · 20.48 kWh Modular Rack Battery',
+    year: '2025',
+    desc: 'Sistem energi bersih zero-emission untuk kawasan wisata ramah lingkungan yang beroperasi 100% mandiri energi terbarukan.',
+    imageUrl: '/asset/how_step5.jpg',
+    stats: [
+      { label: 'Kapasitas', value: '10,53 kWp' },
+      { label: 'Baterai', value: '20,48 kWh' },
+      { label: 'Kemandirian', value: '100% Bersih' },
+    ],
+  },
+];

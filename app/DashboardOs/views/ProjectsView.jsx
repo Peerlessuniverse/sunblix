@@ -1,105 +1,30 @@
 'use client';
 
-import { useState } from 'react';
-
-const INITIAL_PROJECTS = [
-  {
-    code: 'SBX-PRJ-2601',
-    name: 'Villa Sanur Luxury Seaside',
-    client: 'Bapak Made Suryanata',
-    location: 'Sanur, Bali',
-    type: 'Residential (PRO)',
-    kwp: '14.04 kWp',
-    inverter: '1 Phase On-Grid + Smart Dongle',
-    panels: '24x LONGI 585 Wp',
-    progress: 85,
-    status: 'Commissioning',
-    statusColor: 'warning',
-    cod: '15 Okt 2026',
-    estYield: '1,920 kWh/bln',
-  },
-  {
-    code: 'SBX-PRJ-2602',
-    name: 'PT Bali Logistik Benoa Port',
-    client: 'PT Logistik Samudera',
-    location: 'Pelabuhan Benoa, Denpasar',
-    type: 'Commercial (PRO+)',
-    kwp: '49.14 kWp',
-    inverter: '3 Phase 50 kW Industrial Grade',
-    panels: '84x Canadian Solar 585 Wp',
-    progress: 45,
-    status: 'Instalasi Lapangan',
-    statusColor: 'info',
-    cod: '28 Okt 2026',
-    estYield: '6,800 kWh/bln',
-  },
-  {
-    code: 'SBX-PRJ-2603',
-    name: 'Canggu Eco Boutique Resort',
-    client: 'Canggu Living Group',
-    location: 'Canggu, Badung',
-    type: 'Hybrid Battery Storage',
-    kwp: '18.72 kWp + 30 kWh Baterai',
-    inverter: 'Deye Hybrid 20 kW 3-Phase',
-    panels: '32x Jinko Solar 585 Wp',
-    progress: 60,
-    status: 'Wiring & Inverter Setup',
-    statusColor: 'purple',
-    cod: '22 Okt 2026',
-    estYield: '2,550 kWh/bln',
-  },
-  {
-    code: 'SBX-PRJ-2604',
-    name: 'Residensial Pak Bambang Pondok Indah',
-    client: 'Ir. Bambang Trihatmojo',
-    location: 'Jakarta Selatan',
-    type: 'Residential (Standard+)',
-    kwp: '5.85 kWp',
-    inverter: '1 Phase 6 kW On-Grid',
-    panels: '10x Trina Solar 585 Wp',
-    progress: 100,
-    status: 'Live Terkoneksi',
-    statusColor: 'success',
-    cod: '25 Sep 2026 (COD Aktif)',
-    estYield: '810 kWh/bln',
-  },
-  {
-    code: 'SBX-PRJ-2605',
-    name: 'Ubud Heritage Retreat & Spa',
-    client: 'PT Ubud Heritage',
-    location: 'Ubud, Gianyar - Bali',
-    type: 'Commercial (PRO+)',
-    kwp: '25.74 kWp',
-    inverter: '3 Phase 25 kW Grid-Tied',
-    panels: '44x LONGI 585 Wp',
-    progress: 92,
-    status: 'Testing & Commissioning',
-    statusColor: 'warning',
-    cod: '12 Okt 2026',
-    estYield: '3,450 kWh/bln',
-  },
-  {
-    code: 'SBX-PRJ-2606',
-    name: 'Agro Tabanan Smart Greenhouse',
-    client: 'Koperasi Tani Makmur',
-    location: 'Tabanan, Bali',
-    type: 'Hybrid Microgrid',
-    kwp: '35.10 kWp + 60 kWh Baterai',
-    inverter: 'Deye Hybrid 30 kW Microgrid',
-    panels: '60x Jinko N-Type 585 Wp',
-    progress: 30,
-    status: 'Instalasi Struktur Rangka',
-    statusColor: 'info',
-    cod: '10 Nov 2026',
-    estYield: '4,850 kWh/bln',
-  },
-];
+import { useState, useEffect } from 'react';
+import { getStoreProjects, subscribeToStore } from '../../../lib/sunblixOsStore';
+import ProjectModal from '../components/ProjectModal';
+import ProjectDetailModal from '../components/ProjectDetailModal';
 
 export default function ProjectsView({ onBackToDashboard }) {
-  const [projects, setProjects] = useState(INITIAL_PROJECTS);
+  const [projects, setProjects] = useState([]);
   const [activeFilter, setActiveFilter] = useState('all');
   const [search, setSearch] = useState('');
   const [toast, setToast] = useState('');
+
+  // Modals state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingProject, setEditingProject] = useState(null);
+  const [detailProject, setDetailProject] = useState(null);
+
+  const refresh = () => {
+    setProjects(getStoreProjects());
+  };
+
+  useEffect(() => {
+    refresh();
+    const unsub = subscribeToStore(refresh);
+    return () => unsub();
+  }, []);
 
   const filteredProjects = projects.filter((p) => {
     const matchSearch =
@@ -115,6 +40,23 @@ export default function ProjectsView({ onBackToDashboard }) {
     if (activeFilter === 'live') return p.status === 'Live Terkoneksi';
     return true;
   });
+
+  // Calculate dynamic metrics
+  const totalKwp = projects.reduce((acc, curr) => acc + (curr.kwpNum || parseFloat(curr.kwp) || 0), 0);
+  const liveCount = projects.filter((p) => p.status === 'Live Terkoneksi').length;
+  const inProgressCount = projects.filter((p) => p.status !== 'Live Terkoneksi').length;
+  const commissioningCount = projects.filter((p) => p.status === 'Commissioning').length;
+
+  const handleOpenNewProject = () => {
+    setEditingProject(null);
+    setIsModalOpen(true);
+  };
+
+  const handleEditProject = (project) => {
+    setDetailProject(null);
+    setEditingProject(project);
+    setIsModalOpen(true);
+  };
 
   return (
     <div className="sbx-view-container">
@@ -139,12 +81,9 @@ export default function ProjectsView({ onBackToDashboard }) {
           <button
             type="button"
             className="sbx-action-btn primary"
-            onClick={() => {
-              setToast('⚡ Modal buat kontrak proyek EPC baru dibuka.');
-              setTimeout(() => setToast(''), 3000);
-            }}
+            onClick={handleOpenNewProject}
           >
-            + Buat Proyek EPC Baru
+            + Tambah Proyek Baru
           </button>
         </div>
       </div>
@@ -155,54 +94,54 @@ export default function ProjectsView({ onBackToDashboard }) {
       <div className="sbx-metrics-row">
         <div className="sbx-metric-card">
           <div className="sbx-metric-header">
-            <span className="sbx-metric-label">Total Proyek Aktif</span>
-            <div className="sbx-metric-icon">☀️</div>
-          </div>
-          <div className="sbx-metric-body">
-            <span className="sbx-metric-val">42 Sites</span>
-            <span className="sbx-metric-badge-delta">↑ 12 Sites</span>
-          </div>
-          <p className="sbx-metric-subtext">Bali, Jakarta, Surabaya, Lombok</p>
-        </div>
-
-        <div className="sbx-metric-card">
-          <div className="sbx-metric-header">
-            <span className="sbx-metric-label">Kapasitas Terpasang</span>
+            <span className="sbx-metric-label">Total Kapasitas Terpasang</span>
             <div className="sbx-metric-icon">⚡</div>
           </div>
           <div className="sbx-metric-body">
-            <span className="sbx-metric-val">1.84 MWp</span>
-            <span className="sbx-status-badge success">Kumulatif</span>
+            <span className="sbx-metric-val">{totalKwp.toFixed(2)} kWp</span>
+            <span className="sbx-metric-badge-delta">Portofolio</span>
           </div>
-          <p className="sbx-metric-subtext">3,140 unit modul surya aktif</p>
+          <p className="sbx-metric-subtext">Dari {projects.length} kontrak EPC resmi</p>
         </div>
 
         <div className="sbx-metric-card">
           <div className="sbx-metric-header">
-            <span className="sbx-metric-label">Sedang Konstruksi</span>
-            <div className="sbx-metric-icon">🔧</div>
+            <span className="sbx-metric-label">Konstruksi Lapangan</span>
+            <div className="sbx-metric-icon">🏗️</div>
           </div>
           <div className="sbx-metric-body">
-            <span className="sbx-metric-val">16 Sites</span>
-            <span className="sbx-status-badge warning">On Progress</span>
+            <span className="sbx-metric-val">{inProgressCount} Site</span>
+            <span className="sbx-status-badge info">Aktif Berjalan</span>
           </div>
-          <p className="sbx-metric-subtext">Target COD s/d November 2026</p>
+          <p className="sbx-metric-subtext">Struktur, panel, &amp; wiring</p>
         </div>
 
         <div className="sbx-metric-card">
           <div className="sbx-metric-header">
-            <span className="sbx-metric-label">Testing &amp; Commissioning</span>
-            <div className="sbx-metric-icon">🛡️</div>
+            <span className="sbx-metric-label">Tahap Commissioning</span>
+            <div className="sbx-metric-icon">🔍</div>
           </div>
           <div className="sbx-metric-body">
-            <span className="sbx-metric-val">6 Sites</span>
-            <span className="sbx-status-badge info">Final Phase</span>
+            <span className="sbx-metric-val">{commissioningCount} Site</span>
+            <span className="sbx-status-badge warning">Uji SLO</span>
           </div>
-          <p className="sbx-metric-subtext">Inspeksi keselamatan &amp; proteksi</p>
+          <p className="sbx-metric-subtext">Megger test &amp; anti-islanding</p>
+        </div>
+
+        <div className="sbx-metric-card">
+          <div className="sbx-metric-header">
+            <span className="sbx-metric-label">Live Terkoneksi (COD)</span>
+            <div className="sbx-metric-icon">✅</div>
+          </div>
+          <div className="sbx-metric-body">
+            <span className="sbx-metric-val">{liveCount} Sistem</span>
+            <span className="sbx-status-badge success">Generating</span>
+          </div>
+          <p className="sbx-metric-subtext">Beroperasi normal dengan telemetri</p>
         </div>
       </div>
 
-      {/* Table Card */}
+      {/* Projects Table Card */}
       <div className="sbx-card" style={{ marginTop: '16px' }}>
         <div className="sbx-filter-bar">
           <div className="sbx-tab-pills">
@@ -211,35 +150,35 @@ export default function ProjectsView({ onBackToDashboard }) {
               className={`sbx-tab-btn ${activeFilter === 'all' ? 'active' : ''}`}
               onClick={() => setActiveFilter('all')}
             >
-              Semua ({projects.length})
+              Semua Proyek ({projects.length})
             </button>
             <button
               type="button"
               className={`sbx-tab-btn ${activeFilter === 'residential' ? 'active' : ''}`}
               onClick={() => setActiveFilter('residential')}
             >
-              🏡 Residensial (2)
+              🏠 Residensial ({projects.filter((p) => p.type.includes('Residential')).length})
             </button>
             <button
               type="button"
               className={`sbx-tab-btn ${activeFilter === 'commercial' ? 'active' : ''}`}
               onClick={() => setActiveFilter('commercial')}
             >
-              🏢 Komersial PRO+ (2)
+              🏢 Komersial ({projects.filter((p) => p.type.includes('Commercial')).length})
             </button>
             <button
               type="button"
               className={`sbx-tab-btn ${activeFilter === 'hybrid' ? 'active' : ''}`}
               onClick={() => setActiveFilter('hybrid')}
             >
-              🔋 Hybrid Battery (2)
+              🔋 Hybrid BESS ({projects.filter((p) => p.type.includes('Hybrid')).length})
             </button>
             <button
               type="button"
               className={`sbx-tab-btn ${activeFilter === 'live' ? 'active' : ''}`}
               onClick={() => setActiveFilter('live')}
             >
-              🟢 Live Terkoneksi (1)
+              ✅ Live COD ({liveCount})
             </button>
           </div>
 
@@ -248,7 +187,7 @@ export default function ProjectsView({ onBackToDashboard }) {
             <input
               type="text"
               className="sbx-search-input"
-              placeholder="Cari kode, nama proyek, lokasi..."
+              placeholder="Cari kode, nama, klien..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -261,10 +200,10 @@ export default function ProjectsView({ onBackToDashboard }) {
               <tr>
                 <th>Kode &amp; Nama Proyek</th>
                 <th>Klien &amp; Lokasi</th>
-                <th>Sistem &amp; Kapasitas</th>
-                <th>Spesifikasi Hardware</th>
-                <th>Progress EPC</th>
-                <th>Status Tahapan</th>
+                <th>Kapasitas &amp; Panel</th>
+                <th>Inverter &amp; Proteksi</th>
+                <th>Progres EPC</th>
+                <th>Status Lapangan</th>
                 <th>Target COD</th>
                 <th style={{ textAlign: 'right' }}>Aksi</th>
               </tr>
@@ -282,68 +221,98 @@ export default function ProjectsView({ onBackToDashboard }) {
                     </div>
                   </td>
                   <td>
-                    <div style={{ fontWeight: 600, color: 'var(--sbx-text)' }}>{p.client}</div>
-                    <div style={{ fontSize: '11.5px', color: 'var(--sbx-text-muted)' }}>📍 {p.location}</div>
+                    <div style={{ fontWeight: 700, color: 'var(--sbx-text)', fontSize: '12.5px' }}>
+                      {p.client}
+                    </div>
+                    <div style={{ fontSize: '11px', color: 'var(--sbx-text-muted)' }}>📍 {p.location}</div>
                   </td>
                   <td>
-                    <div style={{ fontWeight: 800, color: 'var(--sbx-accent)', fontSize: '13px' }}>
+                    <div style={{ fontSize: '13px', fontWeight: 800, color: 'var(--sbx-accent)' }}>
                       ⚡ {p.kwp}
                     </div>
-                    <div style={{ fontSize: '11px', color: '#10b981' }}>Est: {p.estYield}</div>
+                    <div style={{ fontSize: '11px', color: 'var(--sbx-text-muted)' }}>{p.panels}</div>
                   </td>
                   <td>
-                    <div style={{ fontSize: '11.5px', color: 'var(--sbx-text)' }}>{p.panels}</div>
-                    <div style={{ fontSize: '11px', color: 'var(--sbx-text-muted)' }}>{p.inverter}</div>
+                    <span style={{ fontSize: '12px', color: 'var(--sbx-text)' }}>{p.inverter}</span>
                   </td>
-                  <td style={{ minWidth: '130px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
-                      <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--sbx-text)' }}>
-                        {p.progress}%
-                      </span>
-                    </div>
-                    <div className="sbx-progress-bar-bg">
-                      <div
-                        className="sbx-progress-bar-fill"
-                        style={{
-                          width: `${p.progress}%`,
-                          background:
-                            p.progress === 100
-                              ? '#10b981'
-                              : p.progress > 75
-                              ? '#38bdf8'
-                              : '#f59e0b',
-                        }}
-                      />
+                  <td>
+                    <div style={{ minWidth: '100px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: 700, marginBottom: '3px' }}>
+                        <span>{p.progress}%</span>
+                      </div>
+                      <div className="sbx-progress-bar-bg" style={{ height: '6px', background: 'rgba(255, 255, 255, 0.1)', borderRadius: '3px', overflow: 'hidden' }}>
+                        <div
+                          className="sbx-progress-bar-fill"
+                          style={{
+                            height: '100%',
+                            width: `${p.progress}%`,
+                            background: p.progress >= 100 ? '#10b981' : p.progress >= 70 ? 'var(--sbx-accent)' : '#f59e0b',
+                            borderRadius: '3px',
+                          }}
+                        />
+                      </div>
                     </div>
                   </td>
                   <td>
-                    <span className={`sbx-status-badge ${p.statusColor}`}>{p.status}</span>
-                  </td>
-                  <td>
-                    <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--sbx-text)' }}>
-                      📅 {p.cod}
+                    <span className={`sbx-status-badge ${p.statusColor || 'info'}`}>
+                      {p.status}
                     </span>
+                  </td>
+                  <td>
+                    <span style={{ fontSize: '12px', color: 'var(--sbx-text-muted)' }}>📅 {p.cod}</span>
                   </td>
                   <td style={{ textAlign: 'right' }}>
                     <div style={{ display: 'inline-flex', gap: '6px' }}>
                       <button
                         type="button"
                         className="sbx-row-action-btn"
-                        onClick={() => {
-                          setToast(`📊 Membuka live telemetri IoT ${p.code} (${p.name})...`);
-                          setTimeout(() => setToast(''), 4000);
-                        }}
+                        onClick={() => setDetailProject(p)}
                       >
-                        Telemetri
+                        Detail &amp; Progres
+                      </button>
+                      <button
+                        type="button"
+                        className="sbx-row-action-btn"
+                        onClick={() => handleEditProject(p)}
+                      >
+                        ✏️ Edit
                       </button>
                     </div>
                   </td>
                 </tr>
               ))}
+              {filteredProjects.length === 0 && (
+                <tr>
+                  <td colSpan={8} style={{ textAlign: 'center', padding: '36px', color: 'var(--sbx-text-muted)' }}>
+                    Tidak ada proyek yang sesuai dengan kriteria filter.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
       </div>
+
+      {/* MODAL 1: Add/Edit Project */}
+      {isModalOpen && (
+        <ProjectModal
+          project={editingProject}
+          onClose={() => setIsModalOpen(false)}
+          onSave={() => {
+            setToast('✅ Data proyek berhasil disimpan ke database lokal!');
+            setTimeout(() => setToast(''), 3000);
+          }}
+        />
+      )}
+
+      {/* MODAL 2: Detail Project & Progress Slider */}
+      {detailProject && (
+        <ProjectDetailModal
+          project={detailProject}
+          onClose={() => setDetailProject(null)}
+          onEdit={handleEditProject}
+        />
+      )}
     </div>
   );
 }

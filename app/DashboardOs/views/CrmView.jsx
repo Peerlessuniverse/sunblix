@@ -1,105 +1,30 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { getStoreLeads, subscribeToStore } from '../../../lib/sunblixOsStore';
+import LeadModal from '../components/LeadModal';
+import LeadDetailModal from '../components/LeadDetailModal';
 
-const INITIAL_LEADS = [
-  {
-    id: 'LD-2601',
-    name: 'Bapak Made Suryanata',
-    company: 'Villa Lotus Sanur',
-    location: 'Sanur, Denpasar - Bali',
-    phone: '+62 812-3456-7890',
-    plnTariff: 'R-3 / 11,000 VA',
-    targetKwp: '9.36 kWp',
-    estValue: 'Rp 148,000,000',
-    stage: 'SPH Terkirim',
-    leadSource: 'Kalkulator Web',
-    assigned: 'Sales Engineer (Agus)',
-    date: '4 Okt 2026',
-    notes: 'Konsumsi listrik AC tinggi saat siang hari. Tertarik paket PRO On-Grid.',
-  },
-  {
-    id: 'LD-2602',
-    name: 'Ibu Ratna Dewi',
-    company: 'Residensial Green Valley',
-    location: 'Canggu, Badung - Bali',
-    phone: '+62 819-9876-5432',
-    plnTariff: 'R-2 / 5,500 VA',
-    targetKwp: '4.68 kWp',
-    estValue: 'Rp 78,500,000',
-    stage: 'Survey Terjadwal',
-    leadSource: 'WhatsApp Inbound',
-    assigned: 'Sales Lead (Wayan)',
-    date: '5 Okt 2026',
-    notes: 'Survey fisik atap genteng beton dijadwalkan Selasa 7 Okt jam 10:00.',
-  },
-  {
-    id: 'LD-2603',
-    name: 'Pak Hendra Gunawan',
-    company: 'PT Logistik Samudera Jaya',
-    location: 'Benoa Port, Denpasar',
-    phone: '+62 821-4455-6677',
-    plnTariff: 'B-3 / 41,500 VA',
-    targetKwp: '32.76 kWp',
-    estValue: 'Rp 485,000,000',
-    stage: 'Negosiasi',
-    leadSource: 'Referral EPC',
-    assigned: 'Director (Danny)',
-    date: '2 Okt 2026',
-    notes: 'Gudang cold storage 3-phase. Membutuhkan zero-export inverter & genset sync.',
-  },
-  {
-    id: 'LD-2604',
-    name: 'Dr. Michael Chen',
-    company: 'Chen Aesthetic Clinic',
-    location: 'Kuta, Badung',
-    phone: '+62 878-1122-3344',
-    plnTariff: 'B-2 / 16,500 VA',
-    targetKwp: '14.04 kWp',
-    estValue: 'Rp 215,000,000',
-    stage: 'SPH Terkirim',
-    leadSource: 'Website Contact',
-    assigned: 'Sales Engineer (Agus)',
-    date: '3 Okt 2026',
-    notes: 'Proposal SPH sudah dikirim via email. Menunggu review rapat dewan direksi.',
-  },
-  {
-    id: 'LD-2605',
-    name: 'Pak Wayan Sudarma',
-    company: 'Sudarma Rice Mill & Dryer',
-    location: 'Tabanan, Bali',
-    phone: '+62 852-7788-9900',
-    plnTariff: 'I-2 / 33,000 VA',
-    targetKwp: '25.74 kWp',
-    estValue: 'Rp 375,000,000',
-    stage: 'Kualifikasi',
-    leadSource: 'Agent Omni (AI Chat)',
-    assigned: 'Agent Omni',
-    date: 'Hari ini, 08:15',
-    notes: 'Agent Omni selesai mencocokkan tagihan rekening PLN Rp 18.5jt/bln.',
-  },
-  {
-    id: 'LD-2606',
-    name: 'Mr. David Miller',
-    company: 'Uluwatu Cliff Villa #4',
-    location: 'Uluwatu, Bali',
-    phone: '+62 813-2233-4455',
-    plnTariff: 'R-3 / 13,200 VA',
-    targetKwp: '11.70 kWp + 15 kWh Battery',
-    estValue: 'Rp 298,000,000',
-    stage: 'Survey Terjadwal',
-    leadSource: 'Instagram Ads',
-    assigned: 'Sales Lead (Wayan)',
-    date: 'Hari ini, 09:30',
-    notes: 'Sistem Hybrid dengan backup baterai penuh saat PLN padam.',
-  },
-];
-
-export default function CrmView({ onBackToDashboard }) {
-  const [leads, setLeads] = useState(INITIAL_LEADS);
+export default function CrmView({ onBackToDashboard, onNavigateToProjects }) {
+  const [leads, setLeads] = useState([]);
   const [activeStage, setActiveStage] = useState('all');
   const [search, setSearch] = useState('');
   const [toast, setToast] = useState('');
+
+  // Modals state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingLead, setEditingLead] = useState(null);
+  const [detailLead, setDetailLead] = useState(null);
+
+  const refresh = () => {
+    setLeads(getStoreLeads());
+  };
+
+  useEffect(() => {
+    refresh();
+    const unsub = subscribeToStore(refresh);
+    return () => unsub();
+  }, []);
 
   const filteredLeads = leads.filter((l) => {
     const matchSearch =
@@ -109,12 +34,34 @@ export default function CrmView({ onBackToDashboard }) {
       l.id.toLowerCase().includes(search.toLowerCase());
 
     if (!matchSearch) return false;
-    if (activeStage === 'survey') return l.stage === 'Survey Terjadwal';
+    if (activeStage === 'kualifikasi') return l.stage === 'Kualifikasi';
+    if (activeStage === 'warm') return l.stage === 'Warm Lead' || l.stage === 'Survey Terjadwal (Warm Lead)';
+    if (activeStage === 'survey') return l.stage === 'Survey Terjadwal' || l.stage === 'Warm Lead' || l.stage === 'Survey Terjadwal (Warm Lead)';
     if (activeStage === 'sph') return l.stage === 'SPH Terkirim';
     if (activeStage === 'nego') return l.stage === 'Negosiasi';
-    if (activeStage === 'kualifikasi') return l.stage === 'Kualifikasi';
+    if (activeStage === 'won') return l.stage === 'Deal Won';
+    if (activeStage === 'cold') return l.stage === 'Cold Lead';
     return true;
   });
+
+  // Calculate dynamic metrics
+  const totalPipelineNum = leads.reduce((acc, curr) => acc + (curr.estValueNum || 0), 0);
+  const totalPipelineStr = 'Rp ' + (totalPipelineNum / 1000000000).toFixed(2) + 'B';
+  const surveyCount = leads.filter((l) => l.stage === 'Survey Terjadwal').length;
+  const sphCount = leads.filter((l) => l.stage === 'SPH Terkirim').length;
+  const wonCount = leads.filter((l) => l.stage === 'Deal Won').length;
+  const closingRate = leads.length > 0 ? ((wonCount / leads.length) * 100).toFixed(1) + '%' : '0%';
+
+  const handleOpenNewLead = () => {
+    setEditingLead(null);
+    setIsModalOpen(true);
+  };
+
+  const handleEditLead = (lead) => {
+    setDetailLead(null);
+    setEditingLead(lead);
+    setIsModalOpen(true);
+  };
 
   return (
     <div className="sbx-view-container">
@@ -139,10 +86,7 @@ export default function CrmView({ onBackToDashboard }) {
           <button
             type="button"
             className="sbx-action-btn primary"
-            onClick={() => {
-              setToast('✨ Form tambah lead baru siap diinput!');
-              setTimeout(() => setToast(''), 3000);
-            }}
+            onClick={handleOpenNewLead}
           >
             + Tambah Prospek Baru
           </button>
@@ -151,7 +95,7 @@ export default function CrmView({ onBackToDashboard }) {
 
       {toast && <div className="sbx-toast-box">{toast}</div>}
 
-      {/* KPI Cards */}
+      {/* KPI Cards Strip */}
       <div className="sbx-metrics-row">
         <div className="sbx-metric-card">
           <div className="sbx-metric-header">
@@ -159,10 +103,10 @@ export default function CrmView({ onBackToDashboard }) {
             <div className="sbx-metric-icon">💵</div>
           </div>
           <div className="sbx-metric-body">
-            <span className="sbx-metric-val">Rp 1.59B</span>
-            <span className="sbx-metric-badge-delta">↑ 24%</span>
+            <span className="sbx-metric-val">{totalPipelineStr}</span>
+            <span className="sbx-metric-badge-delta">Live</span>
           </div>
-          <p className="sbx-metric-subtext">Dari 6 prospek aktif bulan ini</p>
+          <p className="sbx-metric-subtext">Dari {leads.length} prospek dalam database</p>
         </div>
 
         <div className="sbx-metric-card">
@@ -171,10 +115,10 @@ export default function CrmView({ onBackToDashboard }) {
             <div className="sbx-metric-icon">📅</div>
           </div>
           <div className="sbx-metric-body">
-            <span className="sbx-metric-val">2 Lokasi</span>
-            <span className="sbx-status-badge warning">Minggu Ini</span>
+            <span className="sbx-metric-val">{surveyCount} Lokasi</span>
+            <span className="sbx-status-badge warning">Aktif</span>
           </div>
-          <p className="sbx-metric-subtext">Canggu &amp; Uluwatu</p>
+          <p className="sbx-metric-subtext">Perlu inspeksi atap &amp; shading</p>
         </div>
 
         <div className="sbx-metric-card">
@@ -183,22 +127,22 @@ export default function CrmView({ onBackToDashboard }) {
             <div className="sbx-metric-icon">📑</div>
           </div>
           <div className="sbx-metric-body">
-            <span className="sbx-metric-val">2 Proposal</span>
+            <span className="sbx-metric-val">{sphCount} Proposal</span>
             <span className="sbx-status-badge info">Menunggu PO</span>
           </div>
-          <p className="sbx-metric-subtext">Sanur &amp; Kuta Clinic</p>
+          <p className="sbx-metric-subtext">Proposal harga siap tindak lanjut</p>
         </div>
 
         <div className="sbx-metric-card">
           <div className="sbx-metric-header">
-            <span className="sbx-metric-label">Closing Rate</span>
-            <div className="sbx-metric-icon">🎯</div>
+            <span className="sbx-metric-label">Closing Rate / Won</span>
+            <div className="sbx-metric-icon">🏆</div>
           </div>
           <div className="sbx-metric-body">
-            <span className="sbx-metric-val">68.4%</span>
-            <span className="sbx-status-badge success">High Win</span>
+            <span className="sbx-metric-val">{wonCount} Deal</span>
+            <span className="sbx-status-badge success">{closingRate}</span>
           </div>
-          <p className="sbx-metric-subtext">Rata-rata siklus 14 hari</p>
+          <p className="sbx-metric-subtext">Siap dikonversi ke kontrak EPC</p>
         </div>
       </div>
 
@@ -218,28 +162,49 @@ export default function CrmView({ onBackToDashboard }) {
               className={`sbx-tab-btn ${activeStage === 'kualifikasi' ? 'active' : ''}`}
               onClick={() => setActiveStage('kualifikasi')}
             >
-              🤖 Kualifikasi AI (1)
+              🤖 Kualifikasi ({leads.filter((l) => l.stage === 'Kualifikasi').length})
+            </button>
+            <button
+              type="button"
+              className={`sbx-tab-btn ${activeStage === 'warm' ? 'active' : ''}`}
+              onClick={() => setActiveStage('warm')}
+            >
+              🔥 Warm Leads ({leads.filter((l) => l.stage === 'Warm Lead' || l.stage === 'Survey Terjadwal (Warm Lead)').length})
             </button>
             <button
               type="button"
               className={`sbx-tab-btn ${activeStage === 'survey' ? 'active' : ''}`}
               onClick={() => setActiveStage('survey')}
             >
-              📐 Survey Terjadwal (2)
+              📐 Survey ({surveyCount})
             </button>
             <button
               type="button"
               className={`sbx-tab-btn ${activeStage === 'sph' ? 'active' : ''}`}
               onClick={() => setActiveStage('sph')}
             >
-              📑 SPH Terkirim (2)
+              📑 SPH Terkirim ({sphCount})
             </button>
             <button
               type="button"
               className={`sbx-tab-btn ${activeStage === 'nego' ? 'active' : ''}`}
               onClick={() => setActiveStage('nego')}
             >
-              🤝 Negosiasi / Final (1)
+              🤝 Negosiasi ({leads.filter((l) => l.stage === 'Negosiasi').length})
+            </button>
+            <button
+              type="button"
+              className={`sbx-tab-btn ${activeStage === 'won' ? 'active' : ''}`}
+              onClick={() => setActiveStage('won')}
+            >
+              🏆 Deal Won ({wonCount})
+            </button>
+            <button
+              type="button"
+              className={`sbx-tab-btn ${activeStage === 'cold' ? 'active' : ''}`}
+              onClick={() => setActiveStage('cold')}
+            >
+              ❄️ Cold Leads ({leads.filter((l) => l.stage === 'Cold Lead').length})
             </button>
           </div>
 
@@ -298,12 +263,18 @@ export default function CrmView({ onBackToDashboard }) {
                   <td>
                     <span
                       className={`sbx-status-badge ${
-                        l.stage === 'Negosiasi'
+                        l.stage === 'Deal Won'
+                          ? 'success'
+                          : l.stage === 'Negosiasi'
                           ? 'success'
                           : l.stage === 'SPH Terkirim'
                           ? 'info'
+                          : l.stage === 'Warm Lead' || l.stage === 'Survey Terjadwal (Warm Lead)'
+                          ? 'warning'
                           : l.stage === 'Survey Terjadwal'
                           ? 'warning'
+                          : l.stage === 'Cold Lead'
+                          ? 'secondary'
                           : 'purple'
                       }`}
                     >
@@ -319,7 +290,9 @@ export default function CrmView({ onBackToDashboard }) {
                   <td style={{ textAlign: 'right' }}>
                     <div style={{ display: 'inline-flex', gap: '6px' }}>
                       <a
-                        href={`https://wa.me/${l.phone.replace(/[^0-9]/g, '')}`}
+                        href={`https://wa.me/${l.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
+                          `Halo ${l.name}, saya dari tim Sunblix Energi Indonesia terkait PLTS ${l.targetKwp}.`
+                        )}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="sbx-row-action-btn"
@@ -331,21 +304,58 @@ export default function CrmView({ onBackToDashboard }) {
                       <button
                         type="button"
                         className="sbx-row-action-btn"
-                        onClick={() => {
-                          setToast(`📄 Detail catatan ${l.name}: "${l.notes}"`);
-                          setTimeout(() => setToast(''), 5000);
-                        }}
+                        onClick={() => setDetailLead(l)}
                       >
                         Detail
+                      </button>
+                      <button
+                        type="button"
+                        className="sbx-row-action-btn"
+                        onClick={() => handleEditLead(l)}
+                      >
+                        ✏️ Edit
                       </button>
                     </div>
                   </td>
                 </tr>
               ))}
+              {filteredLeads.length === 0 && (
+                <tr>
+                  <td colSpan={8} style={{ textAlign: 'center', padding: '36px', color: 'var(--sbx-text-muted)' }}>
+                    Tidak ada prospek yang cocok dengan filter atau pencarian Anda.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
       </div>
+
+      {/* MODAL 1: Add/Edit Lead */}
+      {isModalOpen && (
+        <LeadModal
+          lead={editingLead}
+          onClose={() => setIsModalOpen(false)}
+          onSave={() => {
+            setToast('✅ Data prospek berhasil disimpan ke database lokal!');
+            setTimeout(() => setToast(''), 3000);
+          }}
+        />
+      )}
+
+      {/* MODAL 2: Detail Lead & Convert to Project */}
+      {detailLead && (
+        <LeadDetailModal
+          lead={detailLead}
+          onClose={() => setDetailLead(null)}
+          onEdit={handleEditLead}
+          onConverted={(res) => {
+            setToast(`🚀 Prospek berhasil dikonversi ke Proyek ${res.project.code}!`);
+            setTimeout(() => setToast(''), 4000);
+            if (onNavigateToProjects) onNavigateToProjects();
+          }}
+        />
+      )}
     </div>
   );
 }

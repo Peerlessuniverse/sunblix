@@ -2,86 +2,7 @@
 
 import { useState } from 'react';
 
-const INITIAL_VENDORS = [
-  {
-    id: 'VND-01',
-    name: 'PT Solar Asia Prima (Distributor Resmi LONGI)',
-    category: 'Modul Surya PV',
-    pic: 'Bapak Gunawan Hartono',
-    phone: '+62 811-2233-4455',
-    email: 'sales@solarasia.co.id',
-    rating: '4.9 ⭐',
-    sla: '98.5%',
-    paymentTerms: 'TOP 30 Hari',
-    products: 'LONGI Hi-MO X6 585 Wp N-Type TOPCon',
-    status: 'Preferred Partner',
-  },
-  {
-    id: 'VND-02',
-    name: 'Deye Indonesia Official Direct',
-    category: 'Inverter & Baterai',
-    pic: 'Ms. Emily Zhang / Andy',
-    phone: '+62 812-9988-7766',
-    email: 'service.id@deye.com.cn',
-    rating: '4.8 ⭐',
-    sla: '95.0%',
-    paymentTerms: 'CBD (Cash Before Delivery) 20% Diskon',
-    products: 'Inverter On-Grid 5kW-50kW, Hybrid LV/HV, Baterai SE-G5.1',
-    status: 'Official OEM',
-  },
-  {
-    id: 'VND-03',
-    name: 'PT Struktur Baja & Aluminium Anodized',
-    category: 'Mounting & Rangka Atap',
-    pic: 'Bapak I Ketut Suardika',
-    phone: '+62 819-3344-5566',
-    email: 'ketut@alumbaja.co.id',
-    rating: '4.9 ⭐',
-    sla: '99.0%',
-    paymentTerms: 'TOP 14 Hari',
-    products: 'Rail AL6005-T5, Mid/End Clamps, L-Feet, Hanger Bolt',
-    status: 'Preferred Partner',
-  },
-  {
-    id: 'VND-04',
-    name: 'PT Kabel Prima Sentosa (TÜV Certified)',
-    category: 'Kabel & Proteksi BOS',
-    pic: 'Ibu Linda Susanti',
-    phone: '+62 821-5566-7788',
-    email: 'order@kabelprima.com',
-    rating: '4.7 ⭐',
-    sla: '94.2%',
-    paymentTerms: 'TOP 30 Hari',
-    products: 'Solar Cable DC 4mm²/6mm² TÜV, MC4 Connector IP68, SPD',
-    status: 'Active Supplier',
-  },
-  {
-    id: 'VND-05',
-    name: 'Sungrow Power Indonesia',
-    category: 'Inverter Komersial 3-Phase',
-    pic: 'Bapak Kevin Pratama',
-    phone: '+62 813-7788-9911',
-    email: 'kevin.p@sungrow.co.id',
-    rating: '4.8 ⭐',
-    sla: '96.0%',
-    paymentTerms: 'DP 30%, Pelunasan saat B/L',
-    products: 'Inverter SG33CX, SG50CX, SG110CX Industrial',
-    status: 'Official OEM',
-  },
-  {
-    id: 'VND-06',
-    name: 'CV Bali Scaffolding & Safety Lifting',
-    category: 'Alat Berat & K3 Lapangan',
-    pic: 'Bapak Made Wardana',
-    phone: '+62 852-3344-1122',
-    email: 'wardana@baliscaffolding.com',
-    rating: '4.9 ⭐',
-    sla: '100%',
-    paymentTerms: 'Per Proyek Selesai',
-    products: 'Sewa Scaffolding Galvanis, Crane Truck 5 Ton, Body Harness K3',
-    status: 'Local Contractor',
-  },
-];
+const INITIAL_VENDORS = [];
 
 export default function VendorsView({ onBackToDashboard }) {
   const [vendors, setVendors] = useState(INITIAL_VENDORS);
@@ -101,6 +22,10 @@ export default function VendorsView({ onBackToDashboard }) {
     if (catFilter === 'mounting') return v.category.includes('Mounting');
     return true;
   });
+
+  const panelCount = vendors.filter((v) => v.category?.includes('Modul')).length;
+  const inverterCount = vendors.filter((v) => v.category?.includes('Inverter')).length;
+  const mountingCount = vendors.filter((v) => v.category?.includes('Mounting')).length;
 
   return (
     <div className="sbx-view-container">
@@ -145,8 +70,10 @@ export default function VendorsView({ onBackToDashboard }) {
             <div className="sbx-metric-icon">🤝</div>
           </div>
           <div className="sbx-metric-body">
-            <span className="sbx-metric-val">14 Mitra</span>
-            <span className="sbx-status-badge success">Tier-1 OEM</span>
+            <span className="sbx-metric-val">{vendors.length} Mitra</span>
+            <span className={`sbx-status-badge ${vendors.length > 0 ? 'success' : 'info'}`}>
+              {vendors.length > 0 ? 'Tier-1 OEM' : 'Standby Pool'}
+            </span>
           </div>
           <p className="sbx-metric-subtext">Distributor resmi &amp; supplier BOS</p>
         </div>
@@ -157,8 +84,8 @@ export default function VendorsView({ onBackToDashboard }) {
             <div className="sbx-metric-icon">⭐</div>
           </div>
           <div className="sbx-metric-body">
-            <span className="sbx-metric-val">4.85 / 5.0</span>
-            <span className="sbx-metric-badge-delta">High Quality</span>
+            <span className="sbx-metric-val">{vendors.length > 0 ? '4.85 / 5.0' : '0.0 / 5.0'}</span>
+            <span className="sbx-metric-badge-delta">{vendors.length > 0 ? 'High Quality' : 'Standar SOP'}</span>
           </div>
           <p className="sbx-metric-subtext">Berdasarkan inspeksi QC masuk</p>
         </div>
@@ -169,7 +96,7 @@ export default function VendorsView({ onBackToDashboard }) {
             <div className="sbx-metric-icon">⏱️</div>
           </div>
           <div className="sbx-metric-body">
-            <span className="sbx-metric-val">96.8%</span>
+            <span className="sbx-metric-val">{vendors.length > 0 ? '96.8%' : '100%'}</span>
             <span className="sbx-status-badge info">Tepat Waktu</span>
           </div>
           <p className="sbx-metric-subtext">Ketepatan waktu jadwal kirim site</p>
@@ -181,7 +108,7 @@ export default function VendorsView({ onBackToDashboard }) {
             <div className="sbx-metric-icon">🏷️</div>
           </div>
           <div className="sbx-metric-body">
-            <span className="sbx-metric-val">12 - 20%</span>
+            <span className="sbx-metric-val">{vendors.length > 0 ? '12 - 20%' : 'Tier 0%'}</span>
             <span className="sbx-status-badge purple">Special Tier</span>
           </div>
           <p className="sbx-metric-subtext">Kontrak tahunan eksklusif Sunblix</p>
@@ -204,21 +131,21 @@ export default function VendorsView({ onBackToDashboard }) {
               className={`sbx-tab-btn ${catFilter === 'panel' ? 'active' : ''}`}
               onClick={() => setCatFilter('panel')}
             >
-              ☀️ Modul Surya (1)
+              ☀️ Modul Surya ({panelCount})
             </button>
             <button
               type="button"
               className={`sbx-tab-btn ${catFilter === 'inverter' ? 'active' : ''}`}
               onClick={() => setCatFilter('inverter')}
             >
-              ⚡ Inverter &amp; Baterai (2)
+              ⚡ Inverter &amp; Baterai ({inverterCount})
             </button>
             <button
               type="button"
               className={`sbx-tab-btn ${catFilter === 'mounting' ? 'active' : ''}`}
               onClick={() => setCatFilter('mounting')}
             >
-              🔩 Mounting &amp; Struktur (1)
+              🔩 Mounting &amp; Struktur ({mountingCount})
             </button>
           </div>
 
@@ -248,51 +175,65 @@ export default function VendorsView({ onBackToDashboard }) {
               </tr>
             </thead>
             <tbody>
-              {filteredVendors.map((v) => (
-                <tr key={v.id}>
-                  <td>
-                    <div>
-                      <div style={{ fontWeight: 800, color: 'var(--sbx-text)' }}>{v.name}</div>
-                      <span className="sbx-tag" style={{ marginTop: '3px' }}>{v.status}</span>
+              {filteredVendors.length === 0 ? (
+                <tr>
+                  <td colSpan={7} style={{ textAlign: 'center', padding: '48px 16px', color: 'var(--sbx-text-muted)' }}>
+                    <div style={{ fontSize: '32px', marginBottom: '8px' }}>🤝</div>
+                    <div style={{ fontWeight: 700, color: 'var(--sbx-text)', fontSize: '13.5px', marginBottom: '4px' }}>
+                      Belum Ada Rekanan Vendor Terdaftar
                     </div>
-                  </td>
-                  <td>
-                    <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--sbx-accent)' }}>
-                      {v.category}
-                    </span>
-                  </td>
-                  <td>
-                    <div style={{ fontSize: '12px', color: 'var(--sbx-text)', maxWidth: '280px' }}>
-                      {v.products}
+                    <div style={{ fontSize: '12px' }}>
+                      Klik tombol &quot;+ Registrasi Rekanan Baru&quot; di atas untuk mendaftarkan distributor resmi solar modul, inverter, dan kontraktor lokal.
                     </div>
-                  </td>
-                  <td>
-                    <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--sbx-text)' }}>{v.pic}</div>
-                    <div style={{ fontSize: '11px', color: 'var(--sbx-text-muted)' }}>{v.phone}</div>
-                  </td>
-                  <td>
-                    <div style={{ fontWeight: 800, color: '#f59e0b', fontSize: '12.5px' }}>{v.rating}</div>
-                    <div style={{ fontSize: '11px', color: '#10b981' }}>SLA: {v.sla}</div>
-                  </td>
-                  <td>
-                    <span style={{ fontSize: '11.5px', color: 'var(--sbx-text-muted)' }}>
-                      {v.paymentTerms}
-                    </span>
-                  </td>
-                  <td style={{ textAlign: 'right' }}>
-                    <button
-                      type="button"
-                      className="sbx-row-action-btn"
-                      onClick={() => {
-                        setToast(`📞 Menghubungi PIC ${v.name} (${v.pic}: ${v.phone})`);
-                        setTimeout(() => setToast(''), 4000);
-                      }}
-                    >
-                      Hubungi
-                    </button>
                   </td>
                 </tr>
-              ))}
+              ) : (
+                filteredVendors.map((v) => (
+                  <tr key={v.id}>
+                    <td>
+                      <div>
+                        <div style={{ fontWeight: 800, color: 'var(--sbx-text)' }}>{v.name}</div>
+                        <span className="sbx-tag" style={{ marginTop: '3px' }}>{v.status}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--sbx-accent)' }}>
+                        {v.category}
+                      </span>
+                    </td>
+                    <td>
+                      <div style={{ fontSize: '12px', color: 'var(--sbx-text)', maxWidth: '280px' }}>
+                        {v.products}
+                      </div>
+                    </td>
+                    <td>
+                      <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--sbx-text)' }}>{v.pic}</div>
+                      <div style={{ fontSize: '11px', color: 'var(--sbx-text-muted)' }}>{v.phone}</div>
+                    </td>
+                    <td>
+                      <div style={{ fontWeight: 800, color: '#f59e0b', fontSize: '12.5px' }}>{v.rating}</div>
+                      <div style={{ fontSize: '11px', color: '#10b981' }}>SLA: {v.sla}</div>
+                    </td>
+                    <td>
+                      <span style={{ fontSize: '11.5px', color: 'var(--sbx-text-muted)' }}>
+                        {v.paymentTerms}
+                      </span>
+                    </td>
+                    <td style={{ textAlign: 'right' }}>
+                      <button
+                        type="button"
+                        className="sbx-row-action-btn"
+                        onClick={() => {
+                          setToast(`📞 Menghubungi PIC ${v.name} (${v.pic}: ${v.phone})`);
+                          setTimeout(() => setToast(''), 4000);
+                        }}
+                      >
+                        Hubungi
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

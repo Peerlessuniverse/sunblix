@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
@@ -7,6 +8,7 @@ export default function MobileDrawer({ isOpen, onClose, onOpenQuote }) {
   const pathname = usePathname();
   const router = useRouter();
   const isHome = pathname === '/';
+  const [aboutSubmenuOpen, setAboutSubmenuOpen] = useState(false);
 
   const handleNavClick = (milestone) => {
     onClose();
@@ -97,17 +99,65 @@ export default function MobileDrawer({ isOpen, onClose, onOpenQuote }) {
             <span className="link-label">Solusi Energi PLTS</span>
             <span className="link-arrow">→</span>
           </a>
-          <a
-            href="#about"
-            className="drawer-link"
-            onClick={(e) => {
-              e.preventDefault();
-              handleNavClick('#about');
-            }}
-          >
-            <span className="link-label">🏢 About Us</span>
-            <span className="link-arrow">→</span>
-          </a>
+          {/* ABOUT US ACCORDION */}
+          <div className="drawer-group">
+            <div
+              className={`drawer-link drawer-dropdown-trigger ${aboutSubmenuOpen ? 'is-expanded' : ''}`}
+              onClick={() => setAboutSubmenuOpen(!aboutSubmenuOpen)}
+              style={{ cursor: 'pointer' }}
+            >
+              <span className="link-label">🏢 About Us</span>
+              <span
+                className="drawer-chevron-icon"
+                style={{
+                  transform: aboutSubmenuOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                  transition: 'transform 0.25s ease',
+                  display: 'inline-flex'
+                }}
+              >
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </span>
+            </div>
+            {aboutSubmenuOpen && (
+              <div className="drawer-sublinks">
+                <a
+                  href="#about"
+                  className="drawer-sublink"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavClick('#about');
+                  }}
+                >
+                  <span className="sublink-dot">•</span>
+                  <span>Tentang SUNBLIX</span>
+                </a>
+                <a
+                  href="#how-it-works"
+                  className="drawer-sublink"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavClick('#how-it-works');
+                  }}
+                >
+                  <span className="sublink-dot">•</span>
+                  <span>How It Works (Aliran Daya)</span>
+                </a>
+                <a
+                  href="#why-sunblix"
+                  className="drawer-sublink"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavClick('#why-sunblix');
+                  }}
+                >
+                  <span className="sublink-dot">•</span>
+                  <span>Why SUNBLIX (Keunggulan)</span>
+                </a>
+              </div>
+            )}
+          </div>
           <a
             href="#products"
             className="drawer-link"
@@ -117,28 +167,6 @@ export default function MobileDrawer({ isOpen, onClose, onOpenQuote }) {
             }}
           >
             <span className="link-label">Pilihan Paket Residential</span>
-            <span className="link-arrow">→</span>
-          </a>
-          <a
-            href="#how-it-works"
-            className="drawer-link"
-            onClick={(e) => {
-              e.preventDefault();
-              handleNavClick('#how-it-works');
-            }}
-          >
-            <span className="link-label">Cara Kerja Aliran Daya</span>
-            <span className="link-arrow">→</span>
-          </a>
-          <a
-            href="#why-sunblix"
-            className="drawer-link"
-            onClick={(e) => {
-              e.preventDefault();
-              handleNavClick('#why-sunblix');
-            }}
-          >
-            <span className="link-label">Keunggulan &amp; Tim Teknisi</span>
             <span className="link-arrow">→</span>
           </a>
           <a

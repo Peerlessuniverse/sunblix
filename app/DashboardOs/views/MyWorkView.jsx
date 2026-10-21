@@ -1,118 +1,44 @@
 'use client';
 
-import { useState } from 'react';
-
-const INITIAL_TASKS = [
-  {
-    id: 'TSK-101',
-    title: 'Review Single Line Diagram (SLD) 12.87 kWp Villa Jimbaran',
-    category: 'Engineering',
-    priority: 'HIGH',
-    assignee: 'Tim EPC Engineer & Agent Solaria',
-    dueDate: 'Hari ini, 14:00',
-    status: 'pending',
-    project: 'Villa Jimbaran Luxury',
-    icon: '⚡',
-  },
-  {
-    id: 'TSK-102',
-    title: 'Approval Purchase Order 64x Modul Surya LONGI 585 Wp N-Type TOPCon',
-    category: 'Approval',
-    priority: 'URGENT',
-    assignee: 'Danny (Director / CEO)',
-    dueDate: 'Hari ini, 16:30',
-    status: 'pending',
-    project: 'Warehouse Logistik Benoa',
-    icon: '📦',
-  },
-  {
-    id: 'TSK-103',
-    title: 'Verifikasi Laporan Shading Matrix 3D Atap Kompleks Canggu',
-    category: 'Engineering',
-    priority: 'MEDIUM',
-    assignee: 'Agent Solaria',
-    dueDate: 'Besok, 10:00',
-    status: 'pending',
-    project: 'Canggu Eco Resort',
-    icon: '☀️',
-  },
-  {
-    id: 'TSK-104',
-    title: 'Kirim SPH Revisi Paket 3-Phase 16.38 kWp Hotel Seminyak',
-    category: 'Sales',
-    priority: 'HIGH',
-    assignee: 'Sales Team & Agent Omni',
-    dueDate: 'Hari ini, 17:00',
-    status: 'pending',
-    project: 'Boutique Hotel Seminyak',
-    icon: '📑',
-  },
-  {
-    id: 'TSK-105',
-    title: 'Investigasi Peringatan Suhu Inverter Deye Hybrid Site Ubud (>58°C)',
-    category: 'IoT Monitoring',
-    priority: 'URGENT',
-    assignee: 'Agent Volt & Teknisi Lapangan',
-    dueDate: 'Hari ini, 12:00',
-    status: 'pending',
-    project: 'Ubud Yoga Retreat',
-    icon: '🛡️',
-  },
-  {
-    id: 'TSK-106',
-    title: 'Checklist K3 & Pengujian Tahanan Isolasi Megger 1000V Site Tabanan',
-    category: 'Quality Control',
-    priority: 'MEDIUM',
-    assignee: 'Field Supervisor',
-    dueDate: 'Besok, 11:30',
-    status: 'pending',
-    project: 'Agro Tabanan Farm',
-    icon: '🔧',
-  },
-  {
-    id: 'TSK-107',
-    title: 'Rekonsiliasi Faktur Pembayaran Termin 1 (DP 30%) PT Surya Bali',
-    category: 'Finance',
-    priority: 'LOW',
-    assignee: 'Finance Admin',
-    dueDate: '7 Okt 2026',
-    status: 'pending',
-    project: 'PT Surya Bali Logistik',
-    icon: '💵',
-  },
-  {
-    id: 'TSK-108',
-    title: 'Briefing Pelaksanaan Commissioning Test Proyek Sanur 8.19 kWp',
-    category: 'Operations',
-    priority: 'MEDIUM',
-    assignee: 'All Leads',
-    dueDate: '8 Okt 2026',
-    status: 'pending',
-    project: 'Villa Sanur Beachfront',
-    icon: '🎯',
-  },
-];
+import { useState, useEffect } from 'react';
+import { getStoreTasks, toggleStoreTask, deleteStoreTask, subscribeToStore } from '../../../lib/sunblixOsStore';
+import TaskModal from '../components/TaskModal';
 
 export default function MyWorkView({ onBackToDashboard }) {
-  const [tasks, setTasks] = useState(INITIAL_TASKS);
+  const [tasks, setTasks] = useState([]);
   const [activeTab, setActiveTab] = useState('all');
   const [search, setSearch] = useState('');
   const [successToast, setSuccessToast] = useState('');
 
-  const toggleTask = (id) => {
-    setTasks((prev) =>
-      prev.map((t) => {
-        if (t.id === id) {
-          const nextStatus = t.status === 'completed' ? 'pending' : 'completed';
-          if (nextStatus === 'completed') {
-            setSuccessToast(`✅ Tugas ${t.id} berhasil ditandai selesai!`);
-            setTimeout(() => setSuccessToast(''), 3000);
-          }
-          return { ...t, status: nextStatus };
-        }
-        return t;
-      })
-    );
+  // Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingTask, setEditingTask] = useState(null);
+
+  const refresh = () => {
+    setTasks(getStoreTasks());
+  };
+
+  useEffect(() => {
+    refresh();
+    const unsub = subscribeToStore(refresh);
+    return () => unsub();
+  }, []);
+
+  const handleToggle = (id) => {
+    toggleStoreTask(id);
+    const updated = getStoreTasks().find((t) => t.id === id);
+    if (updated?.status === 'completed') {
+      setSuccessToast(`✅ Tugas ${id} berhasil ditandai selesai!`);
+      setTimeout(() => setSuccessToast(''), 3000);
+    }
+  };
+
+  const handleDelete = (id) => {
+    if (confirm(`Hapus tugas ${id}?`)) {
+      deleteStoreTask(id);
+      setSuccessToast(`🗑️ Tugas ${id} telah dihapus.`);
+      setTimeout(() => setSuccessToast(''), 3000);
+    }
   };
 
   const filteredTasks = tasks.filter((t) => {
@@ -130,6 +56,7 @@ export default function MyWorkView({ onBackToDashboard }) {
 
   const pendingCount = tasks.filter((t) => t.status !== 'completed').length;
   const urgentCount = tasks.filter((t) => t.priority === 'URGENT' && t.status !== 'completed').length;
+  const approvalCount = tasks.filter((t) => t.category === 'Approval' && t.status !== 'completed').length;
   const completedCount = tasks.filter((t) => t.status === 'completed').length;
 
   return (
@@ -156,11 +83,11 @@ export default function MyWorkView({ onBackToDashboard }) {
             type="button"
             className="sbx-action-btn primary"
             onClick={() => {
-              setSuccessToast('⚡ Semua tugas pending telah disinkronkan dengan AI Fleet!');
-              setTimeout(() => setSuccessToast(''), 3000);
+              setEditingTask(null);
+              setIsModalOpen(true);
             }}
           >
-            ⚡ Auto-Sync AI Fleet
+            + Tambah Tugas Baru
           </button>
         </div>
       </div>
@@ -175,14 +102,14 @@ export default function MyWorkView({ onBackToDashboard }) {
       <div className="sbx-metrics-row">
         <div className="sbx-metric-card">
           <div className="sbx-metric-header">
-            <span className="sbx-metric-label">Tugas Aktif</span>
+            <span className="sbx-metric-label">Tugas Pending</span>
             <div className="sbx-metric-icon">📥</div>
           </div>
           <div className="sbx-metric-body">
             <span className="sbx-metric-val">{pendingCount}</span>
-            <span className="sbx-status-badge warning">Pending</span>
+            <span className="sbx-status-badge warning">Perlu Tindakan</span>
           </div>
-          <p className="sbx-metric-subtext">Membutuhkan tindakan hari ini</p>
+          <p className="sbx-metric-subtext">Operasional harian &amp; engineering</p>
         </div>
 
         <div className="sbx-metric-card">
@@ -194,35 +121,35 @@ export default function MyWorkView({ onBackToDashboard }) {
             <span className="sbx-metric-val">{urgentCount}</span>
             <span className="sbx-status-badge danger">Urgent</span>
           </div>
-          <p className="sbx-metric-subtext">Persetujuan PO &amp; telemetry warning</p>
+          <p className="sbx-metric-subtext">Perlu approval &amp; inspeksi site</p>
         </div>
 
         <div className="sbx-metric-card">
           <div className="sbx-metric-header">
-            <span className="sbx-metric-label">Tugas Diselesaikan</span>
+            <span className="sbx-metric-label">Menunggu Approval Direksi</span>
+            <div className="sbx-metric-icon">📦</div>
+          </div>
+          <div className="sbx-metric-body">
+            <span className="sbx-metric-val">{approvalCount}</span>
+            <span className="sbx-status-badge purple">PO &amp; SPH</span>
+          </div>
+          <p className="sbx-metric-subtext">Persetujuan pengadaan material</p>
+        </div>
+
+        <div className="sbx-metric-card">
+          <div className="sbx-metric-header">
+            <span className="sbx-metric-label">Tugas Selesai</span>
             <div className="sbx-metric-icon">✅</div>
           </div>
           <div className="sbx-metric-body">
             <span className="sbx-metric-val">{completedCount}</span>
-            <span className="sbx-status-badge success">Selesai</span>
+            <span className="sbx-status-badge success">Verified</span>
           </div>
-          <p className="sbx-metric-subtext">Produktivitas sprint mingguan</p>
-        </div>
-
-        <div className="sbx-metric-card">
-          <div className="sbx-metric-header">
-            <span className="sbx-metric-label">Bantuan AI Agent</span>
-            <div className="sbx-metric-icon">🤖</div>
-          </div>
-          <div className="sbx-metric-body">
-            <span className="sbx-metric-val">4</span>
-            <span className="sbx-status-badge info">Active Fleet</span>
-          </div>
-          <p className="sbx-metric-subtext">Solaria, Volt, Helios &amp; Omni</p>
+          <p className="sbx-metric-subtext">Terselesaikan minggu ini</p>
         </div>
       </div>
 
-      {/* Main Task List Table / Filter Card */}
+      {/* Tasks Content Card */}
       <div className="sbx-card" style={{ marginTop: '16px' }}>
         <div className="sbx-filter-bar">
           <div className="sbx-tab-pills">
@@ -231,28 +158,28 @@ export default function MyWorkView({ onBackToDashboard }) {
               className={`sbx-tab-btn ${activeTab === 'all' ? 'active' : ''}`}
               onClick={() => setActiveTab('all')}
             >
-              Semua Tugas ({tasks.length})
+              Semua ({tasks.length})
             </button>
             <button
               type="button"
               className={`sbx-tab-btn ${activeTab === 'urgent' ? 'active' : ''}`}
               onClick={() => setActiveTab('urgent')}
             >
-              🔥 Mendesak ({urgentCount})
+              🚨 Prioritas Mendesak ({urgentCount})
             </button>
             <button
               type="button"
               className={`sbx-tab-btn ${activeTab === 'approval' ? 'active' : ''}`}
               onClick={() => setActiveTab('approval')}
             >
-              ✍️ Butuh Approval (1)
+              📦 Butuh Approval ({approvalCount})
             </button>
             <button
               type="button"
               className={`sbx-tab-btn ${activeTab === 'completed' ? 'active' : ''}`}
               onClick={() => setActiveTab('completed')}
             >
-              ✔️ Sudah Selesai ({completedCount})
+              ✅ Selesai ({completedCount})
             </button>
           </div>
 
@@ -268,101 +195,129 @@ export default function MyWorkView({ onBackToDashboard }) {
           </div>
         </div>
 
-        {/* Tasks Table */}
-        <div className="sbx-table-wrap">
-          <table className="sbx-table">
-            <thead>
-              <tr>
-                <th style={{ width: '40px' }}>Status</th>
-                <th>Kode &amp; Judul Tugas</th>
-                <th>Kategori</th>
-                <th>Proyek Terkait</th>
-                <th>Penanggung Jawab</th>
-                <th>Tenggat Waktu</th>
-                <th>Prioritas</th>
-                <th style={{ textAlign: 'right' }}>Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredTasks.length === 0 ? (
-                <tr>
-                  <td colSpan="8" style={{ textAlign: 'center', padding: '30px', color: 'var(--sbx-text-muted)' }}>
-                    Tidak ada tugas yang sesuai filter saat ini.
-                  </td>
-                </tr>
-              ) : (
-                filteredTasks.map((t) => {
-                  const isDone = t.status === 'completed';
-                  return (
-                    <tr key={t.id} className={isDone ? 'sbx-row-done' : ''}>
-                      <td>
-                        <input
-                          type="checkbox"
-                          checked={isDone}
-                          onChange={() => toggleTask(t.id)}
-                          style={{ cursor: 'pointer', width: '16px', height: '16px', accentColor: '#10b981' }}
-                          title="Tandai selesai"
-                        />
-                      </td>
-                      <td>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <span style={{ fontSize: '16px' }}>{t.icon}</span>
-                          <div>
-                            <span style={{ fontSize: '11px', color: 'var(--sbx-text-dim)', fontWeight: 700 }}>
-                              {t.id}
-                            </span>
-                            <div
-                              style={{
-                                fontWeight: 700,
-                                color: isDone ? 'var(--sbx-text-dim)' : 'var(--sbx-text)',
-                                textDecoration: isDone ? 'line-through' : 'none',
-                              }}
-                            >
-                              {t.title}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <span className="sbx-tag">{t.category}</span>
-                      </td>
-                      <td>
-                        <span style={{ fontWeight: 600, color: 'var(--sbx-text)' }}>{t.project}</span>
-                      </td>
-                      <td>
-                        <span style={{ fontSize: '12px', color: 'var(--sbx-text-muted)' }}>{t.assignee}</span>
-                      </td>
-                      <td>
-                        <span style={{ fontSize: '12px', fontWeight: 600, color: t.dueDate.includes('Hari ini') ? '#f59e0b' : 'var(--sbx-text)' }}>
-                          {t.dueDate}
-                        </span>
-                      </td>
-                      <td>
-                        <span
-                          className={`sbx-status-badge ${
-                            t.priority === 'URGENT' ? 'danger' : t.priority === 'HIGH' ? 'warning' : 'info'
-                          }`}
-                        >
-                          {t.priority}
-                        </span>
-                      </td>
-                      <td style={{ textAlign: 'right' }}>
-                        <button
-                          type="button"
-                          className="sbx-row-action-btn"
-                          onClick={() => toggleTask(t.id)}
-                        >
-                          {isDone ? 'Undo' : 'Selesai'}
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
+        {/* Task List Items */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '14px' }}>
+          {filteredTasks.map((t) => (
+            <div
+              key={t.id}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '12px 16px',
+                background: t.status === 'completed' ? 'rgba(255, 255, 255, 0.015)' : 'rgba(255, 255, 255, 0.04)',
+                border: '1px solid var(--sbx-glass-border)',
+                borderRadius: '10px',
+                transition: 'all 0.15s ease',
+                opacity: t.status === 'completed' ? 0.6 : 1,
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flex: 1 }}>
+                <button
+                  type="button"
+                  onClick={() => handleToggle(t.id)}
+                  style={{
+                    width: '24px',
+                    height: '24px',
+                    borderRadius: '6px',
+                    border: t.status === 'completed' ? '2px solid #10b981' : '2px solid var(--sbx-glass-border)',
+                    background: t.status === 'completed' ? '#10b981' : 'transparent',
+                    color: '#fff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    fontSize: '12px',
+                    flexShrink: 0,
+                  }}
+                  title={t.status === 'completed' ? 'Tandai Belum Selesai' : 'Tandai Selesai'}
+                >
+                  {t.status === 'completed' ? '✓' : ''}
+                </button>
+
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                    <span style={{ fontSize: '13px' }}>{t.icon || '📌'}</span>
+                    <span
+                      style={{
+                        fontWeight: 700,
+                        fontSize: '13.5px',
+                        color: 'var(--sbx-text)',
+                        textDecoration: t.status === 'completed' ? 'line-through' : 'none',
+                      }}
+                    >
+                      {t.title}
+                    </span>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '11.5px', color: 'var(--sbx-text-muted)' }}>
+                    <span>ID: {t.id}</span>
+                    <span>•</span>
+                    <span style={{ color: 'var(--sbx-accent)' }}>🏗️ {t.project}</span>
+                    <span>•</span>
+                    <span>👤 {t.assignee}</span>
+                    <span>•</span>
+                    <span>📅 {t.dueDate}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span
+                  className={`sbx-status-badge ${
+                    t.priority === 'URGENT'
+                      ? 'danger'
+                      : t.priority === 'HIGH'
+                      ? 'warning'
+                      : t.priority === 'LOW'
+                      ? 'info'
+                      : 'purple'
+                  }`}
+                >
+                  {t.priority}
+                </span>
+
+                <button
+                  type="button"
+                  className="sbx-row-action-btn"
+                  onClick={() => {
+                    setEditingTask(t);
+                    setIsModalOpen(true);
+                  }}
+                >
+                  ✏️
+                </button>
+                <button
+                  type="button"
+                  className="sbx-row-action-btn"
+                  style={{ color: '#f43f5e' }}
+                  onClick={() => handleDelete(t.id)}
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+          ))}
+
+          {filteredTasks.length === 0 && (
+            <div style={{ textAlign: 'center', padding: '40px', color: 'var(--sbx-text-muted)' }}>
+              Tidak ada tugas di kategori ini. Kerja bagus! ✨
+            </div>
+          )}
         </div>
       </div>
+
+      {/* Modal Add / Edit Task */}
+      {isModalOpen && (
+        <TaskModal
+          task={editingTask}
+          onClose={() => setIsModalOpen(false)}
+          onSave={() => {
+            setSuccessToast('✅ Tugas berhasil disimpan!');
+            setTimeout(() => setSuccessToast(''), 3000);
+          }}
+        />
+      )}
     </div>
   );
 }

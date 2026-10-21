@@ -26,22 +26,44 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
     setErrorMsg('');
 
     try {
-      const res = await fetch('/api/quote', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          systemRecommendation: initialData?.sysName || 'SUNBLIX Residential',
-          timestamp: new Date().toISOString(),
-        }),
-      });
+      const quoteCode = 'SBX-Q' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
 
-      const json = await res.json();
-      if (!res.ok) {
-        throw new Error(json.message || 'Gagal mengirim formulir.');
+      // Encapsulate complete lead payload
+      const encapsulatedLead = {
+        quoteCode,
+        name: formData.name.trim(),
+        whatsapp: formData.whatsapp.trim(),
+        email: formData.email.trim(),
+        city: formData.city.trim(),
+        monthlyBill: formData.monthlyBill.trim() || 'Rp 2.500.000',
+        plnPower: formData.plnPower,
+        propertyType: formData.propertyType || initialData?.property || 'Rumah Tinggal',
+        notes: formData.notes.trim() || '',
+        systemRecommendation: initialData?.sysName || 'SUNBLIX 4.68 Hybrid',
+        kwp: initialData?.kwp || initialData?.powerKwp || '4.68',
+        estInvestment: initialData?.estInvestment || initialData?.investment || 88600000,
+        estSavings: initialData?.estSavings || initialData?.monthlySavings || 1850000,
+        isConfirmed: false,
+        timestamp: new Date().toISOString(),
+        source: 'Web Get Quote (Encapsulated)',
+      };
+
+      // Store encapsulated payload in localStorage for SURTI
+      try {
+        localStorage.setItem('sunblix_pending_quote_surti', JSON.stringify(encapsulatedLead));
+      } catch (err) {
+        console.warn('Storage error:', err);
       }
 
-      setSubmittedData(json);
+      // Background post to API
+      fetch('/api/quote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(encapsulatedLead),
+      }).catch((err) => console.warn('API quote submit warning:', err));
+
+      if (onClose) onClose();
+      window.location.href = `/surti?from=quote&code=${encodeURIComponent(quoteCode)}`;
     } catch (err) {
       setErrorMsg(err.message || 'Terjadi gangguan koneksi. Silakan hubungi kami via WhatsApp.');
     } finally {
@@ -892,22 +914,23 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
                       color: '#1e293b',
                     }}
                   >
-                    Kota / Kabupaten *
+                    Tagihan Listrik PLN / Bulan *
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="Contoh: Jakarta Selatan"
-                    value={formData.city}
-                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                    placeholder="Contoh: Rp 2.500.000"
+                    value={formData.monthlyBill}
+                    onChange={(e) => setFormData({ ...formData, monthlyBill: e.target.value })}
                     style={{
                       width: '100%',
                       padding: '12px 14px',
                       borderRadius: '10px',
                       background: '#f8fafc',
-                      border: '1.5px solid #cbd5e1',
-                      color: '#0f172a',
+                      border: '1.5px solid #0284c7',
+                      color: '#0284c7',
                       fontSize: '14px',
+                      fontWeight: 700,
                       outline: 'none',
                       boxSizing: 'border-box',
                     }}
@@ -951,6 +974,38 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
 
               <div>
                 <label
+                  style={{
+                    display: 'block',
+                    fontSize: '12.5px',
+                    fontWeight: 700,
+                    marginBottom: '6px',
+                    color: '#1e293b',
+                  }}
+                >
+                  Kota / Kabupaten Lokasi Properti *
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Contoh: Denpasar / Badung / Jakarta Selatan"
+                  value={formData.city}
+                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                  style={{
+                    width: '100%',
+                    padding: '12px 14px',
+                    borderRadius: '10px',
+                    background: '#f8fafc',
+                    border: '1.5px solid #cbd5e1',
+                    color: '#0f172a',
+                    fontSize: '14px',
+                    outline: 'none',
+                    boxSizing: 'border-box',
+                  }}
+                />
+              </div>
+
+              <div>
+                <label
                   style={{ display: 'block', fontSize: '12.5px', fontWeight: 700, marginBottom: '6px', color: '#1e293b' }}
                 >
                   Catatan Kebutuhan / Tipe Atap (Opsional)
@@ -987,7 +1042,7 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
                     : 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
                   color: '#fff',
                   border: 'none',
-                  fontSize: '14px',
+                  fontSize: '15px',
                   fontWeight: 800,
                   letterSpacing: '0.3px',
                   cursor: loading ? 'not-allowed' : 'pointer',
@@ -999,7 +1054,7 @@ export default function QuoteModal({ isOpen, onClose, initialData = null }) {
                   transition: 'transform 0.2s ease, box-shadow 0.2s ease',
                 }}
               >
-                {loading ? 'Sedang Memproses...' : 'Kirim Permintaan Penawaran Resmi →'}
+                {loading ? 'Sedang Memproses...' : 'Kirim & Konsultasikan'}
               </button>
 
               <div

@@ -2,70 +2,10 @@
 
 import { useState } from 'react';
 
-const QC_INSPECTIONS = [
-  {
-    id: 'QC-2601',
-    site: 'Villa Sanur Luxury Seaside (14.04 kWp)',
-    testType: 'Uji Tahanan Isolasi (Megger 1000V DC)',
-    parameter: 'R_iso > 100 MΩ (Standar IEC 62446)',
-    actualResult: '450 MΩ (Aman Terisolasi)',
-    status: 'Lulus Uji',
-    statusColor: 'success',
-    tester: 'Agus Priyono, ST',
-    date: '4 Okt 2026',
-    notes: 'Kabel DC terlindungi pipa conduit PVC high-impact tanpa kebocoran arus.',
-  },
-  {
-    id: 'QC-2602',
-    site: 'Agro Tabanan Greenhouse (35.10 kWp)',
-    testType: 'Pengukuran Tahanan Grounding / Pembumian',
-    parameter: 'R_earth < 2.0 Ω (Standar PUIL 2011)',
-    actualResult: '0.85 Ω (Sangat Baik)',
-    status: 'Lulus Uji',
-    statusColor: 'success',
-    tester: 'Tim QA Elektrikal',
-    date: '3 Okt 2026',
-    notes: 'Menggunakan 3 titik copper rod 5/8" paralel dengan pengikatan cadweld.',
-  },
-  {
-    id: 'QC-2603',
-    site: 'Ubud Heritage Retreat (25.74 kWp)',
-    testType: 'Uji String Voc & Isc Tegangan Buka',
-    parameter: 'Toleransi selisih string < 3%',
-    actualResult: 'String 1: 498V | String 2: 496V (0.4% diff)',
-    status: 'Lulus Uji',
-    statusColor: 'success',
-    tester: 'Agent Solaria & Agus',
-    date: '2 Okt 2026',
-    notes: 'Kurva I-V cocok 99.6% dengan kalkulasi radiasi matahari saat jam 11:30.',
-  },
-  {
-    id: 'QC-2604',
-    site: 'PT Bali Logistik Benoa (49.14 kWp)',
-    testType: 'Pengecekan Torsi Pengencangan Clamp (Torque Wrench)',
-    parameter: 'Torsi Baut Hex M8: 9 - 11 N.m',
-    actualResult: '84/84 Clamp Terverifikasi 10.5 N.m',
-    status: 'Lulus Uji',
-    statusColor: 'success',
-    tester: 'Lead Erector Budi',
-    date: '1 Okt 2026',
-    notes: 'Semua mid/end clamp dilengkapi washer anti-slip dan lock nut stainless 304.',
-  },
-  {
-    id: 'QC-2605',
-    site: 'Canggu Eco Resort (18.72 kWp)',
-    testType: 'Uji Proteksi Anti-Islanding & Auto Cut-off',
-    parameter: 'Pemutusan arus < 0.2 detik saat jaringan padam',
-    actualResult: '0.08 detik (Sesuai Standar Proteksi)',
-    status: 'Lulus Uji',
-    statusColor: 'success',
-    tester: 'Agent Volt & Engineer',
-    date: '30 Sep 2026',
-    notes: 'Inverter seketika masuk mode backup tanpa terjadi back-feed ke jaringan.',
-  },
-];
+const QC_INSPECTIONS = [];
 
 export default function QualityView({ onBackToDashboard }) {
+
   const [inspections, setInspections] = useState(QC_INSPECTIONS);
   const [toast, setToast] = useState('');
 
@@ -227,6 +167,19 @@ export default function QualityView({ onBackToDashboard }) {
                   </td>
                 </tr>
               ))}
+              {inspections.length === 0 && (
+                <tr>
+                  <td colSpan={8} style={{ textAlign: 'center', padding: '48px 20px', color: 'var(--sbx-text-muted)' }}>
+                    <div style={{ fontSize: '32px', marginBottom: '8px' }}>🛡️</div>
+                    <div style={{ fontWeight: 700, color: 'var(--sbx-text)', marginBottom: '4px' }}>
+                      Belum Ada Log Pengujian Kualitas (QC) Tercatat
+                    </div>
+                    <div style={{ fontSize: '12px' }}>
+                      Pengujian Megger, tahanan grounding PUIL, dan komisioning inverter akan tercatat di sini saat instalasi selesai.
+                    </div>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

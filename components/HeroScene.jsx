@@ -1,6 +1,6 @@
 'use client';
 
-export default function HeroScene({ onOpenQuote }) {
+export default function HeroScene({ onOpenQuote, onOpenCatalogue }) {
   return (
     <section className="hero-section section-reveal is-revealed" id="home">
       {/* HERO COPY */}
@@ -34,9 +34,16 @@ export default function HeroScene({ onOpenQuote }) {
             >
               Get a Quote <span style={{ marginLeft: '6px' }}>→</span>
             </button>
-            <a href="/brosur" className="hero-button yellow catalogue">
+            <button
+              type="button"
+              className="hero-button yellow catalogue"
+              id="heroBtnCatalogue"
+              onClick={onOpenCatalogue}
+              style={{ cursor: 'pointer', border: 'none', display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}
+              aria-label="Download Katalog Resmi SUNBLIX 2026"
+            >
               Catalogue
-            </a>
+            </button>
           </div>
 
         </div>

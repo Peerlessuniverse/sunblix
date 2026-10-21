@@ -70,6 +70,15 @@ export default function CinematicEngine({ staticCamera = false }) {
           link.classList.remove('is-active');
         }
       });
+
+      const aboutTrigger = document.getElementById('aboutDropdownTrigger');
+      if (aboutTrigger) {
+        if (['about', 'how-it-works', 'why-sunblix'].includes(currentId)) {
+          aboutTrigger.classList.add('is-active');
+        } else {
+          aboutTrigger.classList.remove('is-active');
+        }
+      }
     }
 
     // 3. SCROLL PROGRESS & NAVBAR SCROLLED STATE

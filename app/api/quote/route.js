@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { recordLead } from '../../../lib/surti/crmService.js';
 
 export async function POST(request) {
   try {
@@ -17,24 +18,26 @@ export async function POST(request) {
     const randomSuffix = Math.floor(1000 + Math.random() * 9000);
     const quoteId = `SBX-Q${new Date().getFullYear()}-${randomSuffix}`;
 
-    /*
-      ==================================================================
-      INTEGRASI EMAIL / SMTP (HOSTINGER / RESEND):
-      ------------------------------------------------------------------
-      Jika Anda sudah memiliki akun Hostinger:
-      const transporter = nodemailer.createTransport({
-        host: 'smtp.hostinger.com',
-        port: 465,
-        secure: true,
-        auth: {
-          user: process.env.SMTP_USER, // e.g. penawaran@sunblix.com
-          pass: process.env.SMTP_PASS,
-        }
-      });
-      ==================================================================
-    */
+    // Extract numeric monthly bill
+    const billNum = parseInt(String(monthlyBill).replace(/[^0-9]/g, ''), 10) || 2500000;
 
-    console.log(`[SUNBLIX QUOTE INQUIRY] ID: ${quoteId}`, {
+    // Automatically record into SURTI CRM database
+    recordLead({
+      customerId: quoteId,
+      name,
+      phone: whatsapp,
+      email,
+      customerType: propertyType === 'Pabrik / Gudang' ? 'industrial' : propertyType === 'Ruko / Bisnis' ? 'commercial' : 'residential',
+      companyName: '',
+      city: city || 'Indonesia',
+      monthlyBill: billNum,
+      propertyType: propertyType || 'house',
+      systemType: 'hybrid',
+      source: 'Kalkulator Web (Penawaran Resmi)',
+      notes: `Daya PLN: ${plnPower || '-'}. Rekomendasi: ${systemRecommendation || '-'}. Catatan: ${notes || '-'}`,
+    });
+
+    console.log(`[SUNBLIX QUOTE INQUIRY RECORDED] ID: ${quoteId}`, {
       name,
       whatsapp,
       email,

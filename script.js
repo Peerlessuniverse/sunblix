@@ -333,6 +333,15 @@
         link.classList.remove('is-active');
       }
     });
+
+    const aboutTrigger = document.getElementById('aboutDropdownTrigger');
+    if (aboutTrigger) {
+      if (['about', 'how-it-works', 'why-sunblix'].includes(currentId)) {
+        aboutTrigger.classList.add('is-active');
+      } else {
+        aboutTrigger.classList.remove('is-active');
+      }
+    }
   }
 
   window.addEventListener('scroll', render, { passive: true });
@@ -914,329 +923,244 @@
   }
 
   function openStaticQuoteModal() {
-    let existingModal = document.getElementById('staticQuoteModal');
-    if (existingModal) existingModal.remove();
-
     const billVal = calcBill ? calcBill.value : 'Rp 2.500.000';
+    let modal = document.getElementById('staticQuoteModal');
 
-    const modalBackdrop = document.createElement('div');
-    modalBackdrop.id = 'staticQuoteModal';
-    modalBackdrop.className = 'quote-modal-backdrop';
-    modalBackdrop.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(15,23,42,0.65);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto;';
+    // If modal already exists in DOM (index.html), populate and display it
+    if (modal) {
+      const estSysName = document.getElementById('sqEstSysName');
+      const estSpecs = document.getElementById('sqEstSpecs');
+      const estPrice = document.getElementById('sqEstPrice');
+      const estRoi = document.getElementById('sqEstRoi');
+      const billInput = document.getElementById('sqBill');
 
-    modalBackdrop.innerHTML = `
-      <div class="quote-modal-card" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:24px;max-width:560px;width:100%;padding:32px 28px;color:#0f172a;box-shadow:0 25px 60px rgba(0,0,0,0.18),0 4px 16px rgba(8,123,232,0.08);position:relative;max-height:92vh;overflow-y:auto;font-family:inherit;">
-        <button type="button" id="closeStaticModalBtn" aria-label="Tutup" style="position:absolute;top:20px;right:20px;background:#f1f5f9;border:1px solid #e2e8f0;color:#475569;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all 0.2s ease;">✕</button>
-        <div id="staticModalBody">
-          <div style="margin-bottom:18px;">
-            <span style="font-size:11px;font-weight:800;letter-spacing:2px;color:#0284c7;text-transform:uppercase;">PT SUNBLIX ENERGI INDONESIA</span>
-            <h3 style="margin:6px 0 8px;font-size:22px;font-weight:800;color:#031f45;letter-spacing:-0.3px;">Permintaan Penawaran Resmi (PDF)</h3>
-            <p style="margin:0;font-size:13.5px;color:#64748b;line-height:1.5;">Dapatkan estimasi teknis, analisis ROI, dan proposal resmi Siap Pakai langsung ke email dan WhatsApp Anda.</p>
+      if (estSysName) estSysName.textContent = currentSolarSystem.sysName || 'SUNBLIX 4.68 Hybrid';
+      if (estSpecs) estSpecs.textContent = `${currentSolarSystem.kwp} kWp • ${currentSolarSystem.panels} Panel Astronergy 585Wp • ${currentSolarSystem.battery}`;
+      if (estPrice) estPrice.textContent = `Est. ${formatRupiah(currentSolarSystem.estInvestment)}`;
+      if (estRoi) estRoi.textContent = `ROI: ~${currentSolarSystem.paybackYears} Thn`;
+      if (billInput && (!billInput.value || billInput.value === 'Rp 2.500.000')) {
+        billInput.value = billVal;
+      }
+
+      modal.style.display = 'flex';
+      modal.setAttribute('aria-hidden', 'false');
+
+      const closeBtn = document.getElementById('closeStaticModalBtn');
+      if (closeBtn) {
+        closeBtn.onclick = () => {
+          modal.style.display = 'none';
+          modal.setAttribute('aria-hidden', 'true');
+        };
+      }
+      modal.onclick = (e) => {
+        if (e.target === modal) {
+          modal.style.display = 'none';
+          modal.setAttribute('aria-hidden', 'true');
+        }
+      };
+    } else {
+      // Dynamic fallback if modal is not in DOM
+      modal = document.createElement('div');
+      modal.id = 'staticQuoteModal';
+      modal.className = 'quote-modal-backdrop';
+      modal.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(15,23,42,0.65);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto;';
+
+      modal.innerHTML = `
+        <div class="quote-modal-card" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:24px;max-width:560px;width:100%;padding:32px 28px;color:#0f172a;box-shadow:0 25px 60px rgba(0,0,0,0.18),0 4px 16px rgba(8,123,232,0.08);position:relative;max-height:92vh;overflow-y:auto;font-family:inherit;">
+          <button type="button" id="closeStaticModalBtn" aria-label="Tutup" style="position:absolute;top:20px;right:20px;background:#f1f5f9;border:1px solid #e2e8f0;color:#475569;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all 0.2s ease;">✕</button>
+          <div id="staticModalBody">
+            <div style="margin-bottom:18px;">
+              <span style="font-size:11px;font-weight:800;letter-spacing:2px;color:#0284c7;text-transform:uppercase;">PT SUNBLIX ENERGI INDONESIA</span>
+              <h3 style="margin:6px 0 8px;font-size:22px;font-weight:800;color:#031f45;letter-spacing:-0.3px;">Permintaan Penawaran Resmi (PDF)</h3>
+              <p style="margin:0;font-size:13.5px;color:#64748b;line-height:1.5;">Dapatkan estimasi teknis, analisis ROI, dan proposal resmi Siap Pakai langsung ke email dan WhatsApp Anda.</p>
+            </div>
+
+            <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:12px;color:#0369a1;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+              <div>
+                <strong style="color:#0284c7;font-size:13px;display:block;">${currentSolarSystem.sysName}</strong>
+                <span style="font-size:11.5px;color:#475569;">${currentSolarSystem.kwp} kWp • ${currentSolarSystem.panels} Panel Astronergy 585Wp • ${currentSolarSystem.battery}</span>
+              </div>
+              <div style="text-align:right;">
+                <strong style="color:#0f172a;display:block;font-size:12.5px;">Est. ${formatRupiah(currentSolarSystem.estInvestment)}</strong>
+                <span style="font-size:11px;color:#16a34a;font-weight:700;">ROI: ~${currentSolarSystem.paybackYears} Thn</span>
+              </div>
+            </div>
+
+            <form id="staticQuoteForm" style="display:grid;gap:14px;">
+              <div>
+                <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#1e293b;">Nama Lengkap *</label>
+                <input type="text" id="sqName" required placeholder="Contoh: Bpk. Haris Setiawan" style="width:100%;padding:12px 14px;border-radius:10px;background:#f8fafc;border:1.5px solid #cbd5e1;color:#0f172a;font-size:14px;outline:none;box-sizing:border-box;" />
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div>
+                  <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#1e293b;">Nomor WhatsApp *</label>
+                  <input type="tel" id="sqWa" required placeholder="081234567890" style="width:100%;padding:12px 14px;border-radius:10px;background:#f8fafc;border:1.5px solid #cbd5e1;color:#0f172a;font-size:14px;outline:none;box-sizing:border-box;" />
+                </div>
+                <div>
+                  <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#1e293b;">Alamat Email *</label>
+                  <input type="email" id="sqEmail" required placeholder="email@anda.com" style="width:100%;padding:12px 14px;border-radius:10px;background:#f8fafc;border:1.5px solid #cbd5e1;color:#0f172a;font-size:14px;outline:none;box-sizing:border-box;" />
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div>
+                  <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#1e293b;">Tagihan Listrik PLN / Bulan *</label>
+                  <input type="text" id="sqBill" required placeholder="Contoh: Rp 2.500.000" value="${billVal}" style="width:100%;padding:12px 14px;border-radius:10px;background:#f8fafc;border:1.5px solid #0284c7;color:#0284c7;font-size:14px;font-weight:700;outline:none;box-sizing:border-box;" />
+                </div>
+                <div>
+                  <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#1e293b;">Daya Listrik PLN</label>
+                  <select id="sqPower" style="width:100%;padding:12px 14px;border-radius:10px;background:#f8fafc;border:1.5px solid #cbd5e1;color:#0f172a;font-size:14px;outline:none;box-sizing:border-box;">
+                    <option value="1.300 VA">1.300 VA</option>
+                    <option value="2.200 VA" selected>2.200 VA</option>
+                    <option value="3.500 - 5.500 VA">3.500 – 5.500 VA</option>
+                    <option value="6.600 - 11.000 VA">6.600 – 11.000 VA</option>
+                    <option value="> 11.000 VA (3-Phase)">Di atas 11.000 VA (3 Phase)</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#1e293b;">Kota / Kabupaten Lokasi Properti *</label>
+                <input type="text" id="sqCity" required placeholder="Contoh: Denpasar / Badung / Jakarta Selatan" style="width:100%;padding:12px 14px;border-radius:10px;background:#f8fafc;border:1.5px solid #cbd5e1;color:#0f172a;font-size:14px;outline:none;box-sizing:border-box;" />
+              </div>
+              <div>
+                <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#1e293b;">Catatan Kebutuhan / Tipe Atap (Opsional)</label>
+                <textarea id="sqNotes" rows="2" placeholder="Misal: Atap genteng keramik, butuh sistem hybrid cadangan 24 jam..." style="width:100%;padding:10px 14px;border-radius:10px;background:#f8fafc;border:1.5px solid #cbd5e1;color:#0f172a;font-size:13px;outline:none;resize:none;box-sizing:border-box;"></textarea>
+              </div>
+              <button type="submit" id="sqSubmitBtn" style="margin-top:8px;padding:15px 20px;border-radius:14px;background:linear-gradient(135deg, #0284c7 0%, #0369a1 100%);color:#fff;border:none;font-size:15px;font-weight:800;letter-spacing:0.3px;cursor:pointer;box-shadow:0 8px 22px rgba(2, 132, 199, 0.35);display:flex;align-items:center;justify-content:center;gap:10px;transition:all 0.2s ease;">
+                Kirim &amp; Konsultasikan
+              </button>
+              <div style="font-size:11.5px;color:#64748b;text-align:center;margin-top:4px;">
+                🛡️ Privasi data Anda terjamin. Tim engineer SUNBLIX akan menghubungi dalam 1x24 jam.
+              </div>
+            </form>
           </div>
-
-          <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:12px;color:#0369a1;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-            <div>
-              <strong style="color:#0284c7;font-size:13px;display:block;">${currentSolarSystem.sysName}</strong>
-              <span style="font-size:11.5px;color:#475569;">${currentSolarSystem.kwp} kWp • ${currentSolarSystem.panels} Panel Astronergy 585Wp • ${currentSolarSystem.battery}</span>
-            </div>
-            <div style="text-align:right;">
-              <strong style="color:#0f172a;display:block;font-size:12.5px;">Est. ${formatRupiah(currentSolarSystem.estInvestment)}</strong>
-              <span style="font-size:11px;color:#16a34a;font-weight:700;">ROI: ~${currentSolarSystem.paybackYears} Thn</span>
-            </div>
-          </div>
-
-          <form id="staticQuoteForm" style="display:grid;gap:14px;">
-            <div>
-              <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#1e293b;">Nama Lengkap *</label>
-              <input type="text" id="sqName" required placeholder="Contoh: Bpk. Haris Setiawan" style="width:100%;padding:12px 14px;border-radius:10px;background:#f8fafc;border:1.5px solid #cbd5e1;color:#0f172a;font-size:14px;outline:none;box-sizing:border-box;" />
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-              <div>
-                <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#1e293b;">Nomor WhatsApp *</label>
-                <input type="tel" id="sqWa" required placeholder="081234567890" style="width:100%;padding:12px 14px;border-radius:10px;background:#f8fafc;border:1.5px solid #cbd5e1;color:#0f172a;font-size:14px;outline:none;box-sizing:border-box;" />
-              </div>
-              <div>
-                <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#1e293b;">Alamat Email *</label>
-                <input type="email" id="sqEmail" required placeholder="email@anda.com" style="width:100%;padding:12px 14px;border-radius:10px;background:#f8fafc;border:1.5px solid #cbd5e1;color:#0f172a;font-size:14px;outline:none;box-sizing:border-box;" />
-              </div>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-              <div>
-                <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#1e293b;">Kota / Kabupaten *</label>
-                <input type="text" id="sqCity" required placeholder="Contoh: Jakarta Selatan" style="width:100%;padding:12px 14px;border-radius:10px;background:#f8fafc;border:1.5px solid #cbd5e1;color:#0f172a;font-size:14px;outline:none;box-sizing:border-box;" />
-              </div>
-              <div>
-                <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#1e293b;">Daya Listrik PLN</label>
-                <select id="sqPower" style="width:100%;padding:12px 14px;border-radius:10px;background:#f8fafc;border:1.5px solid #cbd5e1;color:#0f172a;font-size:14px;outline:none;box-sizing:border-box;">
-                  <option value="1.300 VA">1.300 VA</option>
-                  <option value="2.200 VA" selected>2.200 VA</option>
-                  <option value="3.500 - 5.500 VA">3.500 – 5.500 VA</option>
-                  <option value="6.600 - 11.000 VA">6.600 – 11.000 VA</option>
-                  <option value="> 11.000 VA (3-Phase)">Di atas 11.000 VA (3 Phase)</option>
-                </select>
-              </div>
-            </div>
-            <div>
-              <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#1e293b;">Catatan Kebutuhan / Tipe Atap (Opsional)</label>
-              <textarea id="sqNotes" rows="2" placeholder="Misal: Atap genteng bitumen, butuh backup inverter 24 jam..." style="width:100%;padding:10px 14px;border-radius:10px;background:#f8fafc;border:1.5px solid #cbd5e1;color:#0f172a;font-size:13px;outline:none;resize:none;box-sizing:border-box;"></textarea>
-            </div>
-            <button type="submit" style="margin-top:10px;padding:14px 20px;border-radius:12px;background:linear-gradient(135deg, #0284c7 0%, #0369a1 100%);color:#fff;border:none;font-size:14px;font-weight:800;letter-spacing:0.3px;cursor:pointer;box-shadow:0 8px 20px rgba(2, 132, 199, 0.3);display:flex;align-items:center;justify-content:center;gap:8px;transition:transform 0.2s ease;">
-              Kirim Permintaan Penawaran Resmi →
-            </button>
-            <div style="font-size:11.5px;color:#64748b;text-align:center;margin-top:6px;">
-              🛡️ Privasi data Anda terjamin. Tim engineer SUNBLIX akan menghubungi dalam 1x24 jam.
-            </div>
-          </form>
         </div>
-      </div>
-    `;
+      `;
 
-    document.body.appendChild(modalBackdrop);
+      document.body.appendChild(modal);
 
-    const closeBtn = document.getElementById('closeStaticModalBtn');
-    if (closeBtn) closeBtn.onclick = () => modalBackdrop.remove();
-    modalBackdrop.onclick = (e) => {
-      if (e.target === modalBackdrop) modalBackdrop.remove();
-    };
+      const closeBtn = document.getElementById('closeStaticModalBtn');
+      if (closeBtn) closeBtn.onclick = () => modal.remove();
+      modal.onclick = (e) => {
+        if (e.target === modal) modal.remove();
+      };
+    }
 
     const sqForm = document.getElementById('staticQuoteForm');
     if (sqForm) {
       sqForm.onsubmit = (e) => {
         e.preventDefault();
-        const nameVal = document.getElementById('sqName').value;
-        const waVal = document.getElementById('sqWa').value;
-        const emailVal = document.getElementById('sqEmail').value;
-        const cityVal = document.getElementById('sqCity').value;
+        const nameVal = document.getElementById('sqName').value.trim();
+        const waVal = document.getElementById('sqWa').value.trim();
+        const emailVal = document.getElementById('sqEmail').value.trim();
+        const cityVal = document.getElementById('sqCity').value.trim();
+        const customBillVal = document.getElementById('sqBill') ? document.getElementById('sqBill').value.trim() : billVal;
         const powerVal = document.getElementById('sqPower').value;
-        const notesVal = document.getElementById('sqNotes').value;
+        const notesVal = document.getElementById('sqNotes').value.trim();
         const quoteCode = 'SBX-Q' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
 
+        // 1. Prepare standardized lead object
+        const leadPayload = {
+          quoteCode,
+          name: nameVal,
+          whatsapp: waVal,
+          email: emailVal,
+          city: cityVal,
+          monthlyBill: customBillVal || billVal,
+          plnPower: powerVal,
+          notes: notesVal,
+          systemRecommendation: currentSolarSystem.sysName || 'SUNBLIX 4.68 Hybrid',
+          kwp: currentSolarSystem.kwp || '4.68',
+          panels: currentSolarSystem.panels || 8,
+          battery: currentSolarSystem.battery || 'LiFePO4 5.12 kWh',
+          estInvestment: currentSolarSystem.estInvestment || 88600000,
+          estSavings: currentSolarSystem.estSavings || 1850000,
+          paybackYears: currentSolarSystem.paybackYears || 4.2,
+          source: 'Web Get Quote (SURTI AI Handover)',
+          timestamp: new Date().toISOString()
+        };
+
+        // 2. Persist in localStorage for SURTI Chat room to immediately load & greet
+        try {
+          localStorage.setItem('sunblix_pending_quote_surti', JSON.stringify(leadPayload));
+          
+          // Also sync to Central Sunblix OS Store (sunblix_os_store_v2)
+          const rawStore = localStorage.getItem('sunblix_os_store_v2');
+          if (rawStore) {
+            const parsedStore = JSON.parse(rawStore);
+            const newCrmLead = {
+              id: quoteCode,
+              name: nameVal,
+              company: 'Residensial / Komersial',
+              location: cityVal,
+              phone: waVal,
+              plnTariff: powerVal,
+              targetKwp: `${leadPayload.kwp} kWp (${leadPayload.systemRecommendation})`,
+              estValue: 'Rp ' + Number(leadPayload.estInvestment).toLocaleString('id-ID'),
+              estValueNum: Number(leadPayload.estInvestment),
+              stage: 'Kualifikasi',
+              leadSource: 'Web Get Quote (SURTI AI)',
+              assigned: 'SURTI AI',
+              date: 'Hari ini, ' + new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+              notes: `Tagihan: ${leadPayload.monthlyBill}. Daya PLN: ${powerVal}. Catatan: ${notesVal || 'Permintaan penawaran via web.'}`
+            };
+            parsedStore.leads = [newCrmLead, ...(parsedStore.leads || [])];
+            parsedStore.notifications = [{
+              id: 'NTF-' + Date.now(),
+              title: 'Prospek Baru dari Web Menghubungi SURTI AI',
+              desc: `${nameVal} (${cityVal}) - Tagihan ${leadPayload.monthlyBill}. Sesi kualifikasi survei aktif.`,
+              category: 'crm',
+              targetNav: 'crm',
+              icon: '🤖',
+              time: 'Baru saja',
+              isRead: false
+            }, ...(parsedStore.notifications || [])];
+            localStorage.setItem('sunblix_os_store_v2', JSON.stringify(parsedStore));
+          }
+        } catch (storageErr) {
+          console.warn('Storage sync warning:', storageErr);
+        }
+
+        // 3. Post to API in background
+        fetch('/api/quote', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: nameVal,
+            whatsapp: waVal,
+            email: emailVal,
+            city: cityVal,
+            monthlyBill: leadPayload.monthlyBill,
+            plnPower: powerVal,
+            propertyType: 'Residensial / Komersial',
+            systemRecommendation: leadPayload.systemRecommendation,
+            notes: notesVal
+          })
+        }).catch(err => console.warn('[Quote Submit API Error]:', err));
+
+        // 4. Show transition UI then redirect directly to SURTI
         const modalBody = document.getElementById('staticModalBody');
         if (modalBody) {
           modalBody.innerHTML = `
-            <div style="text-align:center;padding:16px 8px;">
-              <div style="width:64px;height:64px;border-radius:50%;background:#ecfdf5;border:2px solid #10b981;color:#10b981;display:inline-flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:16px;">✓</div>
-              <h3 style="font-size:22px;font-weight:800;margin:0 0 10px;color:#031f45;">Permintaan Penawaran Berhasil!</h3>
-              <p style="font-size:14px;color:#475569;line-height:1.6;margin:0 0 20px;">
-                Terima kasih Bpk/Ibu <strong>${nameVal}</strong>. Tim spesialis teknis SUNBLIX sedang menyusun rincian proposal teknis untuk lokasi <strong>${cityVal}</strong>.
+            <div style="text-align:center;padding:28px 16px;">
+              <div style="width:68px;height:68px;border-radius:50%;background:#e0f2fe;border:2px solid #0284c7;color:#0284c7;display:inline-flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:16px;animation:pulse 1.5s infinite;">🤖</div>
+              <h3 style="font-size:22px;font-weight:800;margin:0 0 10px;color:#031f45;">Menghubungkan ke SURTI AI...</h3>
+              <p style="font-size:14px;color:#475569;line-height:1.6;margin:0 0 16px;">
+                Terima kasih Bpk/Ibu <strong>${nameVal}</strong>. Data tagihan listrik <strong>${leadPayload.monthlyBill}</strong> untuk lokasi <strong>${cityVal}</strong> sedang diteruskan ke ruang konsultasi interaktif SURTI AI.
               </p>
-              <div style="background:#f0f9ff;border:1.5px dashed #38bdf8;border-radius:14px;padding:14px;margin-bottom:24px;">
-                <span style="font-size:11px;color:#0369a1;display:block;margin-bottom:4px;font-weight:700;">NOMOR REFERENSI PENAWARAN:</span>
-                <strong style="font-size:19px;color:#0284c7;letter-spacing:1px;">${quoteCode}</strong>
+              <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:12px;font-size:13px;color:#0369a1;font-weight:600;margin-bottom:20px;">
+                Mengalihkan Anda ke ruang chat dalam hitungan detik...
               </div>
-              <div style="display:grid;gap:10px;">
-                <button type="button" id="printQuoteBtn" style="padding:14px;border-radius:12px;background:linear-gradient(135deg, #0284c7 0%, #0369a1 100%);color:#fff;border:none;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 20px rgba(2, 132, 199, 0.25);">
-                  📥 Unduh / Simpan Penawaran Resmi (PDF)
-                </button>
-                <a href="/brosur?customer=${encodeURIComponent(nameVal || '')}&project=${encodeURIComponent(currentSolarSystem.sysName || '')}&docNo=${encodeURIComponent(quoteCode)}" target="_blank" rel="noopener noreferrer" style="padding:12px;border-radius:12px;background:#f8fafc;border:1.5px solid #0284c7;color:#0284c7;font-size:13px;font-weight:700;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;">
-                  ✨ Buka di Generator Brosur Lengkap (3 Halaman) ↗
-                </a>
-                <button type="button" id="waDirectBtn" style="padding:14px;border-radius:12px;background:#25D366;color:#fff;border:none;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 20px rgba(37, 211, 102, 0.25);">
-                  💬 Lanjut Hubungi via WhatsApp (Respon Cepat)
-                </button>
-                <button type="button" id="closeDoneBtn" style="padding:12px;border-radius:12px;background:#f1f5f9;color:#475569;border:1px solid #cbd5e1;font-size:13px;font-weight:600;cursor:pointer;">
-                  Tutup Jendela
-                </button>
-              </div>
+              <a href="/surti?from=quote&code=${encodeURIComponent(quoteCode)}" style="display:inline-block;padding:12px 24px;border-radius:10px;background:#0284c7;color:#fff;text-decoration:none;font-weight:700;font-size:14px;">
+                Klik Disini Jika Tidak Dialihkan Otomatis ➔
+              </a>
             </div>
           `;
-
-          document.getElementById('closeDoneBtn').onclick = () => modalBackdrop.remove();
-
-          document.getElementById('waDirectBtn').onclick = () => {
-            const waText = `Halo Tim Ahli SUNBLIX, saya telah mengisi formulir penawaran resmi di website dengan No. Ref: *${quoteCode}*.\n\n*Nama:* ${nameVal}\n*Lokasi:* ${cityVal}\n*Daya PLN:* ${powerVal}\n*Tagihan Listrik:* ${billVal}\n*Paket Terpilih:* ${currentSolarSystem.sysName} (${currentSolarSystem.kwp} kWp, ${currentSolarSystem.panels} Panel Astronergy 585Wp, ${currentSolarSystem.battery})\n*Estimasi Nilai Paket:* ${formatRupiah(currentSolarSystem.estInvestment)}\n*Estimasi Hemat:* ${formatRupiah(currentSolarSystem.estSavings)}/bln (~${currentSolarSystem.savingsPct}%)\n*Estimasi Balik Modal:* ~${currentSolarSystem.paybackYears} Tahun\n\nMohon info ketersediaan jadwal survei lokasi dan estimasi proposal resminya.`;
-            window.open('https://wa.me/6285288581027?text=' + encodeURIComponent(waText), '_blank');
-          };
-
-          document.getElementById('printQuoteBtn').onclick = () => {
-            const pWin = window.open('', '_blank');
-            if (!pWin) return;
-            const dateStr = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-            pWin.document.write(`<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="utf-8">
-  <title>Penawaran Resmi SUNBLIX - ${quoteCode}</title>
-  <style>
-    @page { size: A4; margin: 15mm; }
-    * { box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #0f172a; margin: 0; padding: 24px; font-size: 13px; line-height: 1.5; }
-    .sunblix-kop-surat { width: 100%; margin-bottom: 8px; background: #ffffff; }
-    .kop-main-row { display: flex; justify-content: space-between; align-items: center; padding-bottom: 2px; }
-    .kop-logo-col { display: flex; align-items: center; }
-    .kop-logo-img { height: 52px; width: auto; max-width: 250px; object-fit: contain; display: block; }
-    .kop-contact-col { border-left: 1.5px solid #0066cc; padding-left: 14px; display: flex; flex-direction: column; gap: 3px; align-items: flex-start; text-align: left; }
-    .kop-company-title { font-size: 13.5px; font-weight: 850; color: #0066cc; letter-spacing: 0.3px; line-height: 1.2; }
-    .kop-address-row { display: flex; align-items: center; gap: 5px; font-size: 10px; color: #334155; font-weight: 500; line-height: 1.3; }
-    .kop-pin-icon { flex-shrink: 0; stroke: #0066cc; }
-    .kop-contacts-row { display: flex; align-items: center; gap: 6px; font-size: 9.5px; color: #334155; font-weight: 500; flex-wrap: nowrap; }
-    .kop-contact-item { display: inline-flex; align-items: center; gap: 3px; white-space: nowrap; }
-    .kop-contact-item svg { stroke: #0066cc; flex-shrink: 0; }
-    .kop-sep { color: #94a3b8; font-size: 9px; }
-    .kop-tricolor-bar { display: flex; width: 100%; height: 2.5px; margin-top: 5px; margin-bottom: 12px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .kop-tricolor-bar .bar-blue { flex: 70; background: #0066cc; height: 100%; }
-    .kop-tricolor-bar .bar-gold { flex: 20; background: #f59e0b; height: 100%; }
-    .kop-tricolor-bar .bar-green { flex: 10; background: #10b981; height: 100%; }
-    .doc-header-row { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 16px; }
-    .doc-title { font-size: 16px; font-weight: 850; color: #041c3e; margin: 0; text-transform: uppercase; letter-spacing: 0.5px; }
-    .doc-sub { font-size: 11px; color: #64748b; margin-top: 2px; }
-    .doc-meta { text-align: right; }
-    .ref-badge { display: inline-block; background: #f0f9ff; border: 1px solid #bae6fd; color: #0284c7; padding: 3px 8px; border-radius: 5px; font-family: monospace; font-size: 12px; font-weight: 700; }
-    .date { font-size: 11px; color: #64748b; margin-top: 4px; }
-    .section-title { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #041c3e; border-left: 4px solid #087be8; padding-left: 8px; margin: 18px 0 10px; }
-    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; }
-    .info-item { font-size: 12px; }
-    .info-label { color: #64748b; display: block; font-size: 11px; text-transform: uppercase; font-weight: 600; }
-    .info-val { font-weight: 700; color: #0f172a; font-size: 13px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 8px; }
-    th { background: #041c3e; color: #ffffff; font-size: 11px; text-transform: uppercase; padding: 8px 12px; text-align: left; }
-    td { padding: 10px 12px; border-bottom: 1px solid #e2e8f0; font-size: 12px; }
-    tr:nth-child(even) td { background: #f8fafc; }
-    .highlight-box { margin-top: 16px; background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%); border: 1px solid #86efac; border-radius: 8px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; }
-    .highlight-label { font-size: 12px; font-weight: 700; color: #166534; text-transform: uppercase; }
-    .highlight-val { font-size: 20px; font-weight: 900; color: #15803d; }
-    .highlight-sub { font-size: 11px; color: #0369a1; font-weight: 600; }
-    .guarantees { margin-top: 16px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-    .guarantee-card { border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px; text-align: center; background: #fafafa; }
-    .guarantee-val { font-size: 14px; font-weight: 800; color: #087be8; display: block; }
-    .guarantee-desc { font-size: 10.5px; color: #64748b; margin-top: 2px; }
-    .footer { margin-top: 24px; padding-top: 14px; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: flex-end; font-size: 11px; color: #64748b; }
-    .signature { text-align: right; display: flex; flex-direction: column; align-items: flex-end; min-width: 200px; }
-    .signature-lead { font-size: 11px; color: #64748b; font-weight: 600; margin-bottom: 2px; }
-    .signature-space { height: 52px; width: 100%; margin: 3px 0; }
-    .signature-name { font-weight: 800; color: #041c3e; text-decoration: underline; font-size: 12.5px; }
-    .signature-title { font-size: 10.5px; color: #64748b; margin-top: 2px; }
-    .print-bar { margin-bottom: 20px; padding: 12px; background: #041c3e; color: white; display: flex; justify-content: space-between; align-items: center; border-radius: 8px; }
-    .btn-print { background: #16dbe0; color: #041c3e; font-weight: 800; padding: 8px 18px; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; }
-    @media print { .print-bar { display: none !important; } body { padding: 0; } }
-  </style>
-</head>
-<body>
-  <div class="print-bar">
-    <span>📄 <strong>Dokumen Estimasi Penawaran Resmi SUNBLIX</strong> siap dicetak / disimpan sebagai PDF.</span>
-    <button class="btn-print" onclick="window.print()">Simpan / Cetak PDF</button>
-  </div>
-  <div class="sunblix-kop-surat">
-    <div class="kop-main-row">
-      <div class="kop-logo-col">
-        <img src="/asset/logo.png" alt="SUNBLIX - Power Your World" class="kop-logo-img">
-      </div>
-      <div class="kop-contact-col">
-        <div class="kop-company-title">PT SUNBLIX ENERGI INDONESIA</div>
-        <div class="kop-address-row">
-          <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="#0066cc" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="kop-pin-icon">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-            <circle cx="12" cy="10" r="3"></circle>
-          </svg>
-          <span>Bintaro Business Centre, Jl. RC. Veteran No. 1-I, Bintaro, Jakarta Selatan 12330</span>
-        </div>
-        <div class="kop-contacts-row">
-          <span class="kop-contact-item">
-            <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="#0066cc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="2" y1="12" x2="22" y2="12"></line>
-              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-            </svg>
-            <span>sunblix.id</span>
-          </span>
-          <span class="kop-sep">|</span>
-          <span class="kop-contact-item">
-            <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="#0066cc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-            </svg>
-            <span>021 7362 639</span>
-          </span>
-          <span class="kop-sep">|</span>
-          <span class="kop-contact-item">
-            <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="#0066cc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
-            </svg>
-            <span>085288581027</span>
-          </span>
-          <span class="kop-sep">|</span>
-          <span class="kop-contact-item">
-            <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="#0066cc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-              <polyline points="22,6 12,13 2,6"></polyline>
-            </svg>
-            <span>hello@sunblix.id</span>
-          </span>
-        </div>
-      </div>
-    </div>
-    <div class="kop-tricolor-bar">
-      <div class="bar-blue"></div>
-      <div class="bar-gold"></div>
-      <div class="bar-green"></div>
-    </div>
-  </div>
-  <div class="doc-header-row">
-    <div>
-      <div class="doc-title">ESTIMASI PENAWARAN RESMI</div>
-      <div class="doc-sub">Smart Rooftop &amp; Solar Engineering Solutions</div>
-    </div>
-    <div class="doc-meta">
-      <div class="ref-badge">${quoteCode}</div>
-      <div class="date">Tanggal: ${dateStr}</div>
-    </div>
-  </div>
-  <div class="section-title">1. Data Pemohon &amp; Lokasi Instalasi</div>
-  <div class="info-grid">
-    <div class="info-item"><span class="info-label">Nama Pemohon</span><span class="info-val">${nameVal}</span></div>
-    <div class="info-item"><span class="info-label">Kota / Lokasi</span><span class="info-val">${cityVal}</span></div>
-    <div class="info-item"><span class="info-label">WhatsApp</span><span class="info-val">${waVal}</span></div>
-    <div class="info-item"><span class="info-label">Email</span><span class="info-val">${emailVal}</span></div>
-    <div class="info-item"><span class="info-label">Daya PLN</span><span class="info-val">${powerVal}</span></div>
-    <div class="info-item"><span class="info-label">Estimasi Tagihan</span><span class="info-val">${billVal}</span></div>
-  </div>
-  <div class="section-title">2. Rekomendasi Konfigurasi Sistem PLTS Siap Pakai</div>
-  <table>
-    <thead><tr><th>Komponen</th><th>Spesifikasi</th><th>Keterangan</th></tr></thead>
-    <tbody>
-      <tr><td><strong>Paket Solusi</strong></td><td><strong>${currentSolarSystem.sysName}</strong></td><td>Paket Siap Pakai SPH 002 (Mode HPP A)</td></tr>
-      <tr><td><strong>Konfigurasi Sistem</strong></td><td><strong>${currentSolarSystem.systemType}</strong></td><td>${currentSolarSystem.systemTypeId === 'hybrid' ? 'Smart BESS (Cadangan Daya Otomatis 24 Jam)' : 'Grid-Tie Self-Consumption (Efisiensi Siang Hari)'}</td></tr>
-      <tr><td><strong>Daya Terpasang</strong></td><td><strong>${currentSolarSystem.kwp} kWp</strong></td><td>Estimasi produksi ~${currentSolarSystem.monthlyKwh.toLocaleString('id-ID')} kWh/bulan</td></tr>
-      <tr><td><strong>Modul Surya</strong></td><td>${currentSolarSystem.panels} Unit Modul</td><td>Astronergy N-Type TOPCon Bifacial 585 Wp</td></tr>
-      <tr><td><strong>Inverter</strong></td><td>${currentSolarSystem.inverter} (${currentSolarSystem.inverterDesc})</td><td>Efisiensi 98.6% + Dual/Multi MPPT + Proteksi Petir</td></tr>
-      <tr><td><strong>Baterai BESS</strong></td><td>${currentSolarSystem.battery}</td><td>${currentSolarSystem.systemTypeId === 'hybrid' ? 'BESS LiFePO4 Deye High Cycle Life' : 'Sistem On-Grid tanpa baterai penyimpanan'}</td></tr>
-      <tr><td><strong>Luas Atap Diperlukan</strong></td><td>~${currentSolarSystem.area}</td><td>Struktur mounting aluminium SNI anti-korosi</td></tr>
-      <tr><td><strong>Monitoring IoT</strong></td><td>SUNBLIX IoT Cloud Live Mobile App</td><td>Pantau performa real-time 24/7</td></tr>
-    </tbody>
-  </table>
-  <div class="highlight-box">
-    <div>
-      <div class="highlight-label">Potensi Penghematan Listrik</div>
-      <div class="highlight-val">${formatRupiah(currentSolarSystem.estSavings)} / Bulan</div>
-      <div class="highlight-sub">Hemat ~${currentSolarSystem.savingsPct}% tagihan PLN</div>
-    </div>
-    <div style="text-align:right;">
-      <div class="highlight-label" style="color:#0369a1;">Estimasi Nilai Paket (SPH)</div>
-      <div class="highlight-val" style="color:#0284c7;font-size:18px;">${formatRupiah(currentSolarSystem.estInvestment)}</div>
-      <div class="highlight-sub">Balik Modal (BEP): ~${currentSolarSystem.paybackYears} Tahun</div>
-    </div>
-  </div>
-  <div class="section-title">3. Jaminan &amp; Layanan Purna Jual</div>
-  <div class="guarantees">
-    <div class="guarantee-card"><span class="guarantee-val">Resmi Pabrik</span><span class="guarantee-desc">Garansi Modul Surya 25-30 Tahun Sesuai Manufaktur</span></div>
-    <div class="guarantee-card"><span class="guarantee-val">5 - 10 Tahun</span><span class="guarantee-desc">Garansi Resmi Inverter &amp; BESS Komponen</span></div>
-    <div class="guarantee-card"><span class="guarantee-val">Full Support</span><span class="guarantee-desc">Dukungan Teknis &amp; Monitoring Sistem 24/7</span></div>
-  </div>
-  ${notesVal ? `<div class="section-title" style="margin-top:14px;">4. Catatan Khusus</div><div style="font-size:12px;background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:8px 12px;color:#92400e;">${notesVal}</div>` : ''}
-  <div class="footer">
-    <div><em>* Dokumen ini merupakan estimasi awal berbasis kalkulator surya resmi SUNBLIX.<br>Proposal final SPH dan gambar teknik CAD diterbitkan setelah survei lokasi.</em></div>
-    <div class="signature">
-      <div class="signature-lead">Tertanda Pemohon,</div>
-      <div class="signature-space"></div>
-      <div class="signature-name">${nameVal || 'Pemohon'}</div>
-      <div class="signature-title">${cityVal ? `Lokasi: ${cityVal}` : 'Calon Pelanggan'}</div>
-    </div>
-  </div>
-  <script>window.onload = function() { setTimeout(function() { window.print(); }, 500); };</script>
-</body>
-</html>`);
-            pWin.document.close();
-          };
         }
+
+        // Direct redirect to SURTI chat
+        setTimeout(() => {
+          window.location.href = '/surti?from=quote&code=' + encodeURIComponent(quoteCode);
+        }, 900);
       };
     }
   }
@@ -1294,7 +1218,8 @@
   if (drawerCloseBtn) drawerCloseBtn.addEventListener('click', closeMobileDrawer);
   if (mobileDrawerBackdrop) mobileDrawerBackdrop.addEventListener('click', closeMobileDrawer);
 
-  document.querySelectorAll('.drawer-link, #drawerBtnQuote, #drawerLogoLink').forEach(link => {
+  // Drawer links click
+  document.querySelectorAll('.drawer-link:not(.drawer-dropdown-trigger), #drawerBtnQuote, #drawerLogoLink').forEach(link => {
     link.addEventListener('click', e => {
       const targetId = link.getAttribute('href');
       closeMobileDrawer();
@@ -1311,6 +1236,55 @@
       }
     });
   });
+
+  // Mobile Drawer About Us Submenu Accordion
+  const drawerAboutTrigger = document.getElementById('drawerAboutTrigger');
+  const drawerAboutSublinks = document.getElementById('drawerAboutSublinks');
+  const drawerAboutChevron = document.getElementById('drawerAboutChevron');
+
+  if (drawerAboutTrigger && drawerAboutSublinks) {
+    drawerAboutTrigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const isHidden = drawerAboutSublinks.style.display === 'none';
+      drawerAboutSublinks.style.display = isHidden ? 'flex' : 'none';
+      drawerAboutTrigger.classList.toggle('is-expanded', isHidden);
+      if (drawerAboutChevron) {
+        drawerAboutChevron.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+      }
+      drawerAboutTrigger.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+    });
+  }
+
+  // Handle drawer sublinks click
+  document.querySelectorAll('.drawer-sublink').forEach(link => {
+    link.addEventListener('click', e => {
+      const targetId = link.getAttribute('href');
+      closeMobileDrawer();
+      if (!targetId || targetId === '#') return;
+      if (milestones[targetId] !== undefined) {
+        e.preventDefault();
+        const maxScroll = Math.max(1, story.offsetHeight - window.innerHeight);
+        const targetScrollY = milestones[targetId] * maxScroll;
+        window.scrollTo({
+          top: targetScrollY,
+          behavior: 'smooth'
+        });
+      }
+    });
+  });
+
+  // Desktop Dropdown Close on Outside Click
+  const navAboutDropdown = document.getElementById('navAboutDropdown');
+  const aboutDropdownTrigger = document.getElementById('aboutDropdownTrigger');
+  if (navAboutDropdown && aboutDropdownTrigger) {
+    document.addEventListener('click', (e) => {
+      if (!navAboutDropdown.contains(e.target)) {
+        navAboutDropdown.classList.remove('is-open');
+        aboutDropdownTrigger.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
 
   // Mobile Tabs: Babak 5 (Why Sunblix: Team vs Reasons)
   const howCardWrapper = document.querySelector('.how-card-wrapper');
@@ -1361,6 +1335,183 @@
           subscribeToast.classList.remove('is-visible');
         }, 5000);
       }
+    });
+  }
+
+  // ==========================================================================
+  // CATALOGUE DOWNLOAD POPUP MODAL (SUNBLIX OFFICIAL 2026)
+  // ==========================================================================
+  const catalogueModal = document.getElementById('catalogueModal');
+  const closeCatModalBtn = document.getElementById('closeCatalogueModalBtn');
+  const catDownloadForm = document.getElementById('catalogueDownloadForm');
+  const catFormView = document.getElementById('catalogueFormView');
+  const catSuccessView = document.getElementById('catalogueSuccessView');
+  const catSuccessCloseBtn = document.getElementById('catSuccessCloseBtn');
+  const catSubmitBtn = document.getElementById('catSubmitBtn');
+  const catSubmitText = document.getElementById('catSubmitText');
+  const catSuccessGreeting = document.getElementById('catSuccessGreeting');
+  const catSuccessWaBtn = document.getElementById('catSuccessWaBtn');
+
+  function openCatalogueModal() {
+    if (!catalogueModal) return;
+    catalogueModal.style.display = 'flex';
+    // Force reflow
+    void catalogueModal.offsetWidth;
+    catalogueModal.classList.add('is-open');
+    catalogueModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+
+    // Reset view if previously submitted
+    if (catFormView) catFormView.style.display = 'block';
+    if (catSuccessView) catSuccessView.style.display = 'none';
+    if (catSubmitBtn) catSubmitBtn.disabled = false;
+    if (catSubmitText) catSubmitText.textContent = 'Download Katalog PDF (15 Hal)';
+
+    const firstInput = document.getElementById('catName');
+    if (firstInput) {
+      setTimeout(() => firstInput.focus(), 150);
+    }
+  }
+
+  function closeCatalogueModal() {
+    if (!catalogueModal) return;
+    catalogueModal.classList.remove('is-open');
+    catalogueModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    setTimeout(() => {
+      catalogueModal.style.display = 'none';
+    }, 280);
+  }
+
+  // Bind catalogue triggers
+  const heroBtnCatalogue = document.getElementById('heroBtnCatalogue');
+  if (heroBtnCatalogue) {
+    heroBtnCatalogue.addEventListener('click', (e) => {
+      e.preventDefault();
+      openCatalogueModal();
+    });
+  }
+
+  document.querySelectorAll('[data-open-catalogue="true"]').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      openCatalogueModal();
+    });
+  });
+
+  if (closeCatModalBtn) closeCatModalBtn.addEventListener('click', closeCatalogueModal);
+  if (catSuccessCloseBtn) catSuccessCloseBtn.addEventListener('click', closeCatalogueModal);
+
+  if (catalogueModal) {
+    catalogueModal.addEventListener('click', (e) => {
+      if (e.target === catalogueModal) {
+        closeCatalogueModal();
+      }
+    });
+  }
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && catalogueModal && catalogueModal.classList.contains('is-open')) {
+      closeCatalogueModal();
+    }
+  });
+
+  // Handle Form Submission
+  if (catDownloadForm) {
+    catDownloadForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = (document.getElementById('catName')?.value || '').trim();
+      const email = (document.getElementById('catEmail')?.value || '').trim();
+      const phone = (document.getElementById('catWa')?.value || '').trim();
+      const sendWa = document.getElementById('catSendWa')?.checked;
+
+      if (!name || !email || !phone) return;
+
+      if (catSubmitBtn) catSubmitBtn.disabled = true;
+      if (catSubmitText) catSubmitText.textContent = '⚡ Menyiapkan Unduhan PDF...';
+
+      // 1. Trigger Direct Download of Catalogue PDF
+      const pdfPath = 'asset/SUNBLIX_KATALOG_2026.pdf';
+      const downloadLink = document.createElement('a');
+      downloadLink.href = pdfPath;
+      downloadLink.download = 'SUNBLIX_KATALOG_2026_Solar_Specialist.pdf';
+      downloadLink.target = '_blank';
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      setTimeout(() => downloadLink.remove(), 200);
+
+      // 2. Sync lead to Sunblix OS Store CRM
+      try {
+        const STORAGE_KEY = 'sunblix_os_store_v3';
+        const rawStore = localStorage.getItem(STORAGE_KEY);
+        let store = rawStore ? JSON.parse(rawStore) : { leads: [], projects: [], invoices: [], tasks: [], notifications: [] };
+        if (!Array.isArray(store.leads)) store.leads = [];
+        if (!Array.isArray(store.notifications)) store.notifications = [];
+
+        const leadId = `LD-CAT-${Date.now().toString().slice(-4)}`;
+        const newLead = {
+          id: leadId,
+          name: name,
+          company: 'Unduh Katalog Resmi (15 Hal)',
+          location: 'Website Hero Form',
+          phone: phone,
+          plnTariff: 'Residential / Commercial',
+          targetKwp: 'Katalog Edisi 2026 (Standard+, PRO, PRO MAX)',
+          estValue: 'Rp 63.500.000 - Rp 310.600.000',
+          estValueNum: 88600000,
+          stage: 'Kualifikasi',
+          stageColor: 'cyan',
+          date: 'Hari ini, ' + new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+          notes: `Prospek mendownload katalog resmi SUNBLIX 2026 dari tombol Hero. Email: ${email}, WA: ${phone}. Opsi kirim WA: ${sendWa ? 'Ya' : 'Tidak'}.`,
+        };
+        store.leads.unshift(newLead);
+
+        // Add Notification in Sunblix OS
+        store.notifications.unshift({
+          id: `NTF-${Date.now()}`,
+          time: 'Baru saja',
+          isRead: false,
+          category: 'crm',
+          title: `📥 Unduhan Katalog Baru: ${name}`,
+          desc: `${name} (${phone}) mengunduh katalog PDF resmi 2026. Prospek telah masuk ke CRM.`,
+          targetNav: 'crm',
+        });
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+      } catch (err) {
+        console.warn('Could not store lead in localStorage:', err);
+      }
+
+      // 3. Send lead to backend API asynchronously
+      fetch('/api/surti/crm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'create_lead',
+          name,
+          email,
+          phone,
+          customerType: 'residential',
+          city: 'Indonesia',
+          source: 'Hero Catalogue Download',
+          notes: `Mengunduh katalog resmi 15 hal. Send WA: ${sendWa ? 'true' : 'false'}.`,
+        }),
+      }).catch((err) => console.log('API Lead sync background:', err));
+
+      // 4. Update Success View
+      if (catSuccessGreeting) {
+        catSuccessGreeting.innerHTML = `Terima kasih, <strong>${name}</strong>!<br>File PDF resmi <strong>SUNBLIX_KATALOG_2026.pdf</strong> telah terunduh ke perangkat Anda.`;
+      }
+      if (catSuccessWaBtn) {
+        const waText = encodeURIComponent(`Halo SUNBLIX, saya ${name} baru saja mendownload katalog resmi 2026 dan ingin berkonsultasi mengenai solusi PLTS.`);
+        catSuccessWaBtn.href = `https://wa.me/6285288581027?text=${waText}`;
+      }
+
+      // Transition to Success Screen
+      setTimeout(() => {
+        if (catFormView) catFormView.style.display = 'none';
+        if (catSuccessView) catSuccessView.style.display = 'block';
+      }, 500);
     });
   }
 })();

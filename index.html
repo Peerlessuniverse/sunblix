@@ -57,10 +57,43 @@
       </a>
       <nav class="nav-menu">
         <a href="#solutions">Solutions</a>
-        <a href="#about">About Us</a>
+
+        <!-- ABOUT US DROPDOWN -->
+        <div class="nav-dropdown" id="navAboutDropdown">
+          <a href="#about" class="nav-dropdown-trigger" id="aboutDropdownTrigger" aria-expanded="false" aria-haspopup="true">
+            About Us
+            <svg class="dropdown-chevron" width="10" height="10" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <div class="nav-dropdown-menu" id="aboutDropdownMenu" role="menu" aria-label="About Us Submenu">
+            <a href="#how-it-works" class="nav-dropdown-item" role="menuitem">
+              <div class="dropdown-item-icon">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="4"/>
+                  <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+                </svg>
+              </div>
+              <div class="dropdown-item-text">
+                <span class="dropdown-item-title">How It Works</span>
+                <span class="dropdown-item-desc">Cara kerja & aliran daya PLTS terintegrasi</span>
+              </div>
+            </a>
+            <a href="#why-sunblix" class="nav-dropdown-item" role="menuitem">
+              <div class="dropdown-item-icon">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+              </div>
+              <div class="dropdown-item-text">
+                <span class="dropdown-item-title">Why SUNBLIX</span>
+                <span class="dropdown-item-desc">Keunggulan spesialis, garansi & standar tier-1</span>
+              </div>
+            </a>
+          </div>
+        </div>
+
         <a href="#products">Products</a>
-        <a href="#how-it-works">How It Works</a>
-        <a href="#why-sunblix">Why SUNBLIX</a>
         <a href="#projects">Projects</a>
         <a href="/career">Career</a>
         <a href="/partnership">Partnership</a>
@@ -94,20 +127,33 @@
         <span class="link-label">Solusi Energi PLTS</span>
         <span class="link-arrow">→</span>
       </a>
-      <a href="#about" class="drawer-link">
-        <span class="link-label">🏢 About Us</span>
-        <span class="link-arrow">→</span>
-      </a>
+      <!-- ABOUT US ACCORDION -->
+      <div class="drawer-group" id="drawerAboutGroup">
+        <button type="button" class="drawer-link drawer-dropdown-trigger" id="drawerAboutTrigger" aria-expanded="false">
+          <span class="link-label">🏢 About Us</span>
+          <span class="drawer-chevron-icon" id="drawerAboutChevron">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </button>
+        <div class="drawer-sublinks" id="drawerAboutSublinks" style="display: none;">
+          <a href="#about" class="drawer-sublink">
+            <span class="sublink-dot">•</span>
+            <span>Tentang SUNBLIX</span>
+          </a>
+          <a href="#how-it-works" class="drawer-sublink">
+            <span class="sublink-dot">•</span>
+            <span>How It Works (Aliran Daya)</span>
+          </a>
+          <a href="#why-sunblix" class="drawer-sublink">
+            <span class="sublink-dot">•</span>
+            <span>Why SUNBLIX (Keunggulan)</span>
+          </a>
+        </div>
+      </div>
       <a href="#products" class="drawer-link">
         <span class="link-label">Pilihan Paket Residential</span>
-        <span class="link-arrow">→</span>
-      </a>
-      <a href="#how-it-works" class="drawer-link">
-        <span class="link-label">Cara Kerja Aliran Daya</span>
-        <span class="link-arrow">→</span>
-      </a>
-      <a href="#why-sunblix" class="drawer-link">
-        <span class="link-label">Keunggulan & Tim Teknisi</span>
         <span class="link-arrow">→</span>
       </a>
       <a href="#projects" class="drawer-link">
@@ -173,13 +219,14 @@
                 <div class="hero-eyebrow">
                   <span>Clean Energy.<br>Brighter Tomorrow.</span>
                 </div>
-                <h1 class="hero-title">POWER<br><span class="title-light">YOUR WORLD<span class="dot"></span></span></h1>
+                <h1 class="hero-title">POWER<br><span class="title-light">YOUR WORLD<span class="dot"></span></span>
+                </h1>
                 <div class="hero-subtitle">Solar Energy Specialist</div>
                 <p class="hero-description">We design, build and power the future.</p>
                 <div class="hero-buttons">
                   <a href="#solutions" class="hero-button primary">Explore SUNBLIX</a>
                   <a href="#quote" class="hero-button secondary">Get a Quote <span style="margin-left:6px">→</span></a>
-                  <a href="/brosur" class="hero-button yellow catalogue">Catalogue</a>
+                  <a href="javascript:void(0)" class="hero-button yellow catalogue" id="heroBtnCatalogue" data-open-catalogue="true" aria-label="Buka Katalog Resmi SUNBLIX">Catalogue</a>
                 </div>
               </div>
             </div>
@@ -218,23 +265,14 @@
                   </linearGradient>
                 </defs>
                 <!-- Atmospheric Electric Glow Arc -->
-                <path
-                  class="lightning-path-glow"
-                  id="lightningPathGlow"
-                  d="M 765 145 C 620 130 380 160 220 210 C 90 250 50 330 65 430 C 80 520 180 570 360 540 C 480 515 620 470 735 500"
-                />
+                <path class="lightning-path-glow" id="lightningPathGlow"
+                  d="M 765 145 C 620 130 380 160 220 210 C 90 250 50 330 65 430 C 80 520 180 570 360 540 C 480 515 620 470 735 500" />
                 <!-- High Voltage Core Lightning Bolt -->
-                <path
-                  class="lightning-path-core"
-                  id="lightningPathCore"
-                  d="M 765 145 C 620 130 380 160 220 210 C 90 250 50 330 65 430 C 80 520 180 570 360 540 C 480 515 620 470 735 500"
-                />
+                <path class="lightning-path-core" id="lightningPathCore"
+                  d="M 765 145 C 620 130 380 160 220 210 C 90 250 50 330 65 430 C 80 520 180 570 360 540 C 480 515 620 470 735 500" />
                 <!-- Crackling High Frequency Spark Trail -->
-                <path
-                  class="lightning-path-crackle"
-                  id="lightningPathCrackle"
-                  d="M 765 145 C 620 130 380 160 220 210 C 90 250 50 330 65 430 C 80 520 180 570 360 540 C 480 515 620 470 735 500"
-                />
+                <path class="lightning-path-crackle" id="lightningPathCrackle"
+                  d="M 765 145 C 620 130 380 160 220 210 C 90 250 50 330 65 430 C 80 520 180 570 360 540 C 480 515 620 470 735 500" />
               </svg>
 
               <!-- Traveling Plasma Spark Head -->
@@ -244,67 +282,67 @@
               </div>
             </div>
 
-        <div class="purpose-inner-grid">
-          <div class="purpose-content" id="purposeContent">
-            <div class="purpose-eyebrow">OUR PURPOSE</div>
-            <h2 class="purpose-title">
-              <span>ENERGY</span>
-              <span>SHOULD WORK</span>
-              <span>FOR YOU</span>
-            </h2>
-            <p class="purpose-description">
-              Kami percaya energi bersih dapat menciptakan masa depan yang lebih baik untuk keluarga, bisnis, dan
-              Indonesia.
-            </p>
+            <div class="purpose-inner-grid">
+              <div class="purpose-content" id="purposeContent">
+                <div class="purpose-eyebrow">OUR PURPOSE</div>
+                <h2 class="purpose-title">
+                  <span>ENERGY</span>
+                  <span>SHOULD WORK</span>
+                  <span>FOR YOU</span>
+                </h2>
+                <p class="purpose-description">
+                  Kami percaya energi bersih dapat menciptakan masa depan yang lebih baik untuk keluarga, bisnis, dan
+                  Indonesia.
+                </p>
 
-            <div class="purpose-features" aria-label="SUNBLIX benefits">
-              <div class="purpose-feature">
-                <svg viewBox="0 0 48 48" aria-hidden="true">
-                  <path d="M38 9C22 10 11 17 10 31c0 5 2 8 2 8s7-1 12-5c7-6 9-14 8-21-1-2-1-3 6-4Z" />
-                  <path d="M10 39c5-9 12-14 21-18" />
-                </svg>
-                <strong>CLEANER<br>ENVIRONMENT</strong>
+                <div class="purpose-features" aria-label="SUNBLIX benefits">
+                  <div class="purpose-feature">
+                    <svg viewBox="0 0 48 48" aria-hidden="true">
+                      <path d="M38 9C22 10 11 17 10 31c0 5 2 8 2 8s7-1 12-5c7-6 9-14 8-21-1-2-1-3 6-4Z" />
+                      <path d="M10 39c5-9 12-14 21-18" />
+                    </svg>
+                    <strong>CLEANER<br>ENVIRONMENT</strong>
+                  </div>
+                  <div class="purpose-feature">
+                    <svg viewBox="0 0 48 48" aria-hidden="true">
+                      <path d="M9 37V27h8v10H9Z" />
+                      <path d="M20 37V19h8v18h-8Z" />
+                      <path d="M31 37V10h8v27h-8Z" />
+                    </svg>
+                    <strong>LOWER<br>ENERGY COST</strong>
+                  </div>
+                  <div class="purpose-feature">
+                    <svg viewBox="0 0 48 48" aria-hidden="true">
+                      <circle cx="24" cy="16" r="6" />
+                      <path d="M13 35c0-6 5-10 11-10s11 4 11 10" />
+                      <path d="M8 35c0-4 3-7 7-7" />
+                      <path d="M40 35c0-4-3-7-7-7" />
+                    </svg>
+                    <strong>BRIGHTER<br>TOMORROW</strong>
+                  </div>
+                </div>
               </div>
-              <div class="purpose-feature">
-                <svg viewBox="0 0 48 48" aria-hidden="true">
-                  <path d="M9 37V27h8v10H9Z" />
-                  <path d="M20 37V19h8v18h-8Z" />
-                  <path d="M31 37V10h8v27h-8Z" />
-                </svg>
-                <strong>LOWER<br>ENERGY COST</strong>
-              </div>
-              <div class="purpose-feature">
-                <svg viewBox="0 0 48 48" aria-hidden="true">
-                  <circle cx="24" cy="16" r="6" />
-                  <path d="M13 35c0-6 5-10 11-10s11 4 11 10" />
-                  <path d="M8 35c0-4 3-7 7-7" />
-                  <path d="M40 35c0-4-3-7-7-7" />
-                </svg>
-                <strong>BRIGHTER<br>TOMORROW</strong>
-              </div>
-            </div>
-          </div>
 
-          <!-- Watch Our Story Video Card -->
-          <div class="story-card" id="storyCard">
-            <div class="story-thumb" id="storyThumb">
-              <img class="story-thumb-img" src="asset/SUNBLIX_thumbnail.png?v=2" alt="Thumbnail Video SUNBLIX"
-                loading="lazy">
-              <div class="story-live-badge">
-                <span class="live-dot"></span>
-                <span>VIDEO SUNBLIX</span>
+              <!-- Watch Our Story Video Card -->
+              <div class="story-card" id="storyCard">
+                <div class="story-thumb" id="storyThumb">
+                  <img class="story-thumb-img" src="asset/SUNBLIX_thumbnail.png?v=2" alt="Thumbnail Video SUNBLIX"
+                    loading="lazy">
+                  <div class="story-live-badge">
+                    <span class="live-dot"></span>
+                    <span>VIDEO SUNBLIX</span>
+                  </div>
+                  <div class="story-play" aria-hidden="true"></div>
+                </div>
+                <div class="story-meta-bar">
+                  <a class="story-link" href="#" id="storyLink">
+                    <span class="story-link-icon">▶</span>
+                    <span>Tonton Video (2:53)</span>
+                  </a>
+                </div>
               </div>
-              <div class="story-play" aria-hidden="true"></div>
             </div>
-            <div class="story-meta-bar">
-              <a class="story-link" href="#" id="storyLink">
-                <span class="story-link-icon">▶</span>
-                <span>Tonton Video (2:53)</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
+          </section>
         </div>
       </div>
 
@@ -342,7 +380,8 @@
 
               <div class="about-arrow-btns">
                 <button type="button" class="about-arrow-btn" id="aboutPrevBtn" aria-label="Slide sebelumnya">←</button>
-                <button type="button" class="about-arrow-btn" id="aboutNextBtn" aria-label="Slide selanjutnya">→</button>
+                <button type="button" class="about-arrow-btn" id="aboutNextBtn"
+                  aria-label="Slide selanjutnya">→</button>
               </div>
             </div>
           </div>
@@ -360,9 +399,11 @@
                   Solusi PLTS Tanpa Kerumitan Birokrasi &amp; Teknis
                 </h3>
                 <p class="about-card-desc">
-                  SUNBLIX didirikan untuk mengatasi hambatan utama adopsi energi surya di Indonesia: proses perizinan yang
+                  SUNBLIX didirikan untuk mengatasi hambatan utama adopsi energi surya di Indonesia: proses perizinan
+                  yang
                   panjang, keraguan mutu pemasangan atap, dan estimasi biaya yang tidak transparan. Kami hadir sebagai
-                  mitra <em>end-to-end turnkey EPC</em> yang mengawal proyek Anda dari audit sinar hingga operasional penuh.
+                  mitra <em>end-to-end turnkey EPC</em> yang mengawal proyek Anda dari audit sinar hingga operasional
+                  penuh.
                 </p>
 
                 <div class="about-stats-grid">
@@ -398,11 +439,12 @@
                 <h3 class="about-card-title">
                   Akselerasi Menuju Indonesia Net Zero Emission 2060
                 </h3>
-                
+
                 <div class="about-vision-box">
                   <div class="box-tag">VISI KAMI</div>
                   <p class="vision-quote">
-                    “Menjadi ekosistem solusi energi surya terpercaya dan paling transparan di Indonesia yang menghadirkan
+                    “Menjadi ekosistem solusi energi surya terpercaya dan paling transparan di Indonesia yang
+                    menghadirkan
                     kemandirian daya serta efisiensi ekonomi nyata bagi masyarakat luas.”
                   </p>
                 </div>
@@ -411,19 +453,22 @@
                   <div class="mission-pill">
                     <span class="m-icon">🎯</span>
                     <div class="m-text">
-                      <strong>Rekayasa Berstandar K3:</strong> Instalasi presisi dengan jaminan keselamatan kelistrikan dan integritas struktur atap.
+                      <strong>Rekayasa Berstandar K3:</strong> Instalasi presisi dengan jaminan keselamatan kelistrikan
+                      dan integritas struktur atap.
                     </div>
                   </div>
                   <div class="mission-pill">
                     <span class="m-icon">📊</span>
                     <div class="m-text">
-                      <strong>Transparansi Finansial:</strong> Kalkulasi penghematan tagihan 40%-80% yang realistis dan BoQ terbuka tanpa biaya tersembunyi.
+                      <strong>Transparansi Finansial:</strong> Kalkulasi penghematan tagihan 40%-80% yang realistis dan
+                      BoQ terbuka tanpa biaya tersembunyi.
                     </div>
                   </div>
                   <div class="mission-pill">
                     <span class="m-icon">🌐</span>
                     <div class="m-text">
-                      <strong>Monitoring Cerdas 24/7:</strong> Integrasi telemetri IoT cloud untuk memantau performa kilowatt-peak setiap saat.
+                      <strong>Monitoring Cerdas 24/7:</strong> Integrasi telemetri IoT cloud untuk memantau performa
+                      kilowatt-peak setiap saat.
                     </div>
                   </div>
                 </div>
@@ -449,7 +494,8 @@
                       <span class="bento-icon">📐</span>
                       <h4>Engineering Excellence</h4>
                     </div>
-                    <p>Simulasi radiasi software presisi tinggi untuk memaksimalkan produksi energi per meter persegi atap.</p>
+                    <p>Simulasi radiasi software presisi tinggi untuk memaksimalkan produksi energi per meter persegi
+                      atap.</p>
                   </div>
 
                   <div class="bento-box">
@@ -457,7 +503,8 @@
                       <span class="bento-icon">🤝</span>
                       <h4>Integrity &amp; Honesty</h4>
                     </div>
-                    <p>Spesifikasi material asli dari prinsipal resmi Tier-1 dengan garansi performa yang dapat diuji.</p>
+                    <p>Spesifikasi material asli dari prinsipal resmi Tier-1 dengan garansi performa yang dapat diuji.
+                    </p>
                   </div>
 
                   <div class="bento-box">
@@ -465,7 +512,8 @@
                       <span class="bento-icon">🛡️</span>
                       <h4>Safety &amp; Compliance</h4>
                     </div>
-                    <p>Proteksi petir bertingkat (SPD Tipe 1+2), sertifikasi PUIL, dan kepatuhan penuh terhadap standar PLN.</p>
+                    <p>Proteksi petir bertingkat (SPD Tipe 1+2), sertifikasi PUIL, dan kepatuhan penuh terhadap standar
+                      PLN.</p>
                   </div>
 
                   <div class="bento-box">
@@ -473,7 +521,8 @@
                       <span class="bento-icon">🌿</span>
                       <h4>Sustainability Impact</h4>
                     </div>
-                    <p>Membantu hunian dan pelaku usaha memangkas jejak karbon secara konkret untuk masa depan generasi mendatang.</p>
+                    <p>Membantu hunian dan pelaku usaha memangkas jejak karbon secara konkret untuk masa depan generasi
+                      mendatang.</p>
                   </div>
                 </div>
               </article>
@@ -488,7 +537,8 @@
                   PT SUNBLIX ENERGI INDONESIA
                 </h3>
                 <p class="about-card-desc">
-                  Perusahaan resmi spesialis PLTS Rooftop residensial, komersial, dan sistem penyimpanan baterai (Battery ESS).
+                  Perusahaan resmi spesialis PLTS Rooftop residensial, komersial, dan sistem penyimpanan baterai
+                  (Battery ESS).
                   Siap mendampingi Anda di setiap langkah transisi energi bersih.
                 </p>
 
@@ -496,19 +546,22 @@
                   <div class="detail-row">
                     <span class="detail-icon">📍</span>
                     <div>
-                      <strong>Kantor Pusat:</strong> Bintaro Business Centre, Jl RC. Veteran No. 1-I, Bintaro, Jakarta Selatan 12330
+                      <strong>Kantor Pusat:</strong> Bintaro Business Centre, Jl RC. Veteran No. 1-I, Bintaro, Jakarta
+                      Selatan 12330
                     </div>
                   </div>
                   <div class="detail-row">
                     <span class="detail-icon">📞</span>
                     <div>
-                      <strong>Kontak Operasional:</strong> <a href="tel:+62217362639">+6221 7362 639</a> | <a href="mailto:hello@sunblix.id">hello@sunblix.id</a>
+                      <strong>Kontak Operasional:</strong> <a href="tel:+62217362639">+6221 7362 639</a> | <a
+                        href="mailto:hello@sunblix.id">hello@sunblix.id</a>
                     </div>
                   </div>
                   <div class="detail-row">
                     <span class="detail-icon">📋</span>
                     <div>
-                      <strong>Layanan Gratis:</strong> Konsultasi kebutuhan daya &amp; survei kelayakan struktur atap tanpa biaya.
+                      <strong>Layanan Gratis:</strong> Konsultasi kebutuhan daya &amp; survei kelayakan struktur atap
+                      tanpa biaya.
                     </div>
                   </div>
                 </div>
@@ -517,12 +570,8 @@
                   <a href="#quote" class="about-btn-quote">
                     Dapatkan Penawaran Resmi →
                   </a>
-                  <a
-                    href="https://wa.me/6285288581027?text=Halo%20SUNBLIX,%20saya%20ingin%20konsultasi%20mengenai%20pemasangan%20solar%20panel%20PLTS."
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="about-btn-wa"
-                  >
+                  <a href="https://wa.me/6285288581027?text=Halo%20SUNBLIX,%20saya%20ingin%20konsultasi%20mengenai%20pemasangan%20solar%20panel%20PLTS."
+                    target="_blank" rel="noopener noreferrer" class="about-btn-wa">
                     💬 Chat WhatsApp Tim Ahli
                   </a>
                   <a href="#products" class="about-btn-continue">
@@ -750,7 +799,8 @@
         </section>
 
         <!-- BABAK 3B / HOW IT WORKS: FROM SUNLIGHT TO YOUR HOME -->
-        <section class="system-shell section-reveal" id="how-it-works" aria-label="How It Works - From Sunlight to Your Home">
+        <section class="system-shell section-reveal" id="how-it-works"
+          aria-label="How It Works - From Sunlight to Your Home">
           <div class="sunlight-container">
 
             <!-- MAIN INFOGRAPHIC DIAGRAM (HOUSE WITH ANIMATED FLOW) -->
@@ -1404,7 +1454,8 @@
                 <div class="calc-eyebrow">⚡ SOLAR CALCULATOR</div>
                 <div class="calc-accent-line"></div>
                 <h3 class="calc-main-title">SIMULASI HEMAT<br>LISTRIK PLTS<span class="calc-dot">.</span></h3>
-                <p class="calc-desc">Hitung estimasi penghematan hingga 85%, estimasi investasi paket, &amp; durasi balik modal (ROI) sesuai standar resmi SUNBLIX.</p>
+                <p class="calc-desc">Hitung estimasi penghematan hingga 85%, estimasi investasi paket, &amp; durasi
+                  balik modal (ROI) sesuai standar resmi SUNBLIX.</p>
               </div>
 
               <!-- CENTER INPUTS ROW -->
@@ -1475,9 +1526,11 @@
                       <option value="ongrid">☀️ On-Grid (Hemat Siang Hari)</option>
                     </select>
                   </div>
-                  <div class="calc-sub-rooftop" style="margin-top: 4px; display: flex; align-items: center; justify-content: space-between; font-size: 9px; color: #4b6b94;">
+                  <div class="calc-sub-rooftop"
+                    style="margin-top: 4px; display: flex; align-items: center; justify-content: space-between; font-size: 9px; color: #4b6b94;">
                     <span>Ukuran Atap:</span>
-                    <select id="calcRooftop" style="background: transparent; border: none; color: #0066cc; font-weight: 700; cursor: pointer; outline: none; font-size: 9px;">
+                    <select id="calcRooftop"
+                      style="background: transparent; border: none; color: #0066cc; font-weight: 700; cursor: pointer; outline: none; font-size: 9px;">
                       <option value="small">&lt; 25 m²</option>
                       <option value="medium" selected>25–50 m²</option>
                       <option value="large">&gt; 50 m²</option>
@@ -1529,7 +1582,8 @@
                   <div class="calc-summary-divider"></div>
                   <div class="calc-summary-item">
                     <span class="summary-label">Estimasi Nilai Paket (SPH)</span>
-                    <strong class="summary-val highlight-blue" id="resInvestment" style="color: #0066cc;">Rp 128.000.000</strong>
+                    <strong class="summary-val highlight-blue" id="resInvestment" style="color: #0066cc;">Rp
+                      128.000.000</strong>
                     <span class="summary-sub" id="resPayback">Balik Modal: ~5.5 Tahun</span>
                   </div>
                   <div class="calc-summary-divider"></div>
@@ -1559,215 +1613,214 @@
             </div>
           </div>
 
-        </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- BABAK 7: THE EPIC FINALE (PANORAMA HORIZON & SUNBLIX FOOTER) -->
-      <section class="finale-shell section-reveal" id="quote" aria-label="Brighter Tomorrow & Sunblix Footer">
-        <!-- TOP PANORAMA BANNER -->
-        <div class="finale-panorama">
-          <div class="finale-panorama-bg"></div>
-          <div class="finale-panorama-scrim"></div>
+    <!-- BABAK 7: THE EPIC FINALE (PANORAMA HORIZON & SUNBLIX FOOTER) -->
+    <section class="finale-shell section-reveal" id="quote" aria-label="Brighter Tomorrow & Sunblix Footer">
+      <!-- TOP PANORAMA BANNER -->
+      <div class="finale-panorama">
+        <div class="finale-panorama-bg"></div>
+        <div class="finale-panorama-scrim"></div>
 
-          <div class="finale-panorama-content">
-            <div class="finale-cta-block">
-              <div class="finale-eyebrow">
-                <span class="eyebrow-accent-line"></span>
-                <span>LET'S BUILD A CLEANER TOMORROW</span>
-              </div>
-              <h2 class="finale-main-title">
-                YOUR ROOFTOP.<br>
-                YOUR ENERGY.<br>
-                YOUR FUTURE<span class="gold-dot">.</span>
-              </h2>
-              <p class="finale-desc">Let's design your solar system.</p>
-              <div class="finale-cta-row">
-                <a href="#quote" class="finale-btn-quote" id="btnFinaleQuote">
-                  <span>Get a Quote</span>
-                  <span class="btn-arrow">→</span>
-                </a>
-              </div>
+        <div class="finale-panorama-content">
+          <div class="finale-cta-block">
+            <div class="finale-eyebrow">
+              <span class="eyebrow-accent-line"></span>
+              <span>LET'S BUILD A CLEANER TOMORROW</span>
             </div>
-
-            <!-- RIGHT PILLARS TEXT -->
-            <div class="finale-pillars-side">
-              <div class="pillar-line">CLEANER</div>
-              <div class="pillar-line">SMARTER</div>
-              <div class="pillar-line">STRONGER</div>
-              <div class="pillar-line highlight-gold">INDONESIA</div>
+            <h2 class="finale-main-title">
+              YOUR ROOFTOP.<br>
+              YOUR ENERGY.<br>
+              YOUR FUTURE<span class="gold-dot">.</span>
+            </h2>
+            <p class="finale-desc">Let's design your solar system.</p>
+            <div class="finale-cta-row">
+              <a href="#quote" class="finale-btn-quote" id="btnFinaleQuote">
+                <span>Get a Quote</span>
+                <span class="btn-arrow">→</span>
+              </a>
             </div>
+          </div>
+
+          <!-- RIGHT PILLARS TEXT -->
+          <div class="finale-pillars-side">
+            <div class="pillar-line">CLEANER</div>
+            <div class="pillar-line">SMARTER</div>
+            <div class="pillar-line">STRONGER</div>
+            <div class="pillar-line highlight-gold">INDONESIA</div>
           </div>
         </div>
+      </div>
 
-        <!-- BOTTOM DARK NAVY FOOTER -->
-        <footer class="sunblix-footer">
-          <div class="footer-main-grid">
-            <div class="footer-brand-col">
-              <a href="#home" class="footer-logo-link" aria-label="SUNBLIX Home">
-                <img src="asset/sublixlogo.svg" alt="PT SUNBLIX ENERGI INDONESIA" class="footer-logo-img">
-              </a>
-              <span class="footer-tagline">POWER YOUR WORLD.</span>
-              <div class="footer-legal-title">PT SUNBLIX ENERGI INDONESIA</div>
-              <p class="footer-brand-desc">Mitra Spesialis Solusi PLTS Rooftop Terpercaya di Indonesia.
-                Berstandar internasional dengan instalasi berkualitas dan teknologi monitoring pintar.</p>
-            </div>
-
-            <div class="footer-nav-col">
-              <h4 class="footer-heading">Solutions</h4>
-              <ul class="footer-nav-list">
-                <li><a href="#residential">Residential (Standard+ & PRO)</a></li>
-                <li><a href="#commercial">Commercial & Industrial (PRO+)</a></li>
-                <li><a href="#energy-storage">Battery Energy Storage</a></li>
-                <li><a href="#projects">Kalkulator Hemat Listrik</a></li>
-              </ul>
-            </div>
-
-            <div class="footer-nav-col">
-              <h4 class="footer-heading">Company</h4>
-              <ul class="footer-nav-list">
-                <li><a href="#about">Tentang SUNBLIX (About Us)</a></li>
-                <li><a href="#projects">Peta Proyek 19+ Kota</a></li>
-                <li><a href="#why-sunblix">Keunggulan & Tim Teknisi</a></li>
-                <li><a href="#projects">Jaminan Paket Siap Pakai</a></li>
-                <li><a href="/career">Karir & Rekrutmen</a></li>
-                <li><a href="/partnership">Kemitraan Vendor</a></li>
-                <li><a href="/faq">Pertanyaan Umum (F.A.Q)</a></li>
-              </ul>
-            </div>
-
-            <div class="footer-nav-col">
-              <h4 class="footer-heading">Kontak & Kantor</h4>
-              <ul class="footer-nav-list footer-contact-list">
-                <li class="footer-contact-item">
-                  <span class="f-contact-icon">📍</span>
-                  <span>Bintaro Business Centre.<br>
-                    Jl RC. Veteran No. 1-I, Bintaro,<br>
-                    Jakarta Selatan 12330<br>
-                    Indonesia</span>
-                </li>
-                <li class="footer-contact-item">
-                  <span class="f-contact-icon">📞</span>
-                  <a href="tel:+62217362639">+6221 7362 639</a>
-                </li>
-                <li class="footer-contact-item">
-                  <span class="f-contact-icon">✉️</span>
-                  <a href="mailto:hello@sunblix.id">hello@sunblix.id</a>
-                </li>
-                <li class="footer-contact-item">
-                  <span class="f-contact-icon">💬</span>
-                  <a href="https://wa.me/6285288581027?text=Halo%20SUNBLIX,%20saya%20ingin%20konsultasi%20pemasangan%20solar%20panel%20PLTS."
-                    target="_blank" rel="noopener noreferrer">Konsultasi WhatsApp Cepat</a>
-                </li>
-              </ul>
-            </div>
-
-            <div class="footer-subscribe-col">
-              <h4 class="footer-heading">Berlangganan Info</h4>
-              <p class="footer-sub-note">Dapatkan panduan efisiensi energi surya dan update regulasi PLTS Indonesia.
-              </p>
-              <form class="footer-subscribe-form" id="footerSubscribeForm">
-                <div class="subscribe-input-box">
-                  <input type="email" id="subscribeEmail" placeholder="Masukkan email Anda" required
-                    aria-label="Alamat email untuk pembaruan energi">
-                  <button type="submit" aria-label="Langganan info">
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"
-                      stroke-linecap="round" stroke-linejoin="round">
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                      <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
-                  </button>
-                </div>
-                <div class="subscribe-toast" id="subscribeToast" aria-live="polite"></div>
-              </form>
-            </div>
+      <!-- BOTTOM DARK NAVY FOOTER -->
+      <footer class="sunblix-footer">
+        <div class="footer-main-grid">
+          <div class="footer-brand-col">
+            <a href="#home" class="footer-logo-link" aria-label="SUNBLIX Home">
+              <img src="asset/sublixlogo.svg" alt="PT SUNBLIX ENERGI INDONESIA" class="footer-logo-img">
+            </a>
+            <span class="footer-tagline">POWER YOUR WORLD.</span>
+            <div class="footer-legal-title">PT SUNBLIX ENERGI INDONESIA</div>
+            <p class="footer-brand-desc">Mitra Spesialis Solusi PLTS Rooftop Terpercaya di Indonesia.
+              Berstandar internasional dengan instalasi berkualitas dan teknologi monitoring pintar.</p>
           </div>
 
-          <div class="footer-bottom-bar">
-            <div class="footer-social-links">
-              <!-- Facebook -->
-              <a href="https://www.facebook.com/profile.php?id=61594676079764" target="_blank" rel="noopener noreferrer"
-                aria-label="Facebook Sunblix Indonesia" title="Facebook Sunblix Indonesia" class="social-icon-btn">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
-                  stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                </svg>
-              </a>
-              <!-- Instagram -->
-              <a href="https://www.instagram.com/sunblix.id/" target="_blank" rel="noopener noreferrer"
-                aria-label="Instagram @sunblix.id" title="Instagram @sunblix.id" class="social-icon-btn">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
-                  stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                </svg>
-              </a>
-              <!-- LinkedIn -->
-              <a href="https://www.linkedin.com/in/sunblix-indonesia-a7305b442/" target="_blank"
-                rel="noopener noreferrer" aria-label="LinkedIn Sunblix Indonesia" title="LinkedIn Sunblix Indonesia"
-                class="social-icon-btn">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
-                  stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-                  <rect x="2" y="9" width="4" height="12"></rect>
-                  <circle cx="4" cy="4" r="2"></circle>
-                </svg>
-              </a>
-              <!-- Threads -->
-              <a href="https://www.threads.com/@sunblix.id" target="_blank" rel="noopener noreferrer"
-                aria-label="Threads @sunblix.id" title="Threads @sunblix.id" class="social-icon-btn">
-                <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor">
-                  <path
-                    d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69c-.242 0-.487.007-.739.021-1.836.103-2.98.946-2.916 2.143.067 1.256 1.452 1.839 2.784 1.767 1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221z" />
-                </svg>
-              </a>
-              <!-- TikTok -->
-              <a href="https://www.tiktok.com/@sunblix.id" target="_blank" rel="noopener noreferrer"
-                aria-label="TikTok @sunblix.id" title="TikTok @sunblix.id" class="social-icon-btn">
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-                  <path
-                    d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z" />
-                </svg>
-              </a>
-              <!-- YouTube -->
-              <a href="https://www.youtube.com/@SunblixIndonesia" target="_blank" rel="noopener noreferrer"
-                aria-label="YouTube Sunblix Indonesia" title="YouTube Sunblix Indonesia" class="social-icon-btn">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
-                  stroke-linecap="round" stroke-linejoin="round">
-                  <path
-                    d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z">
-                  </path>
-                  <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" fill="currentColor"></polygon>
-                </svg>
-              </a>
-              <!-- Telegram -->
-              <a href="https://t.me/Sunblixbot" target="_blank" rel="noopener noreferrer"
-                aria-label="Telegram @Sunblixbot" title="Telegram @Sunblixbot" class="social-icon-btn">
-                <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor">
-                  <path
-                    d="m20.665 3.717-17.73 6.837c-1.21.486-1.203 1.161-.222 1.462l4.552 1.42 10.532-6.645c.498-.303.953-.14.579.192l-8.533 7.701h-.002l-.002.001-.314 4.692c.46 0 .663-.211.921-.46l2.211-2.15 4.599 3.397c.848.467 1.457.227 1.668-.785l3.019-14.228c.309-1.239-.473-1.8-1.282-1.434z" />
-                </svg>
-              </a>
-              <!-- WhatsApp -->
-              <a href="https://wa.me/6285288581027?text=Halo%20SUNBLIX,%20saya%20ingin%20konsultasi%20pemasangan%20solar%20panel%20PLTS."
-                target="_blank" rel="noopener noreferrer" aria-label="WhatsApp Business SUNBLIX"
-                title="WhatsApp Business SUNBLIX" class="social-icon-btn">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-                  <path
-                    d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M9.53 7.34C9.36 7.34 9.08 7.41 8.84 7.67C8.6 7.93 7.92 8.57 7.92 9.87C7.92 11.17 8.87 12.43 9 12.6C9.13 12.77 10.87 15.46 13.53 16.61C14.16 16.88 14.66 17.05 15.04 17.17C15.68 17.37 16.26 17.35 16.72 17.28C17.24 17.2 18.31 16.63 18.53 16C18.75 15.37 18.75 14.83 18.69 14.72C18.63 14.61 18.46 14.54 18.2 14.41C17.94 14.28 16.67 13.65 16.44 13.57C16.21 13.48 16.04 13.44 15.87 13.7C15.7 13.96 15.22 14.54 15.07 14.71C14.92 14.88 14.77 14.9 14.51 14.77C14.25 14.65 13.42 14.37 12.43 13.49C11.66 12.8 11.14 11.95 11 11.7C10.85 11.45 11 11.31 11.12 11.18C11.24 11.07 11.38 10.89 11.5 10.74C11.63 10.6 11.67 10.49 11.76 10.32C11.85 10.15 11.8 10 11.74 9.87C11.67 9.75 11.17 8.52 10.96 8.01C10.76 7.51 10.55 7.58 10.39 7.57C10.24 7.56 10.07 7.56 9.9 7.56L9.53 7.34Z" />
-                </svg>
-              </a>
-            </div>
-            <div class="footer-copyright">
-              © 2026 PT SUNBLIX ENERGI INDONESIA. All rights reserved.
-            </div>
+          <div class="footer-nav-col">
+            <h4 class="footer-heading">Solutions</h4>
+            <ul class="footer-nav-list">
+              <li><a href="#residential">Residential (Standard+ & PRO)</a></li>
+              <li><a href="#commercial">Commercial & Industrial (PRO+)</a></li>
+              <li><a href="#energy-storage">Battery Energy Storage</a></li>
+              <li><a href="#projects">Kalkulator Hemat Listrik</a></li>
+            </ul>
           </div>
-        </footer>
-      </section>
 
-      <!-- SCROLL INDICATORS -->
-      <div class="scroll-hint" id="scrollHint">SCROLL TO EXPLORE</div>
-      <div class="scroll-line"><i id="scrollProgress"></i></div>
+          <div class="footer-nav-col">
+            <h4 class="footer-heading">Company</h4>
+            <ul class="footer-nav-list">
+              <li><a href="#about">Tentang SUNBLIX (About Us)</a></li>
+              <li><a href="#projects">Peta Proyek 19+ Kota</a></li>
+              <li><a href="#why-sunblix">Keunggulan & Tim Teknisi</a></li>
+              <li><a href="#projects">Jaminan Paket Siap Pakai</a></li>
+              <li><a href="/career">Karir & Rekrutmen</a></li>
+              <li><a href="/partnership">Kemitraan Vendor</a></li>
+              <li><a href="/faq">Pertanyaan Umum (F.A.Q)</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-nav-col">
+            <h4 class="footer-heading">Kontak & Kantor</h4>
+            <ul class="footer-nav-list footer-contact-list">
+              <li class="footer-contact-item">
+                <span class="f-contact-icon">📍</span>
+                <span>Bintaro Business Centre.<br>
+                  Jl RC. Veteran No. 1-I, Bintaro,<br>
+                  Jakarta Selatan 12330<br>
+                  Indonesia</span>
+              </li>
+              <li class="footer-contact-item">
+                <span class="f-contact-icon">📞</span>
+                <a href="tel:+62217362639">+6221 7362 639</a>
+              </li>
+              <li class="footer-contact-item">
+                <span class="f-contact-icon">✉️</span>
+                <a href="mailto:hello@sunblix.id">hello@sunblix.id</a>
+              </li>
+              <li class="footer-contact-item">
+                <span class="f-contact-icon">💬</span>
+                <a href="https://wa.me/6285288581027?text=Halo%20SUNBLIX,%20saya%20ingin%20konsultasi%20pemasangan%20solar%20panel%20PLTS."
+                  target="_blank" rel="noopener noreferrer">Konsultasi WhatsApp Cepat</a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="footer-subscribe-col">
+            <h4 class="footer-heading">Berlangganan Info</h4>
+            <p class="footer-sub-note">Dapatkan panduan efisiensi energi surya dan update regulasi PLTS Indonesia.
+            </p>
+            <form class="footer-subscribe-form" id="footerSubscribeForm">
+              <div class="subscribe-input-box">
+                <input type="email" id="subscribeEmail" placeholder="Masukkan email Anda" required
+                  aria-label="Alamat email untuk pembaruan energi">
+                <button type="submit" aria-label="Langganan info">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </button>
+              </div>
+              <div class="subscribe-toast" id="subscribeToast" aria-live="polite"></div>
+            </form>
+          </div>
+        </div>
+
+        <div class="footer-bottom-bar">
+          <div class="footer-social-links">
+            <!-- Facebook -->
+            <a href="https://www.facebook.com/profile.php?id=61594676079764" target="_blank" rel="noopener noreferrer"
+              aria-label="Facebook Sunblix Indonesia" title="Facebook Sunblix Indonesia" class="social-icon-btn">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+              </svg>
+            </a>
+            <!-- Instagram -->
+            <a href="https://www.instagram.com/sunblix.id/" target="_blank" rel="noopener noreferrer"
+              aria-label="Instagram @sunblix.id" title="Instagram @sunblix.id" class="social-icon-btn">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+              </svg>
+            </a>
+            <!-- LinkedIn -->
+            <a href="https://www.linkedin.com/in/sunblix-indonesia-a7305b442/" target="_blank" rel="noopener noreferrer"
+              aria-label="LinkedIn Sunblix Indonesia" title="LinkedIn Sunblix Indonesia" class="social-icon-btn">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                <rect x="2" y="9" width="4" height="12"></rect>
+                <circle cx="4" cy="4" r="2"></circle>
+              </svg>
+            </a>
+            <!-- Threads -->
+            <a href="https://www.threads.com/@sunblix.id" target="_blank" rel="noopener noreferrer"
+              aria-label="Threads @sunblix.id" title="Threads @sunblix.id" class="social-icon-btn">
+              <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor">
+                <path
+                  d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69c-.242 0-.487.007-.739.021-1.836.103-2.98.946-2.916 2.143.067 1.256 1.452 1.839 2.784 1.767 1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221z" />
+              </svg>
+            </a>
+            <!-- TikTok -->
+            <a href="https://www.tiktok.com/@sunblix.id" target="_blank" rel="noopener noreferrer"
+              aria-label="TikTok @sunblix.id" title="TikTok @sunblix.id" class="social-icon-btn">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                <path
+                  d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z" />
+              </svg>
+            </a>
+            <!-- YouTube -->
+            <a href="https://www.youtube.com/@SunblixIndonesia" target="_blank" rel="noopener noreferrer"
+              aria-label="YouTube Sunblix Indonesia" title="YouTube Sunblix Indonesia" class="social-icon-btn">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z">
+                </path>
+                <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" fill="currentColor"></polygon>
+              </svg>
+            </a>
+            <!-- Telegram -->
+            <a href="https://t.me/Sunblixbot" target="_blank" rel="noopener noreferrer"
+              aria-label="Telegram @Sunblixbot" title="Telegram @Sunblixbot" class="social-icon-btn">
+              <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor">
+                <path
+                  d="m20.665 3.717-17.73 6.837c-1.21.486-1.203 1.161-.222 1.462l4.552 1.42 10.532-6.645c.498-.303.953-.14.579.192l-8.533 7.701h-.002l-.002.001-.314 4.692c.46 0 .663-.211.921-.46l2.211-2.15 4.599 3.397c.848.467 1.457.227 1.668-.785l3.019-14.228c.309-1.239-.473-1.8-1.282-1.434z" />
+              </svg>
+            </a>
+            <!-- WhatsApp -->
+            <a href="https://wa.me/6285288581027?text=Halo%20SUNBLIX,%20saya%20ingin%20konsultasi%20pemasangan%20solar%20panel%20PLTS."
+              target="_blank" rel="noopener noreferrer" aria-label="WhatsApp Business SUNBLIX"
+              title="WhatsApp Business SUNBLIX" class="social-icon-btn">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                <path
+                  d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M9.53 7.34C9.36 7.34 9.08 7.41 8.84 7.67C8.6 7.93 7.92 8.57 7.92 9.87C7.92 11.17 8.87 12.43 9 12.6C9.13 12.77 10.87 15.46 13.53 16.61C14.16 16.88 14.66 17.05 15.04 17.17C15.68 17.37 16.26 17.35 16.72 17.28C17.24 17.2 18.31 16.63 18.53 16C18.75 15.37 18.75 14.83 18.69 14.72C18.63 14.61 18.46 14.54 18.2 14.41C17.94 14.28 16.67 13.65 16.44 13.57C16.21 13.48 16.04 13.44 15.87 13.7C15.7 13.96 15.22 14.54 15.07 14.71C14.92 14.88 14.77 14.9 14.51 14.77C14.25 14.65 13.42 14.37 12.43 13.49C11.66 12.8 11.14 11.95 11 11.7C10.85 11.45 11 11.31 11.12 11.18C11.24 11.07 11.38 10.89 11.5 10.74C11.63 10.6 11.67 10.49 11.76 10.32C11.85 10.15 11.8 10 11.74 9.87C11.67 9.75 11.17 8.52 10.96 8.01C10.76 7.51 10.55 7.58 10.39 7.57C10.24 7.56 10.07 7.56 9.9 7.56L9.53 7.34Z" />
+              </svg>
+            </a>
+          </div>
+          <div class="footer-copyright">
+            © 2026 PT SUNBLIX ENERGI INDONESIA. All rights reserved.
+          </div>
+        </div>
+      </footer>
+    </section>
+
+    <!-- SCROLL INDICATORS -->
+    <div class="scroll-hint" id="scrollHint">SCROLL TO EXPLORE</div>
+    <div class="scroll-line"><i id="scrollProgress"></i></div>
 
     </section>
   </main>
@@ -1805,9 +1858,210 @@
         stroke-linecap="round" stroke-linejoin="round" class="back-to-top-icon">
         <path d="M18 15l-6-6-6 6" />
       </svg>
-      <span class="back-to-top-tooltip">Kembali ke Atas</span>
     </button>
   </aside>
+
+  <!-- MODAL GET A QUOTE (FORM PERMINTAAN PENAWARAN RESMI & KONSULTASI) -->
+  <div class="quote-modal-backdrop" id="staticQuoteModal"
+    style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(15,23,42,0.65);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:16px;overflow-y:auto;"
+    aria-hidden="true">
+          <div class="quote-modal-card"
+            style="background:#ffffff;border:1px solid #e2e8f0;border-radius:24px;max-width:560px;width:100%;padding:32px 28px;color:#0f172a;box-shadow:0 25px 60px rgba(0,0,0,0.18),0 4px 16px rgba(8,123,232,0.08);position:relative;max-height:92vh;overflow-y:auto;font-family:inherit;">
+            <button type="button" id="closeStaticModalBtn" aria-label="Tutup"
+              style="position:absolute;top:20px;right:20px;background:#f1f5f9;border:1px solid #e2e8f0;color:#475569;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all 0.2s ease;">✕</button>
+            <div id="staticModalBody">
+              <div style="margin-bottom:18px;">
+                <span
+                  style="font-size:11px;font-weight:800;letter-spacing:2px;color:#0284c7;text-transform:uppercase;">PT
+                  SUNBLIX ENERGI INDONESIA</span>
+                <h3 style="margin:6px 0 8px;font-size:22px;font-weight:800;color:#031f45;letter-spacing:-0.3px;">
+                  Permintaan Penawaran Resmi (PDF)</h3>
+                <p style="margin:0;font-size:13.5px;color:#64748b;line-height:1.5;">Dapatkan estimasi teknis, analisis
+                  ROI, dan proposal resmi Siap Pakai langsung ke email dan WhatsApp Anda.</p>
+              </div>
+
+              <div id="sqEstimateBox"
+                style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:12px;color:#0369a1;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+                <div>
+                  <strong id="sqEstSysName" style="color:#0284c7;font-size:13px;display:block;">SUNBLIX 4.68
+                    Hybrid</strong>
+                  <span id="sqEstSpecs" style="font-size:11.5px;color:#475569;">4.68 kWp • 8 Panel Astronergy 585Wp •
+                    LiFePO4 5.12 kWh</span>
+                </div>
+                <div style="text-align:right;">
+                  <strong id="sqEstPrice" style="color:#0f172a;display:block;font-size:12.5px;">Est. Rp
+                    88.600.000</strong>
+                  <span id="sqEstRoi" style="font-size:11px;color:#16a34a;font-weight:700;">ROI: ~4.2 Thn</span>
+                </div>
+              </div>
+
+              <form id="staticQuoteForm" style="display:grid;gap:14px;">
+                <div>
+                  <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#1e293b;">Nama
+                    Lengkap *</label>
+                  <input type="text" id="sqName" required placeholder="Contoh: Bpk. Haris Setiawan"
+                    style="width:100%;padding:12px 14px;border-radius:10px;background:#f8fafc;border:1.5px solid #cbd5e1;color:#0f172a;font-size:14px;outline:none;box-sizing:border-box;" />
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                  <div>
+                    <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#1e293b;">Nomor
+                      WhatsApp *</label>
+                    <input type="tel" id="sqWa" required placeholder="081234567890"
+                      style="width:100%;padding:12px 14px;border-radius:10px;background:#f8fafc;border:1.5px solid #cbd5e1;color:#0f172a;font-size:14px;outline:none;box-sizing:border-box;" />
+                  </div>
+                  <div>
+                    <label
+                      style="display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#1e293b;">Alamat
+                      Email *</label>
+                    <input type="email" id="sqEmail" required placeholder="email@anda.com"
+                      style="width:100%;padding:12px 14px;border-radius:10px;background:#f8fafc;border:1.5px solid #cbd5e1;color:#0f172a;font-size:14px;outline:none;box-sizing:border-box;" />
+                  </div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                  <div>
+                    <label
+                      style="display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#1e293b;">Tagihan
+                      Listrik PLN / Bulan *</label>
+                    <input type="text" id="sqBill" required placeholder="Contoh: Rp 2.500.000" value="Rp 2.500.000"
+                      style="width:100%;padding:12px 14px;border-radius:10px;background:#f8fafc;border:1.5px solid #0284c7;color:#0284c7;font-size:14px;font-weight:700;outline:none;box-sizing:border-box;" />
+                  </div>
+                  <div>
+                    <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#1e293b;">Daya
+                      Listrik PLN</label>
+                    <select id="sqPower"
+                      style="width:100%;padding:12px 14px;border-radius:10px;background:#f8fafc;border:1.5px solid #cbd5e1;color:#0f172a;font-size:14px;outline:none;box-sizing:border-box;">
+                      <option value="1.300 VA">1.300 VA</option>
+                      <option value="2.200 VA" selected>2.200 VA</option>
+                      <option value="3.500 - 5.500 VA">3.500 – 5.500 VA</option>
+                      <option value="6.600 - 11.000 VA">6.600 – 11.000 VA</option>
+                      <option value="> 11.000 VA (3-Phase)">Di atas 11.000 VA (3 Phase)</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#1e293b;">Kota /
+                    Kabupaten Lokasi Properti *</label>
+                  <input type="text" id="sqCity" required placeholder="Contoh: Denpasar / Badung / Jakarta Selatan"
+                    style="width:100%;padding:12px 14px;border-radius:10px;background:#f8fafc;border:1.5px solid #cbd5e1;color:#0f172a;font-size:14px;outline:none;box-sizing:border-box;" />
+                </div>
+                <div>
+                  <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#1e293b;">Catatan
+                    Kebutuhan / Tipe Atap (Opsional)</label>
+                  <textarea id="sqNotes" rows="2"
+                    placeholder="Misal: Atap genteng keramik, butuh sistem hybrid cadangan 24 jam..."
+                    style="width:100%;padding:10px 14px;border-radius:10px;background:#f8fafc;border:1.5px solid #cbd5e1;color:#0f172a;font-size:13px;outline:none;resize:none;box-sizing:border-box;"></textarea>
+                </div>
+                <button type="submit" id="sqSubmitBtn"
+                  style="margin-top:8px;padding:15px 20px;border-radius:14px;background:linear-gradient(135deg, #0284c7 0%, #0369a1 100%);color:#fff;border:none;font-size:15px;font-weight:800;letter-spacing:0.3px;cursor:pointer;box-shadow:0 8px 22px rgba(2, 132, 199, 0.35);display:flex;align-items:center;justify-content:center;gap:10px;transition:all 0.2s ease;">
+                  Kirim &amp; Konsultasikan
+                </button>
+                <div style="font-size:11.5px;color:#64748b;text-align:center;margin-top:4px;">
+                  🛡️ Privasi data Anda terjamin. Tim engineer SUNBLIX akan menghubungi dalam 1x24 jam.
+                </div>
+              </form>
+            </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL: DOWNLOAD OFFICIAL CATALOGUE 2026 (PDF)
+       ========================================================================= -->
+  <div class="catalogue-modal-backdrop" id="catalogueModal" aria-hidden="true">
+    <div class="catalogue-modal-card" role="dialog" aria-modal="true" aria-labelledby="catModalTitle">
+      <button type="button" class="catalogue-modal-close-btn" id="closeCatalogueModalBtn" aria-label="Tutup Modal Katalog">✕</button>
+      
+      <div class="catalogue-modal-grid">
+        <!-- Left: Visual Preview Column -->
+        <div class="catalogue-preview-col">
+          <div>
+            <div class="catalogue-preview-badge">
+              <span>⚡</span> 15 Halaman • PDF Resmi
+            </div>
+            <div class="catalogue-cover-wrap">
+              <img src="asset/katalog_cover.jpg" alt="Cover Katalog Resmi SUNBLIX 2026" class="catalogue-cover-img" loading="lazy" />
+              <div class="catalogue-cover-tag">EDISI RESMI 2026</div>
+            </div>
+          </div>
+
+          <ul class="catalogue-highlights-list">
+            <li><span class="check">✓</span> <span>Paket PLTS Standard+ &amp; PRO</span></li>
+            <li><span class="check">✓</span> <span>Sistem Hybrid Inverter &amp; Battery ESS</span></li>
+            <li><span class="check">✓</span> <span>Tabel Estimasi Kebutuhan Luas Atap</span></li>
+            <li><span class="check">✓</span> <span>Jaminan Garansi 12 Tahun Tier-1</span></li>
+          </ul>
+        </div>
+
+        <!-- Right: Form / Success Column -->
+        <div class="catalogue-form-col" id="catalogueFormContainer">
+          <div id="catalogueFormView">
+            <div class="catalogue-brand-sup">PT SUNBLIX ENERGI INDONESIA</div>
+            <h3 class="catalogue-title" id="catModalTitle">Download Katalog Resmi (PDF)</h3>
+            <p class="catalogue-subtitle">
+              Dapatkan panduan lengkap spesifikasi teknis, pricelist paket, dan simulasi penghematan listrik PLTS.
+            </p>
+
+            <form class="catalogue-form" id="catalogueDownloadForm">
+              <div class="cat-input-group">
+                <label class="cat-label" for="catName">
+                  <span>Nama Lengkap *</span>
+                </label>
+                <input type="text" id="catName" class="cat-input" required placeholder="Contoh: Bpk. Haris Setiawan" autocomplete="name" />
+              </div>
+
+              <div class="cat-input-group">
+                <label class="cat-label" for="catEmail">
+                  <span>Alamat Email *</span>
+                </label>
+                <input type="email" id="catEmail" class="cat-input" required placeholder="email@anda.com" autocomplete="email" />
+              </div>
+
+              <div class="cat-input-group">
+                <label class="cat-label" for="catWa">
+                  <span>Nomor WhatsApp *</span>
+                </label>
+                <input type="tel" id="catWa" class="cat-input" required placeholder="Contoh: 081234567890" autocomplete="tel" />
+              </div>
+
+              <div class="cat-checkbox-wrap">
+                <input type="checkbox" id="catSendWa" checked />
+                <label for="catSendWa">Kirimkan juga salinan link katalog ke WhatsApp saya</label>
+              </div>
+
+              <button type="submit" class="cat-submit-btn" id="catSubmitBtn">
+                <span>⬇️</span>
+                <span id="catSubmitText">Download Katalog PDF (15 Hal)</span>
+              </button>
+
+              <div class="cat-privacy-note">
+                <span>🛡️</span>
+                <span>Privasi data Anda aman. Unduhan PDF langsung aktif otomatis.</span>
+              </div>
+            </form>
+          </div>
+
+          <!-- Success State View (Revealed after submission) -->
+          <div id="catalogueSuccessView" class="catalogue-success-box" style="display: none;">
+            <div class="cat-success-icon">✓</div>
+            <h3 class="cat-success-title">Katalog Sedang Diunduh!</h3>
+            <p class="cat-success-sub" id="catSuccessGreeting">
+              Terima kasih! File PDF <strong>SUNBLIX_KATALOG_2026.pdf</strong> telah terunduh ke perangkat Anda.
+            </p>
+
+            <div class="cat-success-actions">
+              <a href="asset/SUNBLIX_KATALOG_2026.pdf" target="_blank" class="cat-btn-action download-again" download="SUNBLIX_KATALOG_2026_Solar_Specialist.pdf">
+                <span>📄</span> Buka / Unduh Ulang PDF
+              </a>
+              <a id="catSuccessWaBtn" href="https://wa.me/6285288581027" target="_blank" rel="noopener noreferrer" class="cat-btn-action wa">
+                <span>💬</span> Hubungi Konsultan via WhatsApp
+              </a>
+              <button type="button" class="cat-btn-action close-view" id="catSuccessCloseBtn">
+                Selesai &amp; Kembali ke Website
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>

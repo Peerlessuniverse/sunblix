@@ -1,6 +1,17 @@
 'use client';
 
 import { useState } from 'react';
+import {
+  resetStoreToDefault,
+  clearAllStoreData,
+  exportStoreJson,
+  importStoreJson,
+  getStoreLeads,
+  getStoreProjects,
+  getStoreInvoices,
+  getStoreTasks,
+  getStoreInventory,
+} from '../../../lib/sunblixOsStore';
 
 export default function SettingsView({ currentUser, onBackToDashboard }) {
   const [activeTab, setActiveTab] = useState('company');
@@ -8,7 +19,7 @@ export default function SettingsView({ currentUser, onBackToDashboard }) {
 
   // Form states
   const [companyName, setCompanyName] = useState('PT SUNBLIX ENERGI INDONESIA');
-  const [companyAddress, setCompanyAddress] = useState('Jl. Sunset Road No. 88X, Seminyak, Kuta, Badung, Bali 80361');
+  const [companyAddress, setCompanyAddress] = useState('Bintaro Business Centre, Jl. RC. Veteran No. 1-I, Bintaro, Jakarta Selatan 12330');
   const [companyPhone, setCompanyPhone] = useState('+62 852-8858-1027');
   const [companyEmail, setCompanyEmail] = useState('hello@sunblix.id');
 
@@ -17,6 +28,70 @@ export default function SettingsView({ currentUser, onBackToDashboard }) {
   const [alertNewLead, setAlertNewLead] = useState(true);
   const [alertInvoicePaid, setAlertInvoicePaid] = useState(true);
   const [alertDailySummary, setAlertDailySummary] = useState(false);
+
+  // Local storage counts
+  const leadsCount = getStoreLeads().length;
+  const projectsCount = getStoreProjects().length;
+  const invoicesCount = getStoreInvoices().length;
+  const tasksCount = getStoreTasks().length;
+  const inventoryCount = getStoreInventory().length;
+
+  const handleClearAllDatabase = async () => {
+    if (!confirm('PERINGATAN: Apakah Anda yakin ingin MENGHAPUS SEMUA DATA DUMMY di Dashboard OS (CRM, Prospek, Proyek, Faktur, SPH, dan Tugas)? Database akan dikosongkan total.')) return;
+    try {
+      clearAllStoreData();
+      await Promise.all([
+        fetch('/api/surti/sph', { method: 'DELETE' }),
+        fetch('/api/surti/crm', { method: 'DELETE' }),
+      ]);
+      setToast('🗑️ Seluruh data dummy di Sunblix OS & SURTI berhasil dihapus total!');
+      setTimeout(() => setToast(''), 4000);
+    } catch (err) {
+      alert('Gagal mengosongkan data: ' + err.message);
+    }
+  };
+
+  const handleResetDemo = () => {
+
+    if (confirm('Yakin ingin mereset seluruh data lokal Sunblix OS kembali ke data awal demo resmi?')) {
+      resetStoreToDefault();
+      setToast('⚡ Seluruh database lokal berhasil di-reset ke data demo standar!');
+      setTimeout(() => setToast(''), 4000);
+    }
+  };
+
+  const handleExport = () => {
+    const json = exportStoreJson();
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `sunblix_os_backup_${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    setToast('📥 Cadangan database lokal berhasil diunduh dalam format JSON!');
+    setTimeout(() => setToast(''), 4000);
+  };
+
+  const handleImport = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target?.result;
+      if (typeof content === 'string') {
+        const res = importStoreJson(content);
+        if (res.success) {
+          setToast('📤 Data berhasil dipulihkan dari file cadangan!');
+          setTimeout(() => setToast(''), 4000);
+        } else {
+          alert('Gagal memulihkan data: ' + res.error);
+        }
+      }
+    };
+    reader.readAsText(file);
+  };
 
   return (
     <div className="sbx-view-container">
@@ -30,7 +105,7 @@ export default function SettingsView({ currentUser, onBackToDashboard }) {
           </div>
           <h1 className="sbx-view-title">⚙️ Pengaturan Sistem &amp; Konfigurasi OS</h1>
           <p className="sbx-view-sub">
-            Konfigurasi profil perusahaan, hak akses staf (RBAC), gateway MQTT IoT, dan integrasi WhatsApp alerting.
+            Konfigurasi profil perusahaan, hak akses staf (RBAC), gateway MQTT IoT, dan integrasi data lokal.
           </p>
         </div>
 
@@ -85,6 +160,13 @@ export default function SettingsView({ currentUser, onBackToDashboard }) {
             >
               📡 Gateway IoT &amp; MQTT Server
             </button>
+            <button
+              type="button"
+              className={`sbx-tab-btn ${activeTab === 'database' ? 'active' : ''}`}
+              onClick={() => setActiveTab('database')}
+            >
+              💾 Data Lokal &amp; Cadangan
+            </button>
           </div>
         </div>
 
@@ -102,18 +184,18 @@ export default function SettingsView({ currentUser, onBackToDashboard }) {
             </div>
 
             <div className="sbx-field-box">
-              <label className="sbx-field-label">Alamat Kantor Operasional</label>
+              <label className="sbx-field-label">Alamat Kantor Pusat &amp; Workshop</label>
               <textarea
                 className="sbx-text-input"
-                rows="3"
+                rows={2}
                 value={companyAddress}
                 onChange={(e) => setCompanyAddress(e.target.value)}
               />
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
               <div className="sbx-field-box">
-                <label className="sbx-field-label">Nomor WhatsApp CS &amp; Konsultasi</label>
+                <label className="sbx-field-label">Nomor Hotline Resmi</label>
                 <input
                   type="text"
                   className="sbx-text-input"
@@ -123,7 +205,7 @@ export default function SettingsView({ currentUser, onBackToDashboard }) {
               </div>
 
               <div className="sbx-field-box">
-                <label className="sbx-field-label">Email Resmi Perusahaan</label>
+                <label className="sbx-field-label">Email Korespondensi</label>
                 <input
                   type="email"
                   className="sbx-text-input"
@@ -137,101 +219,70 @@ export default function SettingsView({ currentUser, onBackToDashboard }) {
 
         {/* TAB 2: USERS & RBAC */}
         {activeTab === 'users' && (
-          <div>
-            <h3 style={{ fontSize: '14px', fontWeight: 800, color: 'var(--sbx-text)', marginBottom: '12px' }}>
-              Daftar Pengguna Terdaftar Sunblix OS
-            </h3>
-            <div className="sbx-table-wrap">
-              <table className="sbx-table">
-                <thead>
-                  <tr>
-                    <th>Nama &amp; Email</th>
-                    <th>Peran / Role</th>
-                    <th>Tingkat Akses</th>
-                    <th>Status Akun</th>
-                    <th style={{ textAlign: 'right' }}>Aksi</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      <div style={{ fontWeight: 800, color: 'var(--sbx-text)' }}>Danny</div>
-                      <div style={{ fontSize: '11.5px', color: 'var(--sbx-text-muted)' }}>danny@sunblix.id</div>
-                    </td>
-                    <td>Director / CEO</td>
-                    <td>
-                      <span className="sbx-status-badge success">Super Admin</span>
-                    </td>
-                    <td>🟢 Aktif</td>
-                    <td style={{ textAlign: 'right' }}>
-                      <span style={{ fontSize: '11.5px', color: 'var(--sbx-text-dim)' }}>Akun Anda</span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div style={{ fontWeight: 800, color: 'var(--sbx-text)' }}>Agus Priyono, ST</div>
-                      <div style={{ fontSize: '11.5px', color: 'var(--sbx-text-muted)' }}>engineer@sunblix.id</div>
-                    </td>
-                    <td>Lead Rooftop EPC Engineer</td>
-                    <td>
-                      <span className="sbx-status-badge info">Engineering &amp; QC</span>
-                    </td>
-                    <td>🟢 Aktif</td>
-                    <td style={{ textAlign: 'right' }}>
-                      <button type="button" className="sbx-row-action-btn">Edit Role</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div style={{ fontWeight: 800, color: 'var(--sbx-text)' }}>I Wayan Sugiarta</div>
-                      <div style={{ fontSize: '11.5px', color: 'var(--sbx-text-muted)' }}>wayan@sunblix.id</div>
-                    </td>
-                    <td>Field PV Installer Lead</td>
-                    <td>
-                      <span className="sbx-status-badge warning">Field Supervisor</span>
-                    </td>
-                    <td>🟢 Aktif</td>
-                    <td style={{ textAlign: 'right' }}>
-                      <button type="button" className="sbx-row-action-btn">Edit Role</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div style={{ fontWeight: 800, color: 'var(--sbx-text)' }}>Linda Susanti</div>
-                      <div style={{ fontSize: '11.5px', color: 'var(--sbx-text-muted)' }}>finance@sunblix.id</div>
-                    </td>
-                    <td>Finance &amp; Procurement Admin</td>
-                    <td>
-                      <span className="sbx-status-badge purple">Finance &amp; PO</span>
-                    </td>
-                    <td>🟢 Aktif</td>
-                    <td style={{ textAlign: 'right' }}>
-                      <button type="button" className="sbx-row-action-btn">Edit Role</button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{ fontSize: '13px', color: 'var(--sbx-text-muted)', marginBottom: '4px' }}>
+              Daftar Staf dan Akun yang Memiliki Akses ke Portal Sunblix OS:
             </div>
+
+            {[
+              {
+                name: 'Danny',
+                role: 'Director / CEO',
+                email: 'danny@sunblix.id',
+                level: 'Super Admin',
+                badge: 'success',
+              },
+              {
+                name: 'Tim Engineering EPC',
+                role: 'Lead Rooftop EPC Engineer',
+                email: 'engineer@sunblix.id',
+                level: 'Engineering Lead',
+                badge: 'info',
+              },
+              {
+                name: 'Sales & Project Coordinator',
+                role: 'Senior Sales Engineer',
+                email: 'sales@sunblix.id',
+                level: 'Sales Lead',
+                badge: 'warning',
+              },
+            ].map((u) => (
+              <div
+                key={u.email}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '12px 16px',
+                  background: 'rgba(255, 255, 255, 0.02)',
+                  border: '1px solid var(--sbx-glass-border)',
+                  borderRadius: '8px',
+                }}
+              >
+                <div>
+                  <div style={{ fontWeight: 700, color: 'var(--sbx-text)', fontSize: '13.5px' }}>
+                    {u.name}
+                  </div>
+                  <div style={{ fontSize: '11.5px', color: 'var(--sbx-text-muted)' }}>
+                    {u.email} • {u.role}
+                  </div>
+                </div>
+                <span className={`sbx-status-badge ${u.badge}`}>{u.level}</span>
+              </div>
+            ))}
           </div>
         )}
 
-        {/* TAB 3: ALERTS & WHATSAPP */}
+        {/* TAB 3: NOTIFICATIONS */}
         {activeTab === 'alerts' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', maxWidth: '640px' }}>
-            <h3 style={{ fontSize: '14px', fontWeight: 800, color: 'var(--sbx-text)', margin: '0 0 4px' }}>
-              WhatsApp Auto-Alert Notifications (Twilio / WA Business API)
-            </h3>
-            <p style={{ fontSize: '12px', color: 'var(--sbx-text-muted)', margin: '0 0 12px' }}>
-              Kirim peringatan otomatis langsung ke nomor WhatsApp Direksi dan Tim Engineering saat parameter kritis terdeteksi.
-            </p>
-
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxWidth: '640px' }}>
             <div className="sbx-toggle-row">
               <div>
                 <div style={{ fontWeight: 700, color: 'var(--sbx-text)', fontSize: '12.5px' }}>
-                  🚨 Peringatan Suhu Inverter Kritis (&gt; 55°C)
+                  🚨 Alert Peringatan Suhu Inverter Tinggi (&gt;55°C)
                 </div>
                 <div style={{ fontSize: '11px', color: 'var(--sbx-text-muted)' }}>
-                  Notifikasi instan jika inverter mendeteksi over-temperature di lapangan.
+                  Kirim notifikasi otomatis ke tim maintenance saat inverter mendeteksi suhu kritis.
                 </div>
               </div>
               <input
@@ -245,10 +296,10 @@ export default function SettingsView({ currentUser, onBackToDashboard }) {
             <div className="sbx-toggle-row">
               <div>
                 <div style={{ fontWeight: 700, color: 'var(--sbx-text)', fontSize: '12.5px' }}>
-                  👥 Inbound Lead Baru dari Website
+                  👥 Notifikasi Calon Klien Baru (Lead Inbound)
                 </div>
                 <div style={{ fontSize: '11px', color: 'var(--sbx-text-muted)' }}>
-                  Notifikasi instan saat calon klien submit estimasi kalkulator surya.
+                  Notifikasi instan saat calon klien submit estimasi kalkulator surya atau chat SURTI AI.
                 </div>
               </div>
               <input
@@ -312,6 +363,89 @@ export default function SettingsView({ currentUser, onBackToDashboard }) {
               >
                 📡 Test Koneksi Broker MQTT
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 5: LOCAL DATABASE & BACKUP */}
+        {activeTab === 'database' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', maxWidth: '680px' }}>
+            <div style={{ background: 'rgba(56, 189, 248, 0.08)', border: '1px solid rgba(56, 189, 248, 0.25)', borderRadius: '10px', padding: '16px' }}>
+              <div style={{ fontWeight: 800, fontSize: '14px', color: 'var(--sbx-accent)', marginBottom: '6px' }}>
+                🟢 Status Penyimpanan Lokal: AKTIF &amp; PERSISTEN
+              </div>
+              <p style={{ margin: 0, fontSize: '12.5px', color: 'var(--sbx-text-muted)', lineHeight: '1.6' }}>
+                Seluruh data prospek CRM, proyek EPC, termin faktur, tugas My Work, dan stok komponen tersimpan secara aman di browser lokal Anda (Web Storage v2). Setiap perubahan tersimpan otomatis tanpa perlu koneksi database eksternal.
+              </p>
+            </div>
+
+            <div className="sbx-metrics-row" style={{ marginTop: '0' }}>
+              <div className="sbx-metric-card">
+                <span className="sbx-metric-label">Prospek CRM</span>
+                <div className="sbx-metric-val">{leadsCount}</div>
+              </div>
+              <div className="sbx-metric-card">
+                <span className="sbx-metric-label">Proyek EPC</span>
+                <div className="sbx-metric-val">{projectsCount}</div>
+              </div>
+              <div className="sbx-metric-card">
+                <span className="sbx-metric-label">Faktur Tagihan</span>
+                <div className="sbx-metric-val">{invoicesCount}</div>
+              </div>
+              <div className="sbx-metric-card">
+                <span className="sbx-metric-label">Tugas My Work</span>
+                <div className="sbx-metric-val">{tasksCount}</div>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '8px' }}>
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                <button
+                  type="button"
+                  className="sbx-action-btn primary"
+                  onClick={handleExport}
+                >
+                  📥 Ekspor Cadangan Data (.json)
+                </button>
+
+                <label
+                  className="sbx-filter-pill-btn"
+                  style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center' }}
+                >
+                  📤 Impor Cadangan Data
+                  <input
+                    type="file"
+                    accept=".json"
+                    onChange={handleImport}
+                    style={{ display: 'none' }}
+                  />
+                </label>
+              </div>
+
+              <div style={{ borderTop: '1px solid var(--sbx-glass-border)', paddingTop: '14px', marginTop: '6px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                  <button
+                    type="button"
+                    className="sbx-filter-pill-btn"
+                    style={{ color: '#ef4444', borderColor: 'rgba(239, 68, 68, 0.4)', background: 'rgba(239, 68, 68, 0.08)' }}
+                    onClick={handleClearAllDatabase}
+                  >
+                    🗑️ Hapus Bersih Semua Data Dummy (Kosongkan Database)
+                  </button>
+                  <button
+                    type="button"
+                    className="sbx-filter-pill-btn"
+                    style={{ color: '#f59e0b', borderColor: 'rgba(245, 158, 11, 0.4)' }}
+                    onClick={handleResetDemo}
+                  >
+                    ⚡ Reset Data ke Demo Standar Sunblix
+                  </button>
+                </div>
+                <div style={{ fontSize: '11px', color: 'var(--sbx-text-dim)' }}>
+                  Tombol &ldquo;Hapus Bersih&rdquo; akan mengosongkan seluruh isi CRM, Prospek SURTI, SPH, Proyek, dan Faktur untuk pengujian sistem dari nol.
+                </div>
+              </div>
+
             </div>
           </div>
         )}

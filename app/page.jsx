@@ -14,14 +14,17 @@ import SolarCalculator from '../components/SolarCalculator';
 import FinaleSection from '../components/FinaleSection';
 import VideoModal from '../components/VideoModal';
 import QuoteModal from '../components/QuoteModal';
+import CatalogueModal from '../components/CatalogueModal';
 import FloatingWhatsApp from '../components/FloatingWhatsApp';
 import FloatingBackToTop from '../components/FloatingBackToTop';
+import FloatingSurtiAi from '../components/FloatingSurtiAi';
 import CinematicEngine from '../components/CinematicEngine';
 
 export default function HomePage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [videoModalOpen, setVideoModalOpen] = useState(false);
   const [quoteModalOpen, setQuoteModalOpen] = useState(false);
+  const [catalogueModalOpen, setCatalogueModalOpen] = useState(false);
   const [selectedSystem, setSelectedSystem] = useState(null);
   const [projectTab, setProjectTab] = useState('calc');
 
@@ -66,7 +69,10 @@ export default function HomePage() {
 
             <div className="hero-purpose-content">
               {/* SCENE 1: HERO */}
-              <HeroScene onOpenQuote={() => handleOpenQuote(null)} />
+              <HeroScene
+                onOpenQuote={() => handleOpenQuote(null)}
+                onOpenCatalogue={() => setCatalogueModalOpen(true)}
+              />
 
               {/* SCENE 2: PURPOSE */}
               <PurposeScene onOpenVideo={() => setVideoModalOpen(true)} />
@@ -144,8 +150,14 @@ export default function HomePage() {
         initialData={selectedSystem}
       />
 
+      <CatalogueModal
+        isOpen={catalogueModalOpen}
+        onClose={() => setCatalogueModalOpen(false)}
+      />
+
       {/* FLOATING ACTION BUTTONS */}
       <FloatingBackToTop />
+      <FloatingSurtiAi />
       <FloatingWhatsApp />
     </>
   );

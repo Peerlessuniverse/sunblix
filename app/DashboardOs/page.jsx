@@ -1,9 +1,23 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import './dashboard.css';
 import './os.css';
+
+// Lazy-loaded 3D Virtual Office (Three.js WebGL with Zero Memory Leak & Mobile Adaptive Guard)
+const AgentVirtualOffice3D = dynamic(
+  () => import('./components/AgentVirtualOffice3D'),
+  {
+    ssr: false,
+    loading: () => (
+      <div style={{ width: '100%', height: '100%', minHeight: '440px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0a1120', color: '#94a3b8', fontFamily: 'monospace', fontSize: '12px' }}>
+        ⚡ Memuat 3D Virtual Office Sunblix AI Fleet...
+      </div>
+    ),
+  }
+);
 
 // Dedicated Menu Views
 import MyWorkView from './views/MyWorkView';
@@ -17,6 +31,23 @@ import DeliveryView from './views/DeliveryView';
 import FinanceView from './views/FinanceView';
 import PerformanceView from './views/PerformanceView';
 import SettingsView from './views/SettingsView';
+import SurtiIntelligenceView from './views/SurtiIntelligenceView';
+
+// Notification & Inbound Message Drawers
+import NotificationDrawer from './components/NotificationDrawer';
+import MessagesDrawer from './components/MessagesDrawer';
+import {
+  getStoreNotifications,
+  getStoreMessages,
+  getStoreProjects,
+  getStoreTasks,
+  getStoreLeads,
+  getStoreInvoices,
+  subscribeToStore,
+  addStoreNotification,
+  addStoreMessage,
+  saveStoreTask,
+} from '../../lib/sunblixOsStore';
 
 // Application Dynamic Version
 const APP_VERSION = 'v.1.0.0';
@@ -36,6 +67,21 @@ export default function SunblixDashboardOS() {
     email: 'danny@sunblix.id',
   });
 
+  // Notification & Messages Drawer State
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showMessages, setShowMessages] = useState(false);
+  const [unreadNotifCount, setUnreadNotifCount] = useState(0);
+  const [messagesCount, setMessagesCount] = useState(0);
+  const [storeLeadsCount, setStoreLeadsCount] = useState(0);
+  const [storeProjectsCount, setStoreProjectsCount] = useState(0);
+  const [storeTasksCount, setStoreTasksCount] = useState(0);
+
+  // Live Lists for Dynamic Dashboard Charts & Metrics
+  const [storeTasksList, setStoreTasksList] = useState([]);
+  const [storeProjectsList, setStoreProjectsList] = useState([]);
+  const [storeInvoicesList, setStoreInvoicesList] = useState([]);
+  const [storeNotifsList, setStoreNotifsList] = useState([]);
+
   // Theme State ('dark' | 'light')
   const [theme, setTheme] = useState('dark');
 
@@ -51,8 +97,17 @@ export default function SunblixDashboardOS() {
   // Selected AI Agent for Live Inspection
   const [selectedAgentKey, setSelectedAgentKey] = useState('solaria');
   const [agentActionMessage, setAgentActionMessage] = useState('');
+  const [fleetViewMode, setFleetViewMode] = useState('3d'); // '3d' | 'hud'
+  const [isCycleRunning, setIsCycleRunning] = useState(false);
 
-  // AI Agent Fleet Live Working Status
+  // Auto-detect mobile screen: default to lightweight 2D Diagnostic HUD for Pak Danny's mobile/tablet
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      setFleetViewMode('hud');
+    }
+  }, []);
+
+  // AI Agent Fleet Live Working Status (Clean Standby Operational State)
   const [agents, setAgents] = useState({
     solaria: {
       key: 'solaria',
@@ -60,15 +115,14 @@ export default function SunblixDashboardOS() {
       role: 'Rooftop Site & PV Engineer',
       avatarClass: 'solaria',
       icon: '☀️',
-      status: 'Working',
-      progress: 78,
-      activity: 'Calculating azimuth & 3D shading matrix for Villa Sanur (Site #SBX-26209)...',
-      currentTask: 'Auto-Layout 24x LONGI 585 Wp on 11° slope tile roof',
+      status: 'Standby',
+      progress: 100,
+      activity: 'Standby & monitoring solar irradiance data. Ready for rooftop azimuth & satellite 3D analysis.',
+      currentTask: 'Awaiting new site survey or roof layout simulation request',
       logs: [
-        '09:40:12 — Fetched high-res satellite contour data (Lat -8.670, Long 115.260)',
-        '09:40:28 — Azimuth detected: 175° South-South-East (Irradiance: 4.85 PSH)',
-        '09:40:44 — Auto-clamping string configuration: 2 Strings x 12 Panels',
-        '09:41:02 — Generating BoQ rail mounting & single-line diagram draft...',
+        '08:00:00 — Solar Irradiance Satellite Broker connected',
+        '08:00:05 — Azimuth auto-calculation engine initialized',
+        '08:00:10 — High-res elevation contours ready for 3D layout simulation',
       ],
     },
     helios: {
@@ -77,15 +131,14 @@ export default function SunblixDashboardOS() {
       role: 'Sales & SPH Proposal Copilot',
       avatarClass: 'helios',
       icon: '📑',
-      status: 'Working',
-      progress: 92,
-      activity: 'Formulating tiered 4.5% discount proposal for PT Megah Semesta SPH Ref #014...',
-      currentTask: 'Finalizing 3-Page Official SPH PDF export with PPN 11%',
+      status: 'Standby',
+      progress: 100,
+      activity: 'Standby for SPH generation, official brochure quotes, and 11% PPN tax compliance.',
+      currentTask: 'Ready to draft new official SPH proposal',
       logs: [
-        '09:38:05 — Loaded Base Price: SUNBLIX PRO 8.19 kWp (Rp 145.400.000)',
-        '09:38:40 — Safe Tiered Discount Rule applied: 4.5% (-Rp 6.543.000)',
-        '09:39:15 — DPP calculated: Rp 138.857.000 | PPN 11%: Rp 15.274.270',
-        '09:40:50 — Watermark & official signature stamps verified for download.',
+        '08:00:00 — Sunblix 2026 Commercial Pricing Engine loaded',
+        '08:00:05 — Tiered discount & PPN 11% protection rules active',
+        '08:00:10 — SPH document generator online',
       ],
     },
     volt: {
@@ -95,14 +148,13 @@ export default function SunblixDashboardOS() {
       avatarClass: 'volt',
       icon: '⚡',
       status: 'Monitoring',
-      progress: 99,
-      activity: 'Streaming live telemetry across 48 Deye hybrid inverters & LiFePO4 packs...',
-      currentTask: 'Harmonic grid frequency & battery cell thermal balancing',
+      progress: 100,
+      activity: 'Standby & monitoring MQTT broker for connected Deye hybrid inverters & LiFePO4 batteries.',
+      currentTask: 'Grid frequency & battery thermal monitoring standby',
       logs: [
-        '09:41:00 — 48/48 Gateways Connected to Sunblix Cloud IoT Broker',
-        '09:41:05 — Peak solar generation recorded: 1,480 kW across fleet',
-        '09:41:12 — Average Battery Health: SOH 99.4%, SoC 94.2%, Temp 28.3°C',
-        '09:41:18 — Zero inverter fault codes reported in past 36 hours.',
+        '08:00:00 — MQTT Cloud IoT Broker connection verified',
+        '08:00:05 — Inverter telemetry telemetry listener active',
+        '08:00:10 — Zero fault codes detected across system',
       ],
     },
     omni: {
@@ -113,13 +165,12 @@ export default function SunblixDashboardOS() {
       icon: '💬',
       status: 'Active',
       progress: 100,
-      activity: 'Auto-qualifying 6 incoming residential solar leads via WhatsApp API...',
-      currentTask: 'Confirming site survey appointment for tomorrow 10:00 WIB',
+      activity: 'Standby & listening for incoming prospective customer inquiries via WhatsApp & SURTI Live Chat.',
+      currentTask: 'Listening for inbound website / chat leads',
       logs: [
-        '09:35:10 — Inbound lead: David S. (Jakarta Selatan, PLN 5.500 VA)',
-        '09:36:20 — Monthly bill ~Rp 3.2M matched to SUNBLIX PRO 8.19 kWp',
-        '09:37:45 — Survey schedule slot confirmed: Friday 10:00 WIB',
-        '09:40:00 — Lead transferred to Field Engineer with complete roof coordinates.',
+        '08:00:00 — Inbound customer concierge gateway online',
+        '08:00:05 — Live chat connector linked to /surti',
+        '08:00:10 — Auto-qualification rules ready for residential & commercial PLTS',
       ],
     },
   });
@@ -169,6 +220,18 @@ export default function SunblixDashboardOS() {
       if (storedTheme === 'light' || storedTheme === 'dark') {
         setTheme(storedTheme);
       }
+
+      // Check URL search parameters (e.g. ?nav=surti-intelligence)
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const navParam = urlParams.get('nav');
+        if (navParam) {
+          setActiveNav(navParam);
+        }
+      } catch (err) {
+        console.error('Error reading URL params:', err);
+      }
+
       setAuthChecked(true);
     }
 
@@ -200,6 +263,35 @@ export default function SunblixDashboardOS() {
     updateClock();
     const timer = setInterval(updateClock, 1000);
     return () => clearInterval(timer);
+  }, []);
+
+  // Real-time listener for notification, message, and dashboard data lists
+  useEffect(() => {
+    const updateCounts = () => {
+      try {
+        const notifs = getStoreNotifications();
+        setStoreNotifsList(notifs);
+        setUnreadNotifCount(notifs.filter((n) => !n.isRead).length);
+        const msgs = getStoreMessages();
+        setMessagesCount(msgs.length);
+        const lds = getStoreLeads();
+        setStoreLeadsCount(lds.length);
+        const prjs = getStoreProjects();
+        setStoreProjectsList(prjs);
+        setStoreProjectsCount(prjs.length);
+        const tsks = getStoreTasks();
+        setStoreTasksList(tsks);
+        setStoreTasksCount(tsks.filter((t) => t.status !== 'completed').length);
+        const invs = getStoreInvoices();
+        setStoreInvoicesList(invs);
+      } catch (e) {
+        console.warn('Could not read store counts:', e);
+      }
+    };
+
+    updateCounts();
+    const unsub = subscribeToStore(updateCounts);
+    return () => unsub();
   }, []);
 
   const toggleTheme = () => {
@@ -271,11 +363,77 @@ export default function SunblixDashboardOS() {
   };
 
   const handleTriggerAgent = (agentKey) => {
-    setAgentActionMessage(`⚡ Memulai tugas baru untuk ${agents[agentKey].name}...`);
+    const ag = agents[agentKey];
+    setIsCycleRunning(true);
+    setTimeout(() => setIsCycleRunning(false), 3500);
+    setAgentActionMessage(`⚡ Memulai siklus kerja autonomous untuk ${ag.name}...`);
+
     setTimeout(() => {
-      setAgentActionMessage(`✅ ${agents[agentKey].name} sedang mengeksekusi perhitungan dan telemetri langsung!`);
-      setTimeout(() => setAgentActionMessage(''), 4000);
-    }, 1200);
+      const nowTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+      if (agentKey === 'solaria') {
+        saveStoreTask({
+          title: 'Verifikasi Layout 3D & Azimuth 175° Villa Sanur (Agent Solaria)',
+          category: 'Engineering',
+          priority: 'HIGH',
+          assignee: 'Agent Solaria & Tim EPC',
+          dueDate: 'Hari ini, 15:00',
+          project: 'Villa Sanur Luxury Seaside',
+          icon: '☀️',
+        });
+        addStoreNotification({
+          title: 'Agent SOLARIA: Layout 3D PV Selesai',
+          desc: 'Perhitungan azimuth 175° dan stringing 2x12 panel LONGI 585 Wp telah selesai.',
+          category: 'sph',
+          targetNav: 'my-work',
+          icon: '☀️',
+        });
+      } else if (agentKey === 'helios') {
+        addStoreNotification({
+          title: 'Agent HELIOS: Proposal SPH Siap Review',
+          desc: 'Formula harga SPH 14.04 kWp (DPP Rp 138.8jt + PPN 11%) telah digenerate.',
+          category: 'sph',
+          targetNav: 'surti-intelligence',
+          icon: '📑',
+        });
+      } else if (agentKey === 'volt') {
+        addStoreNotification({
+          title: 'Agent VOLT: Telemetri 48 Gateway Normal',
+          desc: 'Inverter Deye Hybrid & baterai LiFePO4 sinkron. SOH rata-rata 99.4%, suhu 28.3°C aman.',
+          category: 'iot',
+          targetNav: 'dashboard',
+          icon: '⚡',
+        });
+      } else if (agentKey === 'omni') {
+        addStoreMessage({
+          sender: 'David S. (Bintaro)',
+          phone: '+62 812-5566-7788',
+          text: 'Halo Sunblix, saya ingin survei atap rumah saya di Bintaro untuk pasang solar panel 8.19 kWp.',
+        });
+        addStoreNotification({
+          title: 'Agent OMNI: Lead Baru Terkualifikasi',
+          desc: 'Klien dari Bintaro (PLN 5.500 VA) telah dikualifikasi dan meminta jadwal survei.',
+          category: 'crm',
+          targetNav: 'crm',
+          icon: '💬',
+        });
+      }
+
+      setAgents((prev) => ({
+        ...prev,
+        [agentKey]: {
+          ...prev[agentKey],
+          progress: 100,
+          logs: [
+            ...prev[agentKey].logs.slice(1),
+            `${nowTime} — [Autonomous Cycle Completed] Tugas berhasil dieksekusi dan dicatat ke sistem operasional.`,
+          ],
+        },
+      }));
+
+      setAgentActionMessage(`✅ ${ag.name} berhasil mengeksekusi siklus kerja dan memperbarui sistem operasional!`);
+      setTimeout(() => setAgentActionMessage(''), 5000);
+    }, 1000);
   };
 
   if (!authChecked) {
@@ -401,6 +559,27 @@ export default function SunblixDashboardOS() {
   // =========================================================================
   const activeAgent = agents[selectedAgentKey] || agents.solaria;
 
+  // Calculate dynamic business metrics for Dashboard Landing
+  const paidInvoices = storeInvoicesList.filter((i) => i.status === 'Lunas');
+  const dynamicRevenueNum = paidInvoices.reduce((acc, curr) => acc + (curr.amountNum || 0), 0);
+  const dynamicRevenueStr = dynamicRevenueNum > 0
+    ? (dynamicRevenueNum >= 1000000000
+        ? `Rp ${(dynamicRevenueNum / 1000000000).toFixed(2)}B`
+        : `Rp ${(dynamicRevenueNum / 1000000).toFixed(0)} Juta`)
+    : 'Rp 0';
+
+  const overdueTasksCount = storeTasksList.filter((t) => t.priority === 'URGENT' && t.status !== 'completed').length;
+  const atRiskTasksCount = storeTasksList.filter((t) => t.priority === 'HIGH' && t.status !== 'completed').length;
+  const dueTodayTasksCount = storeTasksList.filter((t) => (t.dueDate?.includes('Hari') || t.dueDate?.includes('1')) && t.status !== 'completed').length;
+  const upcomingTasksCount = Math.max(0, storeTasksCount - (overdueTasksCount + atRiskTasksCount + dueTodayTasksCount));
+
+  const onTrackProjectsCount = storeProjectsList.filter((p) => p.status === 'Live Terkoneksi' || p.status?.includes('Pemasangan')).length;
+  const atRiskProjectsCount = storeProjectsList.filter((p) => p.status?.includes('Tertunda') || p.status?.includes('Kendala')).length;
+  const delayedProjectsCount = storeProjectsList.filter((p) => p.status?.includes('Material') || p.status?.includes('Menunggu')).length;
+  const onHoldProjectsCount = storeProjectsList.filter((p) => p.status?.includes('Hold')).length;
+
+  const dynamicSlaRate = overdueTasksCount > 0 ? '94.3%' : '100%';
+
   return (
     <div className={`sbx-dashboard-root ${theme === 'light' ? 'light-mode' : ''}`}>
       {/* SIDEBAR NAVIGATION (PERSIS SEPERTI GAMBAR DASAWARSA OS) */}
@@ -442,7 +621,7 @@ export default function SunblixDashboardOS() {
                   <span className="sbx-nav-icon">📥</span>
                   <span>My Work</span>
                 </div>
-                <span className="sbx-nav-badge danger">8</span>
+                {storeTasksCount > 0 && <span className="sbx-nav-badge danger">{storeTasksCount}</span>}
               </button>
             </li>
 
@@ -464,6 +643,20 @@ export default function SunblixDashboardOS() {
             <li>
               <button
                 type="button"
+                className={`sbx-nav-item ${activeNav === 'surti-intelligence' ? 'active' : ''}`}
+                onClick={() => setActiveNav('surti-intelligence')}
+              >
+                <div className="sbx-nav-left">
+                  <span className="sbx-nav-icon">⚡</span>
+                  <span>SURTI Intelligence</span>
+                </div>
+                <span className="sbx-nav-badge" style={{ background: 'rgba(245, 158, 11, 0.2)', color: '#f59e0b', border: '1px solid rgba(245, 158, 11, 0.3)', fontWeight: 600 }}>SPH Queue</span>
+              </button>
+            </li>
+
+            <li>
+              <button
+                type="button"
                 className={`sbx-nav-item ${activeNav === 'crm' ? 'active' : ''}`}
                 onClick={() => setActiveNav('crm')}
               >
@@ -471,7 +664,7 @@ export default function SunblixDashboardOS() {
                   <span className="sbx-nav-icon">👥</span>
                   <span>CRM & Leads</span>
                 </div>
-                <span className="sbx-nav-badge info">6 Baru</span>
+                {storeLeadsCount > 0 && <span className="sbx-nav-badge info">{storeLeadsCount} Baru</span>}
               </button>
             </li>
 
@@ -485,9 +678,10 @@ export default function SunblixDashboardOS() {
                   <span className="sbx-nav-icon">☀️</span>
                   <span>Projects</span>
                 </div>
-                <span style={{ fontSize: '10.5px', color: '#94a3b8' }}>42</span>
+                {storeProjectsCount > 0 && <span style={{ fontSize: '10.5px', color: '#94a3b8' }}>{storeProjectsCount}</span>}
               </button>
             </li>
+
 
             <li>
               <Link href="/brosur" className="sbx-nav-item" target="_blank" rel="noopener noreferrer">
@@ -649,15 +843,25 @@ export default function SunblixDashboardOS() {
             </div>
 
             {/* Notification Bell */}
-            <button type="button" className="sbx-top-btn" title="12 Notifikasi Baru">
+            <button
+              type="button"
+              className="sbx-top-btn"
+              title={`${unreadNotifCount} Notifikasi Operasional Baru`}
+              onClick={() => setShowNotifications(true)}
+            >
               <span>🔔</span>
-              <span className="sbx-btn-badge">12</span>
+              {unreadNotifCount > 0 && <span className="sbx-btn-badge">{unreadNotifCount}</span>}
             </button>
 
             {/* Messages Chat */}
-            <button type="button" className="sbx-top-btn" title="4 Pesan Inbound WhatsApp">
+            <button
+              type="button"
+              className="sbx-top-btn"
+              title={`${messagesCount} Pesan Inbound WhatsApp`}
+              onClick={() => setShowMessages(true)}
+            >
               <span>💬</span>
-              <span className="sbx-btn-badge">4</span>
+              {messagesCount > 0 && <span className="sbx-btn-badge">{messagesCount}</span>}
             </button>
 
             {/* Theme Toggle Button */}
@@ -687,8 +891,18 @@ export default function SunblixDashboardOS() {
           <MyWorkView onBackToDashboard={() => setActiveNav('dashboard')} />
         )}
 
+        {activeNav === 'surti-intelligence' && (
+          <SurtiIntelligenceView
+            currentUser={currentUser}
+            onBackToDashboard={() => setActiveNav('dashboard')}
+          />
+        )}
+
         {activeNav === 'crm' && (
-          <CrmView onBackToDashboard={() => setActiveNav('dashboard')} />
+          <CrmView
+            onBackToDashboard={() => setActiveNav('dashboard')}
+            onNavigateToProjects={() => setActiveNav('projects')}
+          />
         )}
 
         {activeNav === 'projects' && (
@@ -773,6 +987,26 @@ export default function SunblixDashboardOS() {
               <span className="sbx-ai-fleet-badge">4 Digital Specialists Online</span>
             </div>
             <div className="sbx-ai-fleet-actions">
+              {/* Adaptive Switcher: 3D Virtual Office vs 2D Diagnostic HUD */}
+              <div className="sbx-ai-mode-toggle-group">
+                <button
+                  type="button"
+                  className={`sbx-ai-mode-btn ${fleetViewMode === '3d' ? 'active' : ''}`}
+                  onClick={() => setFleetViewMode('3d')}
+                  title="Lihat kantor virtual 3D interaktif 4 spesialis AI"
+                >
+                  🏢 3D Office Space
+                </button>
+                <button
+                  type="button"
+                  className={`sbx-ai-mode-btn ${fleetViewMode === 'hud' ? 'active' : ''}`}
+                  onClick={() => setFleetViewMode('hud')}
+                  title="Mode ringan sensor & telemetri (Optimal untuk baterai ponsel)"
+                >
+                  ⚡ Diagnostic HUD
+                </button>
+              </div>
+
               <button
                 type="button"
                 className="sbx-ai-filter-btn active"
@@ -830,8 +1064,19 @@ export default function SunblixDashboardOS() {
               })}
             </div>
 
-            {/* SISI KANAN: DYNAMIC ANIMATED VIEWPORT CANVAS (PERGERAKAN BERBEDA TIAP AGENT) */}
-            <div className="sbx-ai-animated-viewport">
+            {/* SISI KANAN: ADAPTIVE VIEWPORT (3D VIRTUAL OFFICE ATAU 2D DIAGNOSTIC HUD) */}
+            {fleetViewMode === '3d' ? (
+              <div className="sbx-ai-animated-viewport" style={{ padding: 0, overflow: 'hidden', minHeight: '460px' }}>
+                <AgentVirtualOffice3D
+                  selectedAgentKey={selectedAgentKey}
+                  onSelectAgent={setSelectedAgentKey}
+                  agents={agents}
+                  isCycleActive={isCycleRunning}
+                  onTriggerCycle={handleTriggerAgent}
+                />
+              </div>
+            ) : (
+              <div className="sbx-ai-animated-viewport">
               {/* HUD Header Viewport */}
               <div className="sbx-viewport-hud">
                 <div className="sbx-viewport-agent-name">
@@ -908,8 +1153,8 @@ export default function SunblixDashboardOS() {
                       </div>
                     </div>
                     <div style={{ fontSize: '11px', color: '#cbd5e1', lineHeight: '1.4' }}>
-                      DPP: <strong>Rp 138.857.000</strong> • PPN 11%: <strong>Rp 15.274.270</strong><br />
-                      Total SPH Final: <strong style={{ color: '#38bdf8' }}>Rp 154.131.270</strong>
+                      Kalkulator SPH: <strong>Katalog Resmi Sunblix 2026</strong><br />
+                      Status: <strong style={{ color: '#38bdf8' }}>Siap Kalkulasi Penawaran Real-Time</strong>
                     </div>
                   </div>
                 </div>
@@ -927,7 +1172,7 @@ export default function SunblixDashboardOS() {
                       />
                     </svg>
                     <span style={{ position: 'absolute', top: '8px', left: '10px', fontSize: '10px', color: '#10b981', fontWeight: 800, fontFamily: 'monospace' }}>
-                      GRID OSCILLOSCOPE: 50.02 Hz • 224 VAC
+                      GRID OSCILLOSCOPE: 50.00 Hz • 220 VAC
                     </span>
                   </div>
 
@@ -944,8 +1189,8 @@ export default function SunblixDashboardOS() {
                         </div>
                       ))}
                     </div>
-                    <span style={{ fontSize: '10px', color: '#cbd5e1', fontWeight: 700 }}>SoC: 94.2% Normal</span>
-                    <span style={{ fontSize: '9.5px', color: '#94a3b8' }}>Temp 28.3°C • 0 Faults</span>
+                    <span style={{ fontSize: '10px', color: '#cbd5e1', fontWeight: 700 }}>Telemetry Standby</span>
+                    <span style={{ fontSize: '9.5px', color: '#94a3b8' }}>Sistem Siap Sinkronisasi IoT</span>
                   </div>
                 </div>
               )}
@@ -957,9 +1202,7 @@ export default function SunblixDashboardOS() {
                   <div className="sbx-radar-stage">
                     <div className="sbx-radar-sweeper" />
                     {/* Titik Radar Sinyal Masuk */}
-                    <div className="sbx-radar-blip" style={{ top: '25%', left: '30%' }} title="Lead Jakarta" />
-                    <div className="sbx-radar-blip" style={{ top: '65%', left: '70%', animationDelay: '0.4s' }} title="Lead Surabaya" />
-                    <div className="sbx-radar-blip" style={{ top: '40%', left: '60%', animationDelay: '0.8s' }} title="Lead Bali" />
+                    <div className="sbx-radar-blip" style={{ top: '35%', left: '45%' }} title="Lead Radar Standby" />
                     <span style={{ position: 'absolute', bottom: '6px', fontSize: '9px', color: '#a855f7', fontWeight: 800 }}>
                       RADAR DISPATCH
                     </span>
@@ -969,13 +1212,13 @@ export default function SunblixDashboardOS() {
                   <div className="sbx-chat-stream-box">
                     <div className="sbx-chat-bubble">
                       💬 <strong>WhatsApp Inbound Auto-Concierge:</strong><br />
-                      &ldquo;Halo Bpk David, daya PLN 5.500 VA sangat tepat dipasang sistem SUNBLIX PRO 8.19 kWp. Jadwal survei telah kami siapkan besok jam 10:00 WIB.&rdquo;
+                      &ldquo;SURTI AI siap melayani konsultasi dan kualifikasi kebutuhan PLTS calon pelanggan 24/7.&rdquo;
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '10.5px', color: '#a855f7' }}>
                       <span className="sbx-typing-dots">
                         <span /><span /><span />
                       </span>
-                      <span>Agent OMNI is qualifying 6 leads across Jakarta, Surabaya, & Bali...</span>
+                      <span>Agent OMNI standby memantau prospek masuk dari SURTI Web &amp; WhatsApp...</span>
                     </div>
                   </div>
                 </div>
@@ -1007,6 +1250,7 @@ export default function SunblixDashboardOS() {
                 </div>
               </div>
             </div>
+            )}
           </div>
 
           {agentActionMessage && (
@@ -1088,529 +1332,526 @@ export default function SunblixDashboardOS() {
             </div>
 
             {/* ===================================================================
-                ROW 1: 5 TOP METRIC CARDS (PERSIS SEPERTI GAMBAR DASAWARSA OS)
+                ROW 1: 5 TOP METRIC CARDS (DYNAMIC OPERATIONAL VALUES)
                =================================================================== */}
             <section className="sbx-metrics-row">
-          {/* Card 1: Total Revenue (YTD) */}
-          <div className="sbx-metric-card">
-            <div className="sbx-metric-header">
-              <span className="sbx-metric-label">Total Revenue (YTD)</span>
-              <div className="sbx-metric-icon">🪙</div>
-            </div>
-            <div className="sbx-metric-body">
-              <span className="sbx-metric-val">Rp 24.8B</span>
-              <span className="sbx-metric-badge-delta">↑ 18.6%</span>
-            </div>
-            <p className="sbx-metric-subtext">vs last year Rp 20.9B</p>
-          </div>
+              {/* Card 1: Total Revenue (YTD) */}
+              <div className="sbx-metric-card">
+                <div className="sbx-metric-header">
+                  <span className="sbx-metric-label">Total Revenue (YTD)</span>
+                  <div className="sbx-metric-icon">🪙</div>
+                </div>
+                <div className="sbx-metric-body">
+                  <span className="sbx-metric-val">{dynamicRevenueStr}</span>
+                  <span className={`sbx-status-badge ${dynamicRevenueNum > 0 ? 'success' : 'info'}`}>
+                    {dynamicRevenueNum > 0 ? 'Aktif' : 'Zero State'}
+                  </span>
+                </div>
+                <p className="sbx-metric-subtext">
+                  {dynamicRevenueNum > 0 ? 'Total faktur termin terlunasi' : 'Belum ada pembayaran invoice'}
+                </p>
+              </div>
 
-          {/* Card 2: Gross Margin (YTD) */}
-          <div className="sbx-metric-card">
-            <div className="sbx-metric-header">
-              <span className="sbx-metric-label">Gross Margin (YTD)</span>
-              <div className="sbx-metric-icon">📊</div>
-            </div>
-            <div className="sbx-metric-body">
-              <span className="sbx-metric-val">21.7%</span>
-              <span className="sbx-metric-badge-delta">↑ 3.4%</span>
-            </div>
-            <p className="sbx-metric-subtext">vs last year 18.3%</p>
-          </div>
+              {/* Card 2: Gross Margin (YTD) */}
+              <div className="sbx-metric-card">
+                <div className="sbx-metric-header">
+                  <span className="sbx-metric-label">Gross Margin (YTD)</span>
+                  <div className="sbx-metric-icon">📊</div>
+                </div>
+                <div className="sbx-metric-body">
+                  <span className="sbx-metric-val">{dynamicRevenueNum > 0 ? '21.7%' : '0%'}</span>
+                  <span className="sbx-metric-badge-delta">SOP Target</span>
+                </div>
+                <p className="sbx-metric-subtext">Gross margin operasional EPC</p>
+              </div>
 
-          {/* Card 3: Active Projects */}
-          <div className="sbx-metric-card">
-            <div className="sbx-metric-header">
-              <span className="sbx-metric-label">Active Projects</span>
-              <div className="sbx-metric-icon">📁</div>
-            </div>
-            <div className="sbx-metric-body">
-              <span className="sbx-metric-val">42</span>
-            </div>
-            <p className="sbx-metric-subtext">24 On Track • 10 At Risk • 8 Delayed</p>
-          </div>
+              {/* Card 3: Active Projects */}
+              <div className="sbx-metric-card">
+                <div className="sbx-metric-header">
+                  <span className="sbx-metric-label">Active Projects</span>
+                  <div className="sbx-metric-icon">📁</div>
+                </div>
+                <div className="sbx-metric-body">
+                  <span className="sbx-metric-val">{storeProjectsCount}</span>
+                </div>
+                <p className="sbx-metric-subtext">
+                  {storeProjectsCount === 0 ? 'Belum ada proyek aktif' : `${storeProjectsCount} Proyek dalam pengerjaan`}
+                </p>
+              </div>
 
-          {/* Card 4: Open Work Items */}
-          <div className="sbx-metric-card">
-            <div className="sbx-metric-header">
-              <span className="sbx-metric-label">Open Work Items</span>
-              <div className="sbx-metric-icon">☑️</div>
-            </div>
-            <div className="sbx-metric-body">
-              <span className="sbx-metric-val">127</span>
-            </div>
-            <p className="sbx-metric-subtext">8 Overdue • 19 At Risk</p>
-          </div>
+              {/* Card 4: Open Work Items */}
+              <div className="sbx-metric-card">
+                <div className="sbx-metric-header">
+                  <span className="sbx-metric-label">Open Work Items</span>
+                  <div className="sbx-metric-icon">☑️</div>
+                </div>
+                <div className="sbx-metric-body">
+                  <span className="sbx-metric-val">{storeTasksCount}</span>
+                </div>
+                <p className="sbx-metric-subtext">
+                  {storeTasksCount === 0 ? 'Semua tugas telah terselesaikan' : `${storeTasksCount} Tugas aktif`}
+                </p>
+              </div>
 
-          {/* Card 5: SLA Achievement */}
-          <div className="sbx-metric-card">
-            <div className="sbx-metric-header">
-              <span className="sbx-metric-label">SLA Achievement</span>
-              <div className="sbx-metric-icon">🎯</div>
-            </div>
-            <div className="sbx-metric-body">
-              <span className="sbx-metric-val">94.3%</span>
-              <span className="sbx-metric-badge-delta">↑ 4.7%</span>
-            </div>
-            <p className="sbx-metric-subtext">vs last month 89.6%</p>
-          </div>
-        </section>
+              {/* Card 5: SLA Achievement */}
+              <div className="sbx-metric-card">
+                <div className="sbx-metric-header">
+                  <span className="sbx-metric-label">SLA Achievement</span>
+                  <div className="sbx-metric-icon">🎯</div>
+                </div>
+                <div className="sbx-metric-body">
+                  <span className="sbx-metric-val">{dynamicSlaRate}</span>
+                  <span className="sbx-status-badge success">Target SOP</span>
+                </div>
+                <p className="sbx-metric-subtext">Kepatuhan SLA operasional</p>
+              </div>
+            </section>
 
-        {/* ===================================================================
-            ROW 2: 3 VISUAL WIDGETS (DONUT CHART, SLA LINE, STATUS DONUT)
-           =================================================================== */}
-        <section className="sbx-row-three-cols">
-          {/* Widget 1: Work Summary (Donut Chart) */}
-          <div className="sbx-card">
-            <div className="sbx-card-header">
-              <h3 className="sbx-card-title">Work Summary</h3>
-            </div>
+            {/* ===================================================================
+                ROW 2: 3 VISUAL WIDGETS (DONUT CHART, SLA LINE, STATUS DONUT)
+               =================================================================== */}
+            <section className="sbx-row-three-cols">
+              {/* Widget 1: Work Summary (Donut Chart) */}
+              <div className="sbx-card">
+                <div className="sbx-card-header">
+                  <h3 className="sbx-card-title">Work Summary</h3>
+                </div>
 
-            <div className="sbx-donut-wrapper">
-              <div className="sbx-donut-graphic">
-                <svg width="120" height="120" viewBox="0 0 120 120">
-                  <circle cx="60" cy="60" r="46" fill="transparent" stroke="rgba(255,255,255,0.06)" strokeWidth="16" />
-                  {/* Green slice (Upcoming 65) */}
-                  <circle
-                    cx="60" cy="60" r="46" fill="transparent"
-                    stroke="#10b981" strokeWidth="16"
-                    strokeDasharray="147 289"
-                    strokeDashoffset="0"
-                    transform="rotate(-90 60 60)"
-                  />
-                  {/* Blue slice (Due today 35) */}
-                  <circle
-                    cx="60" cy="60" r="46" fill="transparent"
-                    stroke="#0284c7" strokeWidth="16"
-                    strokeDasharray="79 289"
-                    strokeDashoffset="-147"
-                    transform="rotate(-90 60 60)"
-                  />
-                  {/* Orange slice (At Risk 19) */}
-                  <circle
-                    cx="60" cy="60" r="46" fill="transparent"
-                    stroke="#f59e0b" strokeWidth="16"
-                    strokeDasharray="43 289"
-                    strokeDashoffset="-226"
-                    transform="rotate(-90 60 60)"
-                  />
-                  {/* Red slice (Overdue 8) */}
-                  <circle
-                    cx="60" cy="60" r="46" fill="transparent"
-                    stroke="#f43f5e" strokeWidth="16"
-                    strokeDasharray="18 289"
-                    strokeDashoffset="-269"
-                    transform="rotate(-90 60 60)"
-                  />
-                </svg>
-                <div className="sbx-donut-center-text">
-                  <div className="sbx-donut-center-num">127</div>
-                  <div className="sbx-donut-center-lbl">Total</div>
+                <div className="sbx-donut-wrapper">
+                  <div className="sbx-donut-graphic">
+                    <svg width="120" height="120" viewBox="0 0 120 120">
+                      <circle cx="60" cy="60" r="46" fill="transparent" stroke="rgba(255,255,255,0.06)" strokeWidth="16" />
+                      {storeTasksCount > 0 ? (
+                        <>
+                          {upcomingTasksCount > 0 && (
+                            <circle
+                              cx="60" cy="60" r="46" fill="transparent"
+                              stroke="#10b981" strokeWidth="16"
+                              strokeDasharray={`${Math.round((upcomingTasksCount / storeTasksCount) * 289)} 289`}
+                              strokeDashoffset="0"
+                              transform="rotate(-90 60 60)"
+                            />
+                          )}
+                          {dueTodayTasksCount > 0 && (
+                            <circle
+                              cx="60" cy="60" r="46" fill="transparent"
+                              stroke="#0284c7" strokeWidth="16"
+                              strokeDasharray={`${Math.round((dueTodayTasksCount / storeTasksCount) * 289)} 289`}
+                              strokeDashoffset={`-${Math.round((upcomingTasksCount / storeTasksCount) * 289)}`}
+                              transform="rotate(-90 60 60)"
+                            />
+                          )}
+                          {atRiskTasksCount > 0 && (
+                            <circle
+                              cx="60" cy="60" r="46" fill="transparent"
+                              stroke="#f59e0b" strokeWidth="16"
+                              strokeDasharray={`${Math.round((atRiskTasksCount / storeTasksCount) * 289)} 289`}
+                              strokeDashoffset={`-${Math.round(((upcomingTasksCount + dueTodayTasksCount) / storeTasksCount) * 289)}`}
+                              transform="rotate(-90 60 60)"
+                            />
+                          )}
+                          {overdueTasksCount > 0 && (
+                            <circle
+                              cx="60" cy="60" r="46" fill="transparent"
+                              stroke="#f43f5e" strokeWidth="16"
+                              strokeDasharray={`${Math.round((overdueTasksCount / storeTasksCount) * 289)} 289`}
+                              strokeDashoffset={`-${Math.round(((upcomingTasksCount + dueTodayTasksCount + atRiskTasksCount) / storeTasksCount) * 289)}`}
+                              transform="rotate(-90 60 60)"
+                            />
+                          )}
+                        </>
+                      ) : (
+                        <circle cx="60" cy="60" r="46" fill="transparent" stroke="rgba(255,255,255,0.12)" strokeWidth="16" />
+                      )}
+                    </svg>
+                    <div className="sbx-donut-center-text">
+                      <div className="sbx-donut-center-num">{storeTasksCount}</div>
+                      <div className="sbx-donut-center-lbl">Total</div>
+                    </div>
+                  </div>
+
+                  <div className="sbx-donut-legend">
+                    <div className="sbx-legend-item">
+                      <div className="sbx-legend-left">
+                        <span className="sbx-legend-dot red" />
+                        <span>Overdue</span>
+                      </div>
+                      <span className="sbx-legend-val">{overdueTasksCount}</span>
+                    </div>
+                    <div className="sbx-legend-item">
+                      <div className="sbx-legend-left">
+                        <span className="sbx-legend-dot orange" />
+                        <span>At Risk</span>
+                      </div>
+                      <span className="sbx-legend-val">{atRiskTasksCount}</span>
+                    </div>
+                    <div className="sbx-legend-item">
+                      <div className="sbx-legend-left">
+                        <span className="sbx-legend-dot blue" />
+                        <span>Due Today</span>
+                      </div>
+                      <span className="sbx-legend-val">{dueTodayTasksCount}</span>
+                    </div>
+                    <div className="sbx-legend-item">
+                      <div className="sbx-legend-left">
+                        <span className="sbx-legend-dot green" />
+                        <span>Upcoming</span>
+                      </div>
+                      <span className="sbx-legend-val">{upcomingTasksCount}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ textAlign: 'right', marginTop: '10px' }}>
+                  <button
+                    type="button"
+                    className="sbx-card-link"
+                    style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                    onClick={() => setActiveNav('my-work')}
+                  >
+                    View My Work →
+                  </button>
                 </div>
               </div>
 
-              <div className="sbx-donut-legend">
-                <div className="sbx-legend-item">
-                  <div className="sbx-legend-left">
-                    <span className="sbx-legend-dot red" />
-                    <span>Overdue</span>
-                  </div>
-                  <span className="sbx-legend-val">8</span>
+              {/* Widget 2: SLA Performance (Trend Line) */}
+              <div className="sbx-card">
+                <div className="sbx-card-header">
+                  <h3 className="sbx-card-title">SLA Performance</h3>
+                  <span style={{ fontSize: '11px', color: 'var(--sbx-text-muted)', border: '1px solid var(--sbx-glass-border)', padding: '2px 8px', borderRadius: '6px' }}>
+                    Operasional Aktif
+                  </span>
                 </div>
-                <div className="sbx-legend-item">
-                  <div className="sbx-legend-left">
-                    <span className="sbx-legend-dot orange" />
-                    <span>At Risk</span>
-                  </div>
-                  <span className="sbx-legend-val">19</span>
+
+                <div className="sbx-line-chart-wrap">
+                  <svg className="sbx-svg-trend" viewBox="0 0 320 120">
+                    <line x1="20" y1="20" x2="300" y2="20" stroke="rgba(255,255,255,0.06)" strokeDasharray="3 3" />
+                    <line x1="20" y1="50" x2="300" y2="50" stroke="rgba(255,255,255,0.06)" strokeDasharray="3 3" />
+                    <line x1="20" y1="80" x2="300" y2="80" stroke="rgba(255,255,255,0.06)" strokeDasharray="3 3" />
+                    <line x1="20" y1="110" x2="300" y2="110" stroke="rgba(255,255,255,0.06)" />
+
+                    <text x="0" y="24" fill="#94a3b8" fontSize="8">100%</text>
+                    <text x="5" y="54" fill="#94a3b8" fontSize="8">75%</text>
+                    <text x="5" y="84" fill="#94a3b8" fontSize="8">50%</text>
+                    <text x="10" y="114" fill="#94a3b8" fontSize="8">0%</text>
+
+                    <defs>
+                      <linearGradient id="slaGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.3" />
+                        <stop offset="100%" stopColor="#38bdf8" stopOpacity="0.0" />
+                      </linearGradient>
+                    </defs>
+                    <polygon
+                      points="35,36 75,36 120,36 165,36 210,36 255,36 295,36 295,110 35,110"
+                      fill="url(#slaGradient)"
+                    />
+                    <polyline
+                      fill="none"
+                      stroke="#38bdf8"
+                      strokeWidth="2.5"
+                      points="35,36 75,36 120,36 165,36 210,36 255,36 295,36"
+                    />
+                    {[
+                      { x: 35, y: 36, val: '100%', day: 'Hari 1' },
+                      { x: 75, y: 36, val: '100%', day: 'Hari 2' },
+                      { x: 120, y: 36, val: '100%', day: 'Hari 3' },
+                      { x: 165, y: 36, val: '100%', day: 'Hari 4' },
+                      { x: 210, y: 36, val: '100%', day: 'Hari 5' },
+                      { x: 255, y: 36, val: '100%', day: 'Hari 6' },
+                      { x: 295, y: 36, val: '100%', day: 'Hari 7' },
+                    ].map((pt, idx) => (
+                      <g key={idx}>
+                        <circle cx={pt.x} cy={pt.y} r="3.5" fill="#0284c7" stroke="#ffffff" strokeWidth="1.5" />
+                        <text x={pt.x} y={pt.y - 7} fill="#38bdf8" fontSize="8" fontWeight="bold" textAnchor="middle">
+                          {pt.val}
+                        </text>
+                        <text x={pt.x} y={118} fill="#94a3b8" fontSize="7.5" textAnchor="middle">
+                          {pt.day}
+                        </text>
+                      </g>
+                    ))}
+                  </svg>
                 </div>
-                <div className="sbx-legend-item">
-                  <div className="sbx-legend-left">
-                    <span className="sbx-legend-dot blue" />
-                    <span>Due Today</span>
-                  </div>
-                  <span className="sbx-legend-val">35</span>
-                </div>
-                <div className="sbx-legend-item">
-                  <div className="sbx-legend-left">
-                    <span className="sbx-legend-dot green" />
-                    <span>Upcoming</span>
-                  </div>
-                  <span className="sbx-legend-val">65</span>
-                </div>
-              </div>
-            </div>
 
-            <div style={{ textAlign: 'right', marginTop: '10px' }}>
-              <button
-                type="button"
-                className="sbx-card-link"
-                style={{ background: 'none', border: 'none', cursor: 'pointer' }}
-                onClick={() => setActiveNav('my-work')}
-              >
-                View My Work →
-              </button>
-            </div>
-          </div>
-
-          {/* Widget 2: SLA Performance (Trend Line) */}
-          <div className="sbx-card">
-            <div className="sbx-card-header">
-              <h3 className="sbx-card-title">SLA Performance</h3>
-              <span style={{ fontSize: '11px', color: 'var(--sbx-text-muted)', border: '1px solid var(--sbx-glass-border)', padding: '2px 8px', borderRadius: '6px' }}>
-                This Week ⌄
-              </span>
-            </div>
-
-            <div className="sbx-line-chart-wrap">
-              <svg className="sbx-svg-trend" viewBox="0 0 320 120">
-                {/* Horizontal reference lines */}
-                <line x1="20" y1="20" x2="300" y2="20" stroke="rgba(255,255,255,0.06)" strokeDasharray="3 3" />
-                <line x1="20" y1="50" x2="300" y2="50" stroke="rgba(255,255,255,0.06)" strokeDasharray="3 3" />
-                <line x1="20" y1="80" x2="300" y2="80" stroke="rgba(255,255,255,0.06)" strokeDasharray="3 3" />
-                <line x1="20" y1="110" x2="300" y2="110" stroke="rgba(255,255,255,0.06)" />
-
-                {/* Left Percentage Axis */}
-                <text x="0" y="24" fill="#94a3b8" fontSize="8">100%</text>
-                <text x="5" y="54" fill="#94a3b8" fontSize="8">75%</text>
-                <text x="5" y="84" fill="#94a3b8" fontSize="8">50%</text>
-                <text x="10" y="114" fill="#94a3b8" fontSize="8">0%</text>
-
-                {/* Gradient area under trend line */}
-                <defs>
-                  <linearGradient id="slaGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.3" />
-                    <stop offset="100%" stopColor="#38bdf8" stopOpacity="0.0" />
-                  </linearGradient>
-                </defs>
-                <polygon
-                  points="35,55 75,52 120,49 165,45 210,40 255,40 295,36 295,110 35,110"
-                  fill="url(#slaGradient)"
-                />
-
-                {/* Trend line */}
-                <polyline
-                  fill="none"
-                  stroke="#38bdf8"
-                  strokeWidth="2.5"
-                  points="35,55 75,52 120,49 165,45 210,40 255,40 295,36"
-                />
-
-                {/* Data points & Values */}
-                {[
-                  { x: 35, y: 55, val: '89%', day: 'May 10' },
-                  { x: 75, y: 52, val: '90%', day: 'May 11' },
-                  { x: 120, y: 49, val: '91%', day: 'May 12' },
-                  { x: 165, y: 45, val: '92%', day: 'May 13' },
-                  { x: 210, y: 40, val: '93%', day: 'May 14' },
-                  { x: 255, y: 40, val: '93%', day: 'May 15' },
-                  { x: 295, y: 36, val: '94%', day: 'May 16' },
-                ].map((pt, idx) => (
-                  <g key={idx}>
-                    <circle cx={pt.x} cy={pt.y} r="3.5" fill="#0284c7" stroke="#ffffff" strokeWidth="1.5" />
-                    <text x={pt.x} y={pt.y - 7} fill="#38bdf8" fontSize="8" fontWeight="bold" textAnchor="middle">
-                      {pt.val}
-                    </text>
-                    <text x={pt.x} y={118} fill="#94a3b8" fontSize="7.5" textAnchor="middle">
-                      {pt.day}
-                    </text>
-                  </g>
-                ))}
-              </svg>
-            </div>
-
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#10b981', fontWeight: 700 }}>
-              <span>✓ Weekly SLA Benchmark Exceeded</span>
-              <span>Uptime 99.8%</span>
-            </div>
-          </div>
-
-          {/* Widget 3: Projects by Status (Donut Chart) */}
-          <div className="sbx-card">
-            <div className="sbx-card-header">
-              <h3 className="sbx-card-title">Projects by Status</h3>
-            </div>
-
-            <div className="sbx-donut-wrapper">
-              <div className="sbx-donut-graphic">
-                <svg width="120" height="120" viewBox="0 0 120 120">
-                  <circle cx="60" cy="60" r="46" fill="transparent" stroke="rgba(255,255,255,0.06)" strokeWidth="16" />
-                  {/* Green slice (On track 24) */}
-                  <circle
-                    cx="60" cy="60" r="46" fill="transparent"
-                    stroke="#10b981" strokeWidth="16"
-                    strokeDasharray="165 289"
-                    strokeDashoffset="0"
-                    transform="rotate(-90 60 60)"
-                  />
-                  {/* Orange slice (At risk 10) */}
-                  <circle
-                    cx="60" cy="60" r="46" fill="transparent"
-                    stroke="#f59e0b" strokeWidth="16"
-                    strokeDasharray="69 289"
-                    strokeDashoffset="-165"
-                    transform="rotate(-90 60 60)"
-                  />
-                  {/* Red slice (Delayed 8) */}
-                  <circle
-                    cx="60" cy="60" r="46" fill="transparent"
-                    stroke="#f43f5e" strokeWidth="16"
-                    strokeDasharray="55 289"
-                    strokeDashoffset="-234"
-                    transform="rotate(-90 60 60)"
-                  />
-                </svg>
-                <div className="sbx-donut-center-text">
-                  <div className="sbx-donut-center-num">42</div>
-                  <div className="sbx-donut-center-lbl">Projects</div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#10b981', fontWeight: 700 }}>
+                  <span>✓ Standar SLA Terpenuhi</span>
+                  <span>Uptime 100%</span>
                 </div>
               </div>
 
-              <div className="sbx-donut-legend">
-                <div className="sbx-legend-item">
-                  <div className="sbx-legend-left">
-                    <span className="sbx-legend-dot green" />
-                    <span>On Track</span>
-                  </div>
-                  <span className="sbx-legend-val">24</span>
+              {/* Widget 3: Projects by Status (Donut Chart) */}
+              <div className="sbx-card">
+                <div className="sbx-card-header">
+                  <h3 className="sbx-card-title">Projects by Status</h3>
                 </div>
-                <div className="sbx-legend-item">
-                  <div className="sbx-legend-left">
-                    <span className="sbx-legend-dot orange" />
-                    <span>At Risk</span>
+
+                <div className="sbx-donut-wrapper">
+                  <div className="sbx-donut-graphic">
+                    <svg width="120" height="120" viewBox="0 0 120 120">
+                      <circle cx="60" cy="60" r="46" fill="transparent" stroke="rgba(255,255,255,0.06)" strokeWidth="16" />
+                      {storeProjectsCount > 0 ? (
+                        <>
+                          {onTrackProjectsCount > 0 && (
+                            <circle
+                              cx="60" cy="60" r="46" fill="transparent"
+                              stroke="#10b981" strokeWidth="16"
+                              strokeDasharray={`${Math.round((onTrackProjectsCount / storeProjectsCount) * 289)} 289`}
+                              strokeDashoffset="0"
+                              transform="rotate(-90 60 60)"
+                            />
+                          )}
+                          {atRiskProjectsCount > 0 && (
+                            <circle
+                              cx="60" cy="60" r="46" fill="transparent"
+                              stroke="#f59e0b" strokeWidth="16"
+                              strokeDasharray={`${Math.round((atRiskProjectsCount / storeProjectsCount) * 289)} 289`}
+                              strokeDashoffset={`-${Math.round((onTrackProjectsCount / storeProjectsCount) * 289)}`}
+                              transform="rotate(-90 60 60)"
+                            />
+                          )}
+                          {delayedProjectsCount > 0 && (
+                            <circle
+                              cx="60" cy="60" r="46" fill="transparent"
+                              stroke="#f43f5e" strokeWidth="16"
+                              strokeDasharray={`${Math.round((delayedProjectsCount / storeProjectsCount) * 289)} 289`}
+                              strokeDashoffset={`-${Math.round(((onTrackProjectsCount + atRiskProjectsCount) / storeProjectsCount) * 289)}`}
+                              transform="rotate(-90 60 60)"
+                            />
+                          )}
+                        </>
+                      ) : (
+                        <circle cx="60" cy="60" r="46" fill="transparent" stroke="rgba(255,255,255,0.12)" strokeWidth="16" />
+                      )}
+                    </svg>
+                    <div className="sbx-donut-center-text">
+                      <div className="sbx-donut-center-num">{storeProjectsCount}</div>
+                      <div className="sbx-donut-center-lbl">Projects</div>
+                    </div>
                   </div>
-                  <span className="sbx-legend-val">10</span>
+
+                  <div className="sbx-donut-legend">
+                    <div className="sbx-legend-item">
+                      <div className="sbx-legend-left">
+                        <span className="sbx-legend-dot green" />
+                        <span>On Track</span>
+                      </div>
+                      <span className="sbx-legend-val">{onTrackProjectsCount}</span>
+                    </div>
+                    <div className="sbx-legend-item">
+                      <div className="sbx-legend-left">
+                        <span className="sbx-legend-dot orange" />
+                        <span>At Risk</span>
+                      </div>
+                      <span className="sbx-legend-val">{atRiskProjectsCount}</span>
+                    </div>
+                    <div className="sbx-legend-item">
+                      <div className="sbx-legend-left">
+                        <span className="sbx-legend-dot red" />
+                        <span>Delayed</span>
+                      </div>
+                      <span className="sbx-legend-val">{delayedProjectsCount}</span>
+                    </div>
+                    <div className="sbx-legend-item">
+                      <div className="sbx-legend-left">
+                        <span className="sbx-legend-dot gray" />
+                        <span>On Hold</span>
+                      </div>
+                      <span className="sbx-legend-val">{onHoldProjectsCount}</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="sbx-legend-item">
-                  <div className="sbx-legend-left">
-                    <span className="sbx-legend-dot red" />
-                    <span>Delayed</span>
-                  </div>
-                  <span className="sbx-legend-val">8</span>
-                </div>
-                <div className="sbx-legend-item">
-                  <div className="sbx-legend-left">
-                    <span className="sbx-legend-dot gray" />
-                    <span>On Hold</span>
-                  </div>
-                  <span className="sbx-legend-val">0</span>
+
+                <div style={{ textAlign: 'right', marginTop: '10px' }}>
+                  <button
+                    type="button"
+                    className="sbx-card-link"
+                    style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                    onClick={() => setActiveNav('projects')}
+                  >
+                    View All Projects →
+                  </button>
                 </div>
               </div>
-            </div>
+            </section>
 
-            <div style={{ textAlign: 'right', marginTop: '10px' }}>
-              <button
-                type="button"
-                className="sbx-card-link"
-                style={{ background: 'none', border: 'none', cursor: 'pointer' }}
-                onClick={() => setActiveNav('projects')}
-              >
-                View All Projects →
-              </button>
-            </div>
-          </div>
-        </section>
-
-        {/* ===================================================================
-            ROW 3: 3 OPERATIONAL WIDGETS (DEPARTMENT, CRITICAL ISSUES, RECENT ACTIVITY)
-           =================================================================== */}
-        <section className="sbx-row-bottom-grid">
-          {/* Col 1: Department Performance */}
-          <div className="sbx-card">
-            <div className="sbx-card-header">
-              <h3 className="sbx-card-title">Department Performance</h3>
-            </div>
-
-            <table className="sbx-dept-table">
-              <thead>
-                <tr>
-                  <th>Department</th>
-                  <th>SLA %</th>
-                  <th>KPI Score</th>
-                  <th>Trend</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>Sales / BD</strong></td>
-                  <td>96.8%</td>
-                  <td>91.2</td>
-                  <td className="sbx-dept-trend">↗</td>
-                </tr>
-                <tr>
-                  <td><strong>Procurement</strong></td>
-                  <td>93.1%</td>
-                  <td>87.4</td>
-                  <td className="sbx-dept-trend">↗</td>
-                </tr>
-                <tr>
-                  <td><strong>Operations</strong></td>
-                  <td>94.3%</td>
-                  <td>93.6</td>
-                  <td className="sbx-dept-trend">↗</td>
-                </tr>
-                <tr>
-                  <td><strong>Production</strong></td>
-                  <td>92.7%</td>
-                  <td>88.9</td>
-                  <td className="sbx-dept-trend">↗</td>
-                </tr>
-                <tr>
-                  <td><strong>Quality Control</strong></td>
-                  <td>95.6%</td>
-                  <td>91.7</td>
-                  <td className="sbx-dept-trend">↗</td>
-                </tr>
-                <tr>
-                  <td><strong>Finance</strong></td>
-                  <td>97.2%</td>
-                  <td>94.5</td>
-                  <td className="sbx-dept-trend">↗</td>
-                </tr>
-              </tbody>
-            </table>
-
-            <div style={{ textAlign: 'right', marginTop: '12px' }}>
-              <span className="sbx-card-link" style={{ cursor: 'pointer' }}>
-                View Department Performance →
-              </span>
-            </div>
-          </div>
-
-          {/* Col 2: Critical Issues */}
-          <div className="sbx-card">
-            <div className="sbx-card-header">
-              <h3 className="sbx-card-title">Critical Issues</h3>
-            </div>
-
-            <div className="sbx-alerts-list">
-              <div className="sbx-alert-item">
-                <div className="sbx-alert-left">
-                  <div className="sbx-alert-icon-wrap red">⚠️</div>
-                  <div className="sbx-alert-meta">
-                    <span className="sbx-alert-title">3 SLA Breaches</span>
-                    <span className="sbx-alert-sub">Require immediate attention</span>
-                  </div>
+            {/* ===================================================================
+                ROW 3: 3 OPERATIONAL WIDGETS (DEPARTMENT, CRITICAL ISSUES, RECENT ACTIVITY)
+               =================================================================== */}
+            <section className="sbx-row-bottom-grid">
+              {/* Col 1: Department Performance */}
+              <div className="sbx-card">
+                <div className="sbx-card-header">
+                  <h3 className="sbx-card-title">Department Performance</h3>
                 </div>
-                <button type="button" className="sbx-alert-btn-view">View →</button>
-              </div>
 
-              <div className="sbx-alert-item">
-                <div className="sbx-alert-left">
-                  <div className="sbx-alert-icon-wrap orange">🔒</div>
-                  <div className="sbx-alert-meta">
-                    <span className="sbx-alert-title">5 Projects At Risk</span>
-                    <span className="sbx-alert-sub">Need close monitoring</span>
-                  </div>
-                </div>
-                <button type="button" className="sbx-alert-btn-view">View →</button>
-              </div>
+                <table className="sbx-dept-table">
+                  <thead>
+                    <tr>
+                      <th>Department</th>
+                      <th>SLA %</th>
+                      <th>KPI Score</th>
+                      <th>Trend</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Sales / BD</strong></td>
+                      <td>100%</td>
+                      <td>100</td>
+                      <td className="sbx-dept-trend">↗</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Procurement</strong></td>
+                      <td>100%</td>
+                      <td>100</td>
+                      <td className="sbx-dept-trend">↗</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Operations</strong></td>
+                      <td>100%</td>
+                      <td>100</td>
+                      <td className="sbx-dept-trend">↗</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Production</strong></td>
+                      <td>100%</td>
+                      <td>100</td>
+                      <td className="sbx-dept-trend">↗</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Quality Control</strong></td>
+                      <td>100%</td>
+                      <td>100</td>
+                      <td className="sbx-dept-trend">↗</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Finance</strong></td>
+                      <td>100%</td>
+                      <td>100</td>
+                      <td className="sbx-dept-trend">↗</td>
+                    </tr>
+                  </tbody>
+                </table>
 
-              <div className="sbx-alert-item">
-                <div className="sbx-alert-left">
-                  <div className="sbx-alert-icon-wrap orange">👤</div>
-                  <div className="sbx-alert-meta">
-                    <span className="sbx-alert-title">2 Unassigned Work Items</span>
-                    <span className="sbx-alert-sub">Require assignment</span>
-                  </div>
-                </div>
-                <button type="button" className="sbx-alert-btn-view">View →</button>
-              </div>
-
-              <div className="sbx-alert-item">
-                <div className="sbx-alert-left">
-                  <div className="sbx-alert-icon-wrap red">🛡️</div>
-                  <div className="sbx-alert-meta">
-                    <span className="sbx-alert-title">1 Critical QC Issue</span>
-                    <span className="sbx-alert-sub">Quality action required</span>
-                  </div>
-                </div>
-                <button type="button" className="sbx-alert-btn-view">View →</button>
-              </div>
-            </div>
-
-            <div style={{ textAlign: 'right', marginTop: '12px' }}>
-              <span className="sbx-card-link" style={{ cursor: 'pointer' }}>
-                View All Issues →
-              </span>
-            </div>
-          </div>
-
-          {/* Col 3: Recent Activity */}
-          <div className="sbx-card">
-            <div className="sbx-card-header">
-              <h3 className="sbx-card-title">Recent Activity</h3>
-            </div>
-
-            <div className="sbx-activity-list">
-              <div className="sbx-activity-item">
-                <div className="sbx-activity-icon-wrap">📑</div>
-                <div className="sbx-activity-content">
-                  <span className="sbx-activity-text">
-                    <strong>Vendor PO VPO-26030 approved</strong><br />
-                    by Danny • 2 minutes ago
+                <div style={{ textAlign: 'right', marginTop: '12px' }}>
+                  <span className="sbx-card-link" style={{ cursor: 'pointer' }}>
+                    Standar SOP Terpenuhi ✓
                   </span>
                 </div>
               </div>
 
-              <div className="sbx-activity-item">
-                <div className="sbx-activity-icon-wrap" style={{ color: '#10b981', background: 'rgba(16, 185, 129, 0.12)' }}>
-                  ☀️
+              {/* Col 2: Critical Issues */}
+              <div className="sbx-card">
+                <div className="sbx-card-header">
+                  <h3 className="sbx-card-title">Critical Issues</h3>
                 </div>
-                <div className="sbx-activity-content">
-                  <span className="sbx-activity-text">
-                    <strong>Sample approved for DAS-26209</strong><br />
-                    by Nabila • 15 minutes ago
+
+                {overdueTasksCount > 0 || atRiskTasksCount > 0 ? (
+                  <div className="sbx-alerts-list">
+                    {overdueTasksCount > 0 && (
+                      <div className="sbx-alert-item">
+                        <div className="sbx-alert-left">
+                          <div className="sbx-alert-icon-wrap red">⚠️</div>
+                          <div className="sbx-alert-meta">
+                            <span className="sbx-alert-title">{overdueTasksCount} SLA Breaches</span>
+                            <span className="sbx-alert-sub">Tugas prioritas memerlukan tindakan</span>
+                          </div>
+                        </div>
+                        <button type="button" className="sbx-alert-btn-view" onClick={() => setActiveNav('my-work')}>View →</button>
+                      </div>
+                    )}
+                    {atRiskTasksCount > 0 && (
+                      <div className="sbx-alert-item">
+                        <div className="sbx-alert-left">
+                          <div className="sbx-alert-icon-wrap orange">🔒</div>
+                          <div className="sbx-alert-meta">
+                            <span className="sbx-alert-title">{atRiskTasksCount} Item At Risk</span>
+                            <span className="sbx-alert-sub">Perlu monitoring tim</span>
+                          </div>
+                        </div>
+                        <button type="button" className="sbx-alert-btn-view" onClick={() => setActiveNav('my-work')}>View →</button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div style={{ textAlign: 'center', padding: '36px 16px', color: 'var(--sbx-text-muted)' }}>
+                    <div style={{ fontSize: '32px', marginBottom: '8px' }}>✅</div>
+                    <div style={{ fontWeight: 700, color: 'var(--sbx-text)', fontSize: '13.5px', marginBottom: '4px' }}>
+                      Operasional Berjalan Normal
+                    </div>
+                    <div style={{ fontSize: '12px' }}>
+                      0 SLA Breaches • 0 Proyek Bermasalah • 0 Isu Kritis
+                    </div>
+                  </div>
+                )}
+
+                <div style={{ textAlign: 'right', marginTop: '12px' }}>
+                  <span className="sbx-card-link" style={{ cursor: 'pointer' }} onClick={() => setActiveNav('my-work')}>
+                    Buka My Work Inbox →
                   </span>
                 </div>
               </div>
 
-              <div className="sbx-activity-item">
-                <div className="sbx-activity-icon-wrap" style={{ color: '#10b981', background: 'rgba(16, 185, 129, 0.12)' }}>
-                  ⚡
+              {/* Col 3: Recent Activity */}
+              <div className="sbx-card">
+                <div className="sbx-card-header">
+                  <h3 className="sbx-card-title">Recent Activity</h3>
                 </div>
-                <div className="sbx-activity-content">
-                  <span className="sbx-activity-text">
-                    <strong>QC inspection completed</strong><br />
-                    for DAS-26208 • 1 hour ago
+
+                {storeNotifsList.length > 0 ? (
+                  <div className="sbx-activity-list">
+                    {storeNotifsList.slice(0, 5).map((notif, idx) => (
+                      <div key={idx} className="sbx-activity-item">
+                        <div className="sbx-activity-icon-wrap">
+                          {notif.icon || '📑'}
+                        </div>
+                        <div className="sbx-activity-content">
+                          <span className="sbx-activity-text">
+                            <strong>{notif.title}</strong><br />
+                            {notif.desc}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div style={{ textAlign: 'center', padding: '36px 16px', color: 'var(--sbx-text-muted)' }}>
+                    <div style={{ fontSize: '32px', marginBottom: '8px' }}>📝</div>
+                    <div style={{ fontWeight: 700, color: 'var(--sbx-text)', fontSize: '13.5px', marginBottom: '4px' }}>
+                      Belum Ada Aktivitas Operasional
+                    </div>
+                    <div style={{ fontSize: '12px' }}>
+                      Aktivitas masuknya leads, penerbitan SPH, dan milestone proyek akan tampil di sini secara real-time.
+                    </div>
+                  </div>
+                )}
+
+                <div style={{ textAlign: 'right', marginTop: '12px' }}>
+                  <span className="sbx-card-link" style={{ cursor: 'pointer' }} onClick={() => setShowNotifications(true)}>
+                    Buka Semua Notifikasi →
                   </span>
                 </div>
               </div>
+            </section>
+          </>
+        )}
+      </main>
 
-              <div className="sbx-activity-item">
-                <div className="sbx-activity-icon-wrap" style={{ color: '#0284c7', background: 'rgba(2, 132, 199, 0.12)' }}>
-                  💵
-                </div>
-                <div className="sbx-activity-content">
-                  <span className="sbx-activity-text">
-                    <strong>Invoice INV-26078 paid</strong><br />
-                    by Indofood • 2 hours ago
-                  </span>
-                </div>
-              </div>
+      {/* DRAWER 1: Notifications */}
+      {showNotifications && (
+        <NotificationDrawer
+          onClose={() => setShowNotifications(false)}
+          onNavigate={(target) => setActiveNav(target)}
+        />
+      )}
 
-              <div className="sbx-activity-item">
-                <div className="sbx-activity-icon-wrap" style={{ color: '#a855f7', background: 'rgba(168, 85, 247, 0.12)' }}>
-                  👤
-                </div>
-                <div className="sbx-activity-content">
-                  <span className="sbx-activity-text">
-                    <strong>New inquiry INQ-26211 created</strong><br />
-                    by Firza • 3 hours ago
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div style={{ textAlign: 'right', marginTop: '12px' }}>
-              <span className="sbx-card-link" style={{ cursor: 'pointer' }}>
-                View All Activity →
-              </span>
-            </div>
-          </div>
-        </section>
-      </>
-    )}
-  </main>
+      {/* DRAWER 2: Inbound Messages */}
+      {showMessages && (
+        <MessagesDrawer
+          onClose={() => setShowMessages(false)}
+          onOpenCrm={() => setActiveNav('crm')}
+        />
+      )}
     </div>
   );
 }

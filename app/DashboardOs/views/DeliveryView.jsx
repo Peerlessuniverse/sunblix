@@ -2,52 +2,7 @@
 
 import { useState } from 'react';
 
-const SHIPMENTS = [
-  {
-    doNumber: 'DO-SBX-2601',
-    destination: 'Villa Sanur Luxury Seaside',
-    receiver: 'Budi Santoso (Supervisor Site)',
-    driver: 'Wayan Sumerta (Truck Isuzu Elf)',
-    items: '24x Panel LONGI 585 Wp + 1 Inverter Deye + 14 Rail AL6005',
-    departure: '05 Okt, 08:30',
-    eta: '05 Okt, 10:15',
-    status: 'Tiba di Lokasi',
-    statusColor: 'success',
-  },
-  {
-    doNumber: 'DO-SBX-2602',
-    destination: 'PT Bali Logistik Pelabuhan Benoa',
-    receiver: 'Eko Wahyudi (Structural Lead)',
-    driver: 'Ketut Astawa (Truck Fuso 8 Ton)',
-    items: '84x Panel Canadian Solar 585 Wp (3 Pallet Kayu Solid)',
-    departure: '05 Okt, 09:15',
-    eta: '05 Okt, 11:30',
-    status: 'Dalam Perjalanan',
-    statusColor: 'warning',
-  },
-  {
-    doNumber: 'DO-SBX-2603',
-    destination: 'Canggu Eco Boutique Resort',
-    receiver: 'Agus Priyono (Electrical Lead)',
-    driver: 'Made Arta (Pickup Hilux)',
-    items: '4x Baterai LiFePO4 Deye 5.12 kWh + Box Panel DC/AC',
-    departure: '05 Okt, 13:00',
-    eta: '05 Okt, 14:45',
-    status: 'Pemuatan di Gudang',
-    statusColor: 'info',
-  },
-  {
-    doNumber: 'DO-SBX-2604',
-    destination: 'Agro Tabanan Greenhouse',
-    receiver: 'Tim Alpha Tabanan',
-    driver: 'Nyoman Darsa (Truck Box)',
-    items: '60x Modul Jinko Bifacial + Aksesoris Clamping M8',
-    departure: '06 Okt, 07:30',
-    eta: '06 Okt, 10:00',
-    status: 'Terjadwal Besok',
-    statusColor: 'purple',
-  },
-];
+const SHIPMENTS = [];
 
 export default function DeliveryView({ onBackToDashboard }) {
   const [shipments, setShipments] = useState(SHIPMENTS);
@@ -96,10 +51,14 @@ export default function DeliveryView({ onBackToDashboard }) {
             <div className="sbx-metric-icon">🚚</div>
           </div>
           <div className="sbx-metric-body">
-            <span className="sbx-metric-val">3 Armada</span>
-            <span className="sbx-status-badge info">En Route</span>
+            <span className="sbx-metric-val">{shipments.length} Armada</span>
+            <span className={`sbx-status-badge ${shipments.length > 0 ? 'info' : 'success'}`}>
+              {shipments.length > 0 ? 'En Route' : 'Pool Standby'}
+            </span>
           </div>
-          <p className="sbx-metric-subtext">Truk Fuso, Isuzu Elf, &amp; Pickup Hilux</p>
+          <p className="sbx-metric-subtext">
+            {shipments.length > 0 ? 'Truk logistik dalam pengantaran' : 'Armada siap operasional pengiriman'}
+          </p>
         </div>
 
         <div className="sbx-metric-card">
@@ -108,10 +67,12 @@ export default function DeliveryView({ onBackToDashboard }) {
             <div className="sbx-metric-icon">📦</div>
           </div>
           <div className="sbx-metric-body">
-            <span className="sbx-metric-val">108 Panel</span>
+            <span className="sbx-metric-val">{shipments.length > 0 ? '108 Panel' : '0 Panel'}</span>
             <span className="sbx-metric-badge-delta">Hari Ini</span>
           </div>
-          <p className="sbx-metric-subtext">Total bobot aman 3.2 Ton</p>
+          <p className="sbx-metric-subtext">
+            {shipments.length > 0 ? 'Total bobot aman 3.2 Ton' : 'Gudang siap melakukan muat modul'}
+          </p>
         </div>
 
         <div className="sbx-metric-card">
@@ -132,10 +93,10 @@ export default function DeliveryView({ onBackToDashboard }) {
             <div className="sbx-metric-icon">⏱️</div>
           </div>
           <div className="sbx-metric-body">
-            <span className="sbx-metric-val">98.5%</span>
+            <span className="sbx-metric-val">100%</span>
             <span className="sbx-status-badge success">On Schedule</span>
           </div>
-          <p className="sbx-metric-subtext">Rata-rata deviasi &lt; 20 menit</p>
+          <p className="sbx-metric-subtext">SOP koordinasi supervisor site</p>
         </div>
       </div>
 
@@ -204,6 +165,19 @@ export default function DeliveryView({ onBackToDashboard }) {
                   </td>
                 </tr>
               ))}
+              {shipments.length === 0 && (
+                <tr>
+                  <td colSpan={7} style={{ textAlign: 'center', padding: '48px 20px', color: 'var(--sbx-text-muted)' }}>
+                    <div style={{ fontSize: '32px', marginBottom: '8px' }}>🚚</div>
+                    <div style={{ fontWeight: 700, color: 'var(--sbx-text)', marginBottom: '4px' }}>
+                      Belum Ada Surat Jalan Pengiriman Aktif
+                    </div>
+                    <div style={{ fontSize: '12px' }}>
+                      Surat jalan (DO) material modul surya, inverter, dan baterai akan dibuat saat proyek memasuki tahap konstruksi lapangan.
+                    </div>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

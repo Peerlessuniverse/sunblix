@@ -2,68 +2,8 @@
 
 import { useState } from 'react';
 
-const TELEMETRY_SITES = [
-  {
-    siteName: 'Residensial Pak Bambang (Pondok Indah)',
-    capacity: '5.85 kWp Standard+',
-    instantPower: '4.82 kW',
-    todayKwh: '24.8 kWh',
-    monthKwh: '680 kWh',
-    prRatio: '84.6%',
-    co2Offset: '570 kg',
-    inverterTemp: '42°C',
-    status: 'Optimal',
-    statusColor: 'success',
-  },
-  {
-    siteName: 'Villa Sanur Luxury Seaside',
-    capacity: '14.04 kWp PRO',
-    instantPower: '11.60 kW',
-    todayKwh: '58.4 kWh',
-    monthKwh: '1,640 kWh',
-    prRatio: '83.2%',
-    co2Offset: '1.38 Ton',
-    inverterTemp: '46°C',
-    status: 'Optimal',
-    statusColor: 'success',
-  },
-  {
-    siteName: 'PT Bali Logistik Benoa Port',
-    capacity: '49.14 kWp PRO+',
-    instantPower: '41.80 kW',
-    todayKwh: '215.0 kWh',
-    monthKwh: '5,890 kWh',
-    prRatio: '82.0%',
-    co2Offset: '4.95 Ton',
-    inverterTemp: '48°C',
-    status: 'Optimal',
-    statusColor: 'success',
-  },
-  {
-    siteName: 'Ubud Heritage Retreat & Spa',
-    capacity: '25.74 kWp PRO+',
-    instantPower: '21.40 kW',
-    todayKwh: '106.2 kWh',
-    monthKwh: '2,980 kWh',
-    prRatio: '81.5%',
-    co2Offset: '2.50 Ton',
-    inverterTemp: '54°C',
-    status: 'Suhu Tinggi',
-    statusColor: 'warning',
-  },
-  {
-    siteName: 'Canggu Eco Boutique Resort (Hybrid)',
-    capacity: '18.72 kWp + 30 kWh Baterai',
-    instantPower: '15.40 kW (SOC 92%)',
-    todayKwh: '82.5 kWh',
-    monthKwh: '2,240 kWh',
-    prRatio: '85.1%',
-    co2Offset: '1.88 Ton',
-    inverterTemp: '43°C',
-    status: 'Baterai Siaga',
-    statusColor: 'success',
-  },
-];
+const TELEMETRY_SITES = [];
+
 
 export default function PerformanceView({ onBackToDashboard }) {
   const [sites, setSites] = useState(TELEMETRY_SITES);
@@ -112,10 +52,10 @@ export default function PerformanceView({ onBackToDashboard }) {
             <div className="sbx-metric-icon">☀️</div>
           </div>
           <div className="sbx-metric-body">
-            <span className="sbx-metric-val">486.9 kWh</span>
-            <span className="sbx-metric-badge-delta">Live 11:30</span>
+            <span className="sbx-metric-val">{sites.length > 0 ? '486.9 kWh' : '0.0 kWh'}</span>
+            <span className="sbx-metric-badge-delta">Live Telemetri</span>
           </div>
-          <p className="sbx-metric-subtext">Est. harian akhir ~920 kWh</p>
+          <p className="sbx-metric-subtext">{sites.length > 0 ? 'Total akumulasi PLTS' : 'Belum ada sistem online'}</p>
         </div>
 
         <div className="sbx-metric-card">
@@ -124,8 +64,8 @@ export default function PerformanceView({ onBackToDashboard }) {
             <div className="sbx-metric-icon">📈</div>
           </div>
           <div className="sbx-metric-body">
-            <span className="sbx-metric-val">83.3%</span>
-            <span className="sbx-status-badge success">Tier-1 Yield</span>
+            <span className="sbx-metric-val">{sites.length > 0 ? '83.3%' : '0.0%'}</span>
+            <span className="sbx-status-badge success">{sites.length > 0 ? 'Tier-1 Yield' : 'Standby'}</span>
           </div>
           <p className="sbx-metric-subtext">Standar industri 78 - 82%</p>
         </div>
@@ -136,10 +76,10 @@ export default function PerformanceView({ onBackToDashboard }) {
             <div className="sbx-metric-icon">🌱</div>
           </div>
           <div className="sbx-metric-body">
-            <span className="sbx-metric-val">11.28 Ton</span>
+            <span className="sbx-metric-val">{sites.length > 0 ? '11.28 Ton' : '0.0 Ton'}</span>
             <span className="sbx-status-badge success">Bulan Ini</span>
           </div>
-          <p className="sbx-metric-subtext">Setara menanam 540 pohon dewasa</p>
+          <p className="sbx-metric-subtext">Kalkulasi faktor emisi PLN</p>
         </div>
 
         <div className="sbx-metric-card">
@@ -148,7 +88,7 @@ export default function PerformanceView({ onBackToDashboard }) {
             <div className="sbx-metric-icon">⚡</div>
           </div>
           <div className="sbx-metric-body">
-            <span className="sbx-metric-val">99.8%</span>
+            <span className="sbx-metric-val">100%</span>
             <span className="sbx-status-badge info">Zero Trip</span>
           </div>
           <p className="sbx-metric-subtext">Sinkronisasi stabil jaringan</p>
@@ -224,6 +164,19 @@ export default function PerformanceView({ onBackToDashboard }) {
                   </td>
                 </tr>
               ))}
+              {sites.length === 0 && (
+                <tr>
+                  <td colSpan={9} style={{ textAlign: 'center', padding: '48px 20px', color: 'var(--sbx-text-muted)' }}>
+                    <div style={{ fontSize: '32px', marginBottom: '8px' }}>📡</div>
+                    <div style={{ fontWeight: 700, color: 'var(--sbx-text)', marginBottom: '4px' }}>
+                      Belum Ada Inverter / Gateway IoT Yang Terhubung
+                    </div>
+                    <div style={{ fontSize: '12px' }}>
+                      Data telemetri energi surya (kWh), daya real-time, dan status baterai akan otomatis aktif begitu inverter di-pairing ke cloud.
+                    </div>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

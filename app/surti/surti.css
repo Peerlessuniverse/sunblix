@@ -1,0 +1,1350 @@
+/* ==========================================================================
+   SUNBLIX SURTI AI — LUXURY CINEMATIC DESIGN SYSTEM
+   ========================================================================== */
+
+:root {
+  --sbx-bg-primary: #020d1c;
+  --sbx-bg-secondary: #041830;
+  --sbx-bg-card: rgba(6, 28, 56, 0.75);
+  --sbx-bg-glass: rgba(10, 37, 72, 0.55);
+  --sbx-gold: #f5b742;
+  --sbx-gold-light: #fcd580;
+  --sbx-gold-glow: rgba(245, 183, 66, 0.28);
+  --sbx-blue-bright: #00d2ff;
+  --sbx-border: rgba(245, 183, 66, 0.2);
+  --sbx-border-subtle: rgba(255, 255, 255, 0.1);
+  --sbx-text-main: #f0f4f8;
+  --sbx-text-muted: #94a3b8;
+  --sbx-success: #10b981;
+  --sbx-warning: #f59e0b;
+  --sbx-danger: #ef4444;
+  --sbx-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.surti-app {
+  height: 100vh;
+  background: radial-gradient(circle at 50% 0%, #08264d 0%, var(--sbx-bg-primary) 70%);
+  color: var(--sbx-text-main);
+  font-family: var(--sbx-font);
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Ambient glow accents */
+.surti-ambient {
+  position: fixed;
+  top: -150px;
+  right: -100px;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, var(--sbx-gold-glow) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Sidebar Layout (ChatGPT / Gemini Style) */
+.surti-sidebar {
+  width: 260px;
+  height: 100vh;
+  background: var(--sbx-bg-secondary);
+  border-right: 1px solid var(--sbx-border-subtle);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 50;
+  transition: margin-left 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+}
+
+.surti-app.sidebar-closed .surti-sidebar {
+  margin-left: -260px;
+}
+
+.surti-sidebar-top {
+  padding: 14px 14px 10px;
+  border-bottom: 1px solid var(--sbx-border-subtle);
+}
+
+.surti-sidebar-brand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.surti-sidebar-logo {
+  height: 38px;
+  width: 38px;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
+}
+
+.surti-sidebar-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--sbx-text-muted);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  display: none;
+}
+
+.surti-sidebar-close-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.surti-new-chat-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #003b7a;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 59, 122, 0.25);
+}
+
+.surti-new-chat-btn:hover {
+  background: #002855;
+  border-color: #004ea3;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.surti-sidebar-sessions {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 10px;
+}
+
+.surti-sidebar-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--sbx-text-muted);
+  padding: 6px 8px;
+  margin-bottom: 4px;
+}
+
+.surti-session-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  color: var(--sbx-text-main);
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.84rem;
+  transition: all 0.18s ease;
+  margin-bottom: 2px;
+}
+
+.surti-session-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--sbx-gold-light);
+}
+
+.surti-session-icon {
+  font-size: 0.95rem;
+  opacity: 0.75;
+  flex-shrink: 0;
+}
+
+.surti-session-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.surti-session-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+.surti-session-time {
+  font-size: 0.7rem;
+  color: var(--sbx-text-muted);
+}
+
+/* Bottom Left: Profile & Settings Popover */
+.surti-sidebar-bottom {
+  border-top: 1px solid var(--sbx-border-subtle);
+  padding: 10px;
+  position: relative;
+}
+
+.surti-profile-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  color: var(--sbx-text-main);
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.surti-profile-btn:hover,
+.surti-profile-btn.is-active {
+  background: var(--sbx-bg-glass);
+  border-color: var(--sbx-border-subtle);
+}
+
+.surti-profile-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--sbx-gold), #b3740e);
+  color: #020d1c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.surti-profile-meta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.surti-profile-name {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--sbx-text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.surti-profile-sub {
+  font-size: 0.72rem;
+  color: var(--sbx-text-muted);
+}
+
+.surti-profile-dots {
+  font-size: 1.1rem;
+  color: var(--sbx-text-muted);
+}
+
+/* Profile Popover (Account Settings Menu) */
+.surti-profile-popover {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 10px;
+  right: 10px;
+  background: var(--sbx-bg-secondary);
+  border: 1px solid var(--sbx-border);
+  border-radius: 14px;
+  padding: 8px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(20px);
+  z-index: 100;
+  animation: popoverSlideUp 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes popoverSlideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.surti-popover-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+}
+
+.surti-popover-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--sbx-gold), #b3740e);
+  color: #020d1c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.surti-popover-name {
+  display: block;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--sbx-text-main);
+}
+
+.surti-popover-id {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--sbx-text-muted);
+}
+
+.surti-popover-divider {
+  height: 1px;
+  background: var(--sbx-border-subtle);
+  margin: 6px 0;
+}
+
+.surti-popover-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  color: var(--sbx-text-main);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.surti-popover-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--sbx-gold-light);
+}
+
+.surti-popover-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+/* Main Area Layout */
+.surti-main-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  min-width: 0;
+}
+
+/* Header */
+.surti-header {
+  height: 56px;
+  border-bottom: 1px solid var(--sbx-border-subtle);
+  background: rgba(2, 13, 28, 0.85);
+  backdrop-filter: blur(16px);
+  position: relative;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  flex-shrink: 0;
+}
+
+.surti-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.surti-sidebar-toggle-btn {
+  background: transparent;
+  border: 1px solid var(--sbx-border-subtle);
+  color: var(--sbx-text-main);
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.surti-sidebar-toggle-btn:hover {
+  background: var(--sbx-bg-glass);
+  border-color: var(--sbx-gold);
+  color: var(--sbx-gold-light);
+}
+
+.surti-model-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--sbx-bg-glass);
+  border: 1px solid var(--sbx-border-subtle);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--sbx-text-main);
+  cursor: pointer;
+}
+
+.surti-model-arrow {
+  font-size: 0.72rem;
+  color: var(--sbx-text-muted);
+}
+
+.surti-icon-btn {
+  background: var(--sbx-bg-glass);
+  border: 1px solid var(--sbx-border-subtle);
+  color: var(--sbx-text-main);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.surti-icon-btn:hover {
+  transform: translateY(-1px);
+  border-color: var(--sbx-gold);
+  background: rgba(245, 183, 66, 0.15);
+}
+
+.surti-brand-logo {
+  height: 28px;
+  width: auto;
+}
+
+.surti-title-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--sbx-bg-glass);
+  border: 1px solid var(--sbx-border);
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--sbx-gold-light);
+  letter-spacing: 0.05em;
+}
+
+.surti-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--sbx-success);
+  box-shadow: 0 0 10px var(--sbx-success);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+.surti-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.surti-btn-subtle {
+  background: var(--sbx-bg-glass);
+  border: 1px solid var(--sbx-border-subtle);
+  color: var(--sbx-text-main);
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.84rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.surti-btn-subtle:hover {
+  border-color: var(--sbx-gold);
+  color: var(--sbx-gold-light);
+  background: rgba(245, 183, 66, 0.1);
+}
+
+.surti-mode-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 4px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.surti-mode-demo {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+}
+
+.surti-mode-live {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+/* Chat Layout */
+.surti-chat-container {
+  flex: 1;
+  max-width: 860px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 20px 140px;
+  overflow-y: auto;
+  position: relative;
+  z-index: 10;
+}
+
+/* Voice Bar Widget */
+.surti-voice-panel {
+  background: linear-gradient(135deg, rgba(8, 38, 77, 0.8), rgba(4, 24, 48, 0.9));
+  border: 1px solid var(--sbx-border);
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(12px);
+}
+
+.surti-voice-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.surti-voice-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--sbx-gold), #b3740e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #020d1c;
+  font-size: 1.2rem;
+  font-weight: 700;
+  box-shadow: 0 0 16px var(--sbx-gold-glow);
+  position: relative;
+}
+
+.surti-voice-details h4 {
+  margin: 0 0 2px 0;
+  font-size: 0.95rem;
+  color: #fff;
+}
+
+.surti-voice-details p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--sbx-text-muted);
+}
+
+.surti-voice-waves {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+}
+
+.surti-wave-bar {
+  width: 3px;
+  height: 8px;
+  background: var(--sbx-gold);
+  border-radius: 2px;
+  transition: height 0.15s ease;
+}
+
+.surti-voice-active .surti-wave-bar {
+  animation: waveMotion 1s ease-in-out infinite;
+}
+
+.surti-voice-active .surti-wave-bar:nth-child(2) { animation-delay: 0.15s; }
+.surti-voice-active .surti-wave-bar:nth-child(3) { animation-delay: 0.3s; }
+.surti-voice-active .surti-wave-bar:nth-child(4) { animation-delay: 0.45s; }
+.surti-voice-active .surti-wave-bar:nth-child(5) { animation-delay: 0.6s; }
+
+@keyframes waveMotion {
+  0%, 100% { height: 6px; }
+  50% { height: 24px; }
+}
+
+.surti-voice-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.surti-mic-btn {
+  background: #003b7a;
+  color: #ffffff;
+  border: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-size: 1.15rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0, 59, 122, 0.3);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.surti-mic-btn:hover {
+  background: #002855;
+  transform: scale(1.05);
+}
+
+.surti-mic-btn.is-listening {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #fff;
+  animation: pulseListening 1.5s infinite;
+}
+
+@keyframes pulseListening {
+  0%, 100% { box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }
+  50% { box-shadow: 0 0 24px rgba(239, 68, 68, 0.8); }
+}
+
+/* Chat Messages */
+.surti-messages-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.surti-message {
+  display: flex;
+  gap: 14px;
+  max-width: 85%;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.surti-message-assistant {
+  align-self: flex-start;
+}
+
+.surti-message-user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.surti-msg-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.surti-message-assistant .surti-msg-avatar {
+  background: linear-gradient(135deg, var(--sbx-gold), #b3740e);
+  color: #020d1c;
+  box-shadow: 0 0 12px var(--sbx-gold-glow);
+}
+
+.surti-message-user .surti-msg-avatar {
+  background: var(--sbx-bg-glass);
+  border: 1px solid var(--sbx-border-subtle);
+  color: var(--sbx-gold-light);
+}
+
+.surti-msg-bubble {
+  background: var(--sbx-bg-card);
+  border: 1px solid var(--sbx-border-subtle);
+  padding: 16px 20px;
+  border-radius: 16px;
+  font-size: 0.94rem;
+  line-height: 1.65;
+  color: #e2e8f0;
+  backdrop-filter: blur(8px);
+}
+
+.surti-message-assistant .surti-msg-bubble {
+  border-top-left-radius: 4px;
+  border-color: rgba(245, 183, 66, 0.25);
+}
+
+.surti-message-user .surti-msg-bubble {
+  border-top-right-radius: 4px;
+  background: linear-gradient(135deg, #093466, #062244);
+  border-color: rgba(0, 210, 255, 0.3);
+  color: #fff;
+}
+
+.surti-msg-bubble p {
+  margin: 0 0 10px 0;
+}
+
+.surti-msg-bubble p:last-child {
+  margin-bottom: 0;
+}
+
+.surti-msg-bubble ul, .surti-msg-bubble ol {
+  margin: 8px 0;
+  padding-left: 20px;
+}
+
+.surti-msg-time {
+  font-size: 0.72rem;
+  color: var(--sbx-text-muted);
+  margin-top: 6px;
+  display: block;
+}
+
+/* Interactive Payload Cards */
+.surti-payload-card {
+  margin-top: 14px;
+  background: rgba(3, 22, 46, 0.95);
+  border: 1px solid var(--sbx-gold);
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.surti-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--sbx-border-subtle);
+  padding-bottom: 8px;
+}
+
+.surti-card-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--sbx-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.surti-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.surti-card-metric {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.surti-metric-label {
+  font-size: 0.76rem;
+  color: var(--sbx-text-muted);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.surti-metric-val {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.surti-metric-val.highlight {
+  color: var(--sbx-gold);
+}
+
+/* Quick Actions */
+.surti-quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.surti-action-chip {
+  background: #003b7a;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 3px 10px rgba(0, 59, 122, 0.25);
+}
+
+.surti-action-chip:hover {
+  background: #002855;
+  border-color: #004ea3;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px rgba(0, 59, 122, 0.4);
+}
+
+/* Bottom Chat Input Form */
+.surti-input-wrapper {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(2, 13, 28, 0.95) 40%, #020d1c 100%);
+  padding: 16px 20px 24px;
+  z-index: 40;
+  pointer-events: none;
+}
+
+.surti-input-bar {
+  max-width: 860px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(6, 28, 56, 0.92);
+  border: 1px solid var(--sbx-border);
+  border-radius: 9999px;
+  padding: 6px 8px 6px 20px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(16px);
+  pointer-events: auto;
+}
+
+.surti-input-field {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
+.surti-input-field::placeholder {
+  color: rgba(148, 163, 184, 0.7);
+}
+
+.surti-send-btn {
+  background: #003b7a;
+  color: #ffffff;
+  border: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(0, 59, 122, 0.3);
+}
+
+.surti-send-btn:hover:not(:disabled) {
+  background: #002855;
+  transform: scale(1.05);
+}
+
+.surti-send-btn:hover:not(:disabled) {
+  transform: scale(1.05);
+}
+
+.surti-send-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Memory Modal */
+.surti-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.surti-modal-box {
+  background: var(--sbx-bg-secondary);
+  border: 1px solid var(--sbx-border);
+  border-radius: 20px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 28px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  position: relative;
+}
+
+.surti-modal-title {
+  margin: 0 0 16px 0;
+  font-size: 1.25rem;
+  color: var(--sbx-gold-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.surti-modal-close {
+  background: transparent;
+  border: none;
+  color: var(--sbx-text-muted);
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+.surti-memory-item {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .surti-card-grid {
+    grid-template-columns: 1fr;
+  }
+  .surti-message {
+    max-width: 95%;
+  }
+  .surti-header {
+    padding: 0 16px;
+  }
+}
+
+/* ==========================================================================
+   SUNBLIX SURTI AI — THEME STYLES (OPTION 5: LIGHT ECO LUXURY)
+   ========================================================================== */
+
+.surti-app.theme-light {
+  --sbx-bg-primary: #f8fafc;
+  --sbx-bg-secondary: #ffffff;
+  --sbx-bg-card: rgba(255, 255, 255, 0.95);
+  --sbx-bg-glass: rgba(255, 255, 255, 0.85);
+  --sbx-gold: #d97706;
+  --sbx-gold-light: #b45309;
+  --sbx-gold-glow: rgba(245, 183, 66, 0.22);
+  --sbx-blue-bright: #0284c7;
+  --sbx-border: rgba(217, 119, 6, 0.3);
+  --sbx-border-subtle: rgba(148, 163, 184, 0.25);
+  --sbx-text-main: #0f172a;
+  --sbx-text-muted: #64748b;
+  background: radial-gradient(circle at 50% 0%, #fef3c7 0%, #f8fafc 40%, #f1f5f9 100%);
+  color: #0f172a;
+}
+
+.surti-app.theme-light .surti-ambient {
+  background: radial-gradient(circle, rgba(245, 183, 66, 0.15) 0%, transparent 70%);
+}
+
+.surti-app.theme-light .surti-header {
+  background: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.95);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.surti-app.theme-light .surti-title-badge {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+}
+
+.surti-app.theme-light .surti-btn-subtle {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.surti-app.theme-light .surti-btn-subtle:hover {
+  border-color: var(--sbx-gold);
+  color: #b45309;
+  background: #fffbeb;
+}
+
+.surti-app.theme-light .surti-voice-panel {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid rgba(245, 183, 66, 0.35);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+}
+
+.surti-app.theme-light .surti-voice-details h4 {
+  color: #0f172a;
+}
+
+.surti-app.theme-light .surti-voice-details p {
+  color: #64748b;
+}
+
+.surti-app.theme-light .surti-msg-bubble {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #1e293b;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+}
+
+.surti-app.theme-light .surti-message-assistant .surti-msg-bubble {
+  border-left: 3px solid #f59e0b;
+}
+
+.surti-app.theme-light .surti-message-user .surti-msg-avatar {
+  background: #e2e8f0;
+  border-color: #cbd5e1;
+  color: #0369a1;
+}
+
+.surti-app.theme-light .surti-message-user .surti-msg-bubble {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  border-color: transparent;
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.25);
+}
+
+.surti-app.theme-light .surti-payload-card {
+  background: #ffffff;
+  border: 1.5px solid #f59e0b;
+  box-shadow: 0 10px 30px rgba(245, 158, 11, 0.12);
+}
+
+.surti-app.theme-light .surti-card-header {
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.surti-app.theme-light .surti-card-metric {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.surti-app.theme-light .surti-metric-val {
+  color: #0f172a;
+}
+
+.surti-app.theme-light .surti-metric-val.highlight {
+  color: #d97706;
+}
+
+.surti-app.theme-light .surti-action-chip {
+  background: #003b7a;
+  border-color: #003b7a;
+  color: #ffffff;
+  box-shadow: 0 3px 10px rgba(0, 59, 122, 0.2);
+}
+
+.surti-app.theme-light .surti-action-chip:hover {
+  background: #002855;
+  border-color: #002855;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.surti-app.theme-light .surti-input-wrapper {
+  background: linear-gradient(180deg, transparent 0%, rgba(248, 250, 252, 0.95) 45%, #f8fafc 100%);
+}
+
+.surti-app.theme-light .surti-input-bar {
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+}
+
+.surti-app.theme-light .surti-input-field {
+  color: #0f172a;
+}
+
+.surti-app.theme-light .surti-input-field::placeholder {
+  color: #94a3b8;
+}
+
+.surti-app.theme-light .surti-modal-box {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.16);
+  color: #0f172a;
+}
+
+.surti-app.theme-light .surti-modal-title {
+  color: #0f172a;
+}
+
+.surti-app.theme-light .surti-memory-item {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #1e293b;
+}
+
+/* Theme Toggle Button */
+.surti-theme-toggle {
+  background: var(--sbx-bg-glass);
+  border: 1px solid var(--sbx-border);
+  color: var(--sbx-text-main);
+  padding: 8px 14px;
+  border-radius: 9999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.surti-theme-toggle:hover {
+  transform: translateY(-1px);
+  border-color: var(--sbx-gold);
+  background: rgba(245, 183, 66, 0.15);
+}
+
+.surti-app.theme-light .surti-theme-toggle {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #1e293b;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.surti-app.theme-light .surti-theme-toggle:hover {
+  background: #fffbeb;
+  border-color: #f59e0b;
+  color: #b45309;
+}
+
+/* Light Theme overrides for Sidebar & Popover */
+.surti-app.theme-light .surti-sidebar {
+  background: #f8fafc;
+  border-right-color: #e2e8f0;
+}
+
+.surti-app.theme-light .surti-sidebar-top {
+  border-bottom-color: #e2e8f0;
+}
+
+.surti-app.theme-light .surti-new-chat-btn {
+  background: #003b7a;
+  border-color: #003b7a;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 59, 122, 0.2);
+}
+
+.surti-app.theme-light .surti-new-chat-btn:hover {
+  background: #002855;
+  border-color: #002855;
+  color: #ffffff;
+}
+
+.surti-app.theme-light .surti-send-btn,
+.surti-app.theme-light .surti-mic-btn {
+  background: #003b7a;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(0, 59, 122, 0.25);
+}
+
+.surti-app.theme-light .surti-send-btn:hover:not(:disabled),
+.surti-app.theme-light .surti-mic-btn:hover {
+  background: #002855;
+}
+
+.surti-app.theme-light .surti-session-item:hover {
+  background: #f1f5f9;
+  color: #b45309;
+}
+
+.surti-app.theme-light .surti-sidebar-bottom {
+  border-top-color: #e2e8f0;
+}
+
+.surti-app.theme-light .surti-profile-btn:hover,
+.surti-app.theme-light .surti-profile-btn.is-active {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+}
+
+.surti-app.theme-light .surti-profile-popover {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.14);
+}
+
+.surti-app.theme-light .surti-popover-divider {
+  background: #e2e8f0;
+}
+
+.surti-app.theme-light .surti-popover-item:hover {
+  background: #f8fafc;
+  color: #b45309;
+}
+
+.surti-app.theme-light .surti-sidebar-toggle-btn {
+  border-color: #cbd5e1;
+  color: #1e293b;
+  background: #ffffff;
+}
+
+.surti-app.theme-light .surti-sidebar-toggle-btn:hover {
+  background: #f8fafc;
+  border-color: #f59e0b;
+  color: #b45309;
+}
+
+.surti-app.theme-light .surti-model-badge {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+.surti-app.theme-light .surti-icon-btn {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #0f172a;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.surti-app.theme-light .surti-icon-btn:hover {
+  background: #fffbeb;
+  border-color: #f59e0b;
+  color: #b45309;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .surti-sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 280px;
+    z-index: 99;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+    transform: translateX(-100%);
+    transition: transform 0.28s ease;
+  }
+  .surti-app.sidebar-open .surti-sidebar {
+    transform: translateX(0);
+    margin-left: 0;
+  }
+  .surti-app.sidebar-closed .surti-sidebar {
+    margin-left: 0;
+    transform: translateX(-100%);
+  }
+  .surti-sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+    z-index: 90;
+  }
+  .surti-sidebar-close-btn {
+    display: block;
+  }
+}
+
+/* Customer Badge & Home Link (Client Chat Mode) */
+.surti-customer-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--sbx-bg-glass);
+  border: 1px solid var(--sbx-border-subtle);
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.surti-customer-badge-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.surti-customer-badge-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--sbx-text-main);
+}
+
+.surti-customer-badge-sub {
+  font-size: 0.7rem;
+  color: var(--sbx-text-muted);
+}
+
+.surti-sidebar-home-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  color: var(--sbx-text-muted);
+  text-decoration: none;
+  font-size: 0.84rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.surti-sidebar-home-link:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--sbx-text-main);
+}
+
+.surti-app.theme-light .surti-customer-badge {
+  background: #ffffff;
+  border-color: #e2e8f0;
+}
+
+.surti-app.theme-light .surti-sidebar-home-link:hover {
+  background: #f1f5f9;
+  color: #003b7a;
+}
+

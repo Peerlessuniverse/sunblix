@@ -2,52 +2,7 @@
 
 import { useState } from 'react';
 
-const EPC_TEAMS = [
-  {
-    team: 'Tim Alpha (Struktur & Rangka)',
-    lead: 'Budi Santoso (Lead Erector)',
-    crewCount: '4 Teknisi K3',
-    site: 'Agro Tabanan Smart Greenhouse',
-    task: 'Pemasangan Aluminium Rail AL6005-T5 & Hanger Bolt pada atap spandek 35.1 kWp',
-    progress: 70,
-    weather: '☀️ Cerah (Angin 8 km/h, UV 9.2)',
-    safetyStatus: 'K3 Verified',
-    statusColor: 'success',
-  },
-  {
-    team: 'Tim Beta (Panel & Stringing)',
-    lead: 'I Wayan Sugiarta (PV Installer Lead)',
-    crewCount: '3 Teknisi PV',
-    site: 'Villa Sanur Luxury Seaside',
-    task: 'Pemasangan 24x Modul Surya LONGI 585 Wp & MC4 crimping DC string 1 & 2',
-    progress: 88,
-    weather: '⛅ Cerah Berawan (Angin 12 km/h, UV 8.4)',
-    safetyStatus: 'K3 Verified',
-    statusColor: 'success',
-  },
-  {
-    team: 'Tim Gamma (Inverter & Sistem AC)',
-    lead: 'Agus Priyono, ST (Electrical Lead)',
-    crewCount: '3 Teknisi Elektrikal',
-    site: 'Ubud Heritage Retreat',
-    task: 'Pemasangan Inverter 3-Phase 25kW, AC Combiner Box, & Pengetesan Proteksi SPD',
-    progress: 95,
-    weather: '⛅ Berawan (Angin 6 km/h, UV 6.8)',
-    safetyStatus: 'Testing Phase',
-    statusColor: 'warning',
-  },
-  {
-    team: 'Tim Delta (Struktur Berat Komersial)',
-    lead: 'Eko Wahyudi (Heavy Structural Lead)',
-    crewCount: '5 Teknisi Rigging',
-    site: 'PT Bali Logistik Benoa Port',
-    task: 'Lifting 84 panel surya ke atap gudang menggunakan Mobile Crane 5 Ton',
-    progress: 40,
-    weather: '💨 Angin Kencang Benoa (22 km/h - Hati-hati)',
-    safetyStatus: 'Wind Alert Active',
-    statusColor: 'danger',
-  },
-];
+const EPC_TEAMS = [];
 
 export default function ProductionView({ onBackToDashboard }) {
   const [teams, setTeams] = useState(EPC_TEAMS);
@@ -96,8 +51,8 @@ export default function ProductionView({ onBackToDashboard }) {
             <div className="sbx-metric-icon">👷</div>
           </div>
           <div className="sbx-metric-body">
-            <span className="sbx-metric-val">15 Personil</span>
-            <span className="sbx-status-badge success">4 Tim EPC</span>
+            <span className="sbx-metric-val">{teams.length > 0 ? `${teams.length * 3} Personil` : '0 Personil'}</span>
+            <span className="sbx-status-badge success">{teams.length > 0 ? `${teams.length} Tim EPC` : 'Standby Pool'}</span>
           </div>
           <p className="sbx-metric-subtext">Bersertifikasi keselamatan kerja atap (K3)</p>
         </div>
@@ -108,10 +63,10 @@ export default function ProductionView({ onBackToDashboard }) {
             <div className="sbx-metric-icon">📍</div>
           </div>
           <div className="sbx-metric-body">
-            <span className="sbx-metric-val">4 Lokasi</span>
-            <span className="sbx-metric-badge-delta">100% Aktif</span>
+            <span className="sbx-metric-val">{teams.length} Lokasi</span>
+            <span className="sbx-metric-badge-delta">{teams.length > 0 ? '100% Aktif' : 'Standby'}</span>
           </div>
-          <p className="sbx-metric-subtext">Tabanan, Sanur, Ubud, Benoa</p>
+          <p className="sbx-metric-subtext">{teams.length > 0 ? 'Site konstruksi aktif' : 'Belum ada proyek konstruksi hari ini'}</p>
         </div>
 
         <div className="sbx-metric-card">
@@ -120,10 +75,10 @@ export default function ProductionView({ onBackToDashboard }) {
             <div className="sbx-metric-icon">🛡️</div>
           </div>
           <div className="sbx-metric-body">
-            <span className="sbx-metric-val">520 Hari</span>
+            <span className="sbx-metric-val">100%</span>
             <span className="sbx-status-badge success">Safe Record</span>
           </div>
-          <p className="sbx-metric-subtext">Nol insiden kecelakaan kerja</p>
+          <p className="sbx-metric-subtext">Kepatuhan standar K3 nasional</p>
         </div>
 
         <div className="sbx-metric-card">
@@ -132,8 +87,8 @@ export default function ProductionView({ onBackToDashboard }) {
             <div className="sbx-metric-icon">⚡</div>
           </div>
           <div className="sbx-metric-body">
-            <span className="sbx-metric-val">18 kWp/hari</span>
-            <span className="sbx-status-badge info">Fast Track</span>
+            <span className="sbx-metric-val">{teams.length > 0 ? '18 kWp/hari' : '-'}</span>
+            <span className="sbx-status-badge info">Standar SOP</span>
           </div>
           <p className="sbx-metric-subtext">Standar mounting AL6005-T5</p>
         </div>
@@ -148,63 +103,75 @@ export default function ProductionView({ onBackToDashboard }) {
           </span>
         </div>
 
-        <div className="sbx-grid-two-cols">
-          {teams.map((t, idx) => (
-            <div key={idx} className="sbx-team-card">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
-                <div>
-                  <div style={{ fontSize: '13.5px', fontWeight: 800, color: 'var(--sbx-text)' }}>
-                    {t.team}
+        {teams.length > 0 ? (
+          <div className="sbx-grid-two-cols">
+            {teams.map((t, idx) => (
+              <div key={idx} className="sbx-team-card">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                  <div>
+                    <div style={{ fontSize: '13.5px', fontWeight: 800, color: 'var(--sbx-text)' }}>
+                      {t.team}
+                    </div>
+                    <div style={{ fontSize: '11.5px', color: 'var(--sbx-accent)' }}>
+                      👤 {t.lead} • {t.crewCount}
+                    </div>
                   </div>
-                  <div style={{ fontSize: '11.5px', color: 'var(--sbx-accent)' }}>
-                    👤 {t.lead} • {t.crewCount}
-                  </div>
+                  <span className={`sbx-status-badge ${t.statusColor}`}>{t.safetyStatus}</span>
                 </div>
-                <span className={`sbx-status-badge ${t.statusColor}`}>{t.safetyStatus}</span>
-              </div>
 
-              <div style={{ fontSize: '12px', color: 'var(--sbx-text)', fontWeight: 600, marginBottom: '4px' }}>
-                📍 Lokasi: {t.site}
-              </div>
+                <div style={{ fontSize: '12px', color: 'var(--sbx-text)', fontWeight: 600, marginBottom: '4px' }}>
+                  📍 Lokasi: {t.site}
+                </div>
 
-              <p style={{ fontSize: '11.5px', color: 'var(--sbx-text-muted)', lineHeight: 1.4, margin: '6px 0 10px' }}>
-                {t.task}
-              </p>
+                <p style={{ fontSize: '11.5px', color: 'var(--sbx-text-muted)', lineHeight: 1.4, margin: '6px 0 10px' }}>
+                  {t.task}
+                </p>
 
-              <div style={{ fontSize: '11px', color: 'var(--sbx-text-dim)', marginBottom: '8px' }}>
-                Cuaca Site: {t.weather}
-              </div>
+                <div style={{ fontSize: '11px', color: 'var(--sbx-text-dim)', marginBottom: '8px' }}>
+                  Cuaca Site: {t.weather}
+                </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
-                <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--sbx-text)' }}>
-                  Progress Hari Ini
-                </span>
-                <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--sbx-accent)' }}>
-                  {t.progress}%
-                </span>
-              </div>
-              <div className="sbx-progress-bar-bg">
-                <div
-                  className="sbx-progress-bar-fill"
-                  style={{ width: `${t.progress}%`, background: t.progress > 80 ? '#10b981' : '#38bdf8' }}
-                />
-              </div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
+                  <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--sbx-text)' }}>
+                    Progress Hari Ini
+                  </span>
+                  <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--sbx-accent)' }}>
+                    {t.progress}%
+                  </span>
+                </div>
+                <div className="sbx-progress-bar-bg">
+                  <div
+                    className="sbx-progress-bar-fill"
+                    style={{ width: `${t.progress}%`, background: t.progress > 80 ? '#10b981' : '#38bdf8' }}
+                  />
+                </div>
 
-              <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
-                <button
-                  type="button"
-                  className="sbx-row-action-btn"
-                  onClick={() => {
-                    setToast(`📸 Meminta foto progress lapangan dari ${t.lead}...`);
-                    setTimeout(() => setToast(''), 3000);
-                  }}
-                >
-                  Request Foto Lapangan
-                </button>
+                <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                  <button
+                    type="button"
+                    className="sbx-row-action-btn"
+                    onClick={() => {
+                      setToast(`📸 Meminta foto progress lapangan dari ${t.lead}...`);
+                      setTimeout(() => setToast(''), 3000);
+                    }}
+                  >
+                    Request Foto Lapangan
+                  </button>
+                </div>
               </div>
+            ))}
+          </div>
+        ) : (
+          <div style={{ textAlign: 'center', padding: '56px 20px', color: 'var(--sbx-text-muted)' }}>
+            <div style={{ fontSize: '36px', marginBottom: '8px' }}>👷</div>
+            <div style={{ fontWeight: 700, color: 'var(--sbx-text)', fontSize: '14px', marginBottom: '4px' }}>
+              Belum Ada Tim Instalasi Lapangan Yang Bertugas
             </div>
-          ))}
-        </div>
+            <div style={{ fontSize: '12px', maxWidth: '420px', margin: '0 auto' }}>
+              Tim EPC lapangan akan dideploy dan dijadwalkan otomatis setelah proposal SPH disepakati dan memasuki tahap konstruksi proyek.
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

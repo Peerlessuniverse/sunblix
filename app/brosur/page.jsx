@@ -613,6 +613,15 @@ function BrochureGeneratorInner() {
     const verifySavedSession = async () => {
       if (typeof window !== 'undefined') {
         const storedToken = localStorage.getItem('sunblix_staff_token');
+        const osSession = localStorage.getItem('sunblix_os_session');
+
+        // Only authenticated DashboardOS executives/staff can access the internal editor
+        if (osSession) {
+          setIsAuthenticated(true);
+          setAuthChecked(true);
+          return;
+        }
+
         if (storedToken) {
           try {
             const res = await fetch('/api/auth-staff', {
@@ -636,7 +645,7 @@ function BrochureGeneratorInner() {
       }
     };
     verifySavedSession();
-  }, []);
+  }, [searchParams]);
 
   const handleUnlock = async (e) => {
     if (e) e.preventDefault();
@@ -679,7 +688,17 @@ function BrochureGeneratorInner() {
 
   // Form State
   const [quoteData, setQuoteData] = useState(() => {
-    const base = PRESETS[initialPresetKey] || PRESETS.sph002 || PRESETS.sph001;
+    // Check if preset key matches an official package from SUNBLIX_OFFICIAL_PACKAGES_2026
+    const officialPkg = SUNBLIX_OFFICIAL_PACKAGES_2026.find((p) => p.id === initialPresetKey);
+    const base = officialPkg
+      ? getPresetFromPackage(
+          officialPkg,
+          searchParams.get('docNo') || 'SBX/SPH/X/2026/001',
+          searchParams.get('sph') || 'SPH 001',
+          searchParams.get('customer') || 'Bapak/Ibu Pelanggan'
+        )
+      : (PRESETS[initialPresetKey] || PRESETS.sph002 || PRESETS.sph001);
+
     // Allow URL params override
     return {
       ...base,
@@ -690,8 +709,51 @@ function BrochureGeneratorInner() {
       project: searchParams.get('project') || base.project,
       powerKwp: searchParams.get('kwp') || base.powerKwp,
       docNo: searchParams.get('docNo') || base.docNo,
+      phone: searchParams.get('phone') || base.phone,
+      delivery: searchParams.get('address') || base.delivery,
     };
   });
+
+  // Dynamic SPH Fetching from SURTI database
+  useEffect(() => {
+    const sphId = searchParams.get('sphId');
+    if (!sphId) return;
+
+    fetch(`/api/surti/sph?id=${sphId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.sph) {
+          const s = data.sph;
+          const pkg = SUNBLIX_OFFICIAL_PACKAGES_2026.find((p) => p.id === s.packageId);
+          const loadedPreset = pkg
+            ? getPresetFromPackage(pkg, s.sphNumber, s.sphNumber, s.customer?.name || 'Bapak/Ibu Pelanggan')
+            : (PRESETS.sph002 || {});
+
+          setQuoteData((prev) => ({
+            ...loadedPreset,
+            ...prev,
+            docNo: s.sphNumber || prev.docNo,
+            sphCode: s.sphNumber || prev.sphCode,
+            customer: s.customer?.name || prev.customer,
+            customerAddress: s.customer?.address || prev.customerAddress,
+            phone: s.customer?.phone || prev.phone,
+            email: s.customer?.email || prev.email,
+            project: `PLTS Hybrid ${s.technicalSpecs?.kwp} kWp (${s.packageName || 'SUNBLIX'})`,
+            powerKwp: String(s.technicalSpecs?.kwp || prev.powerKwp),
+            inverterKw: String(s.technicalSpecs?.inverterKw || prev.inverterKw),
+            batteryKwh: String(s.technicalSpecs?.batteryKwh || prev.batteryKwh),
+            panels: `${s.technicalSpecs?.panelCount} Modul (${s.technicalSpecs?.panelModel || 'LONGI 585 Wp'})`,
+            unitBasePrice: s.commercial?.dpp || prev.unitBasePrice,
+            unitPpn: s.commercial?.ppn || prev.unitPpn,
+            unitTotalPrice: s.commercial?.totalInclPpn || prev.unitTotalPrice,
+            totalOffer: s.commercial?.totalInclPpn || prev.totalOffer,
+            items: (s.lineItems && s.lineItems.length > 0) ? s.lineItems : (loadedPreset.items || prev.items),
+          }));
+          setIsAuthenticated(true);
+        }
+      })
+      .catch((err) => console.warn('Could not load SPH from SURTI API:', err));
+  }, [searchParams]);
 
   // UI state
   const [activePage, setActivePage] = useState('all'); // 'all', '1', '2', '3', '4'
@@ -3259,8 +3321,16 @@ function BrochureGeneratorInner() {
                         <strong className="p3-spec-v">{quoteData.batteryKwh ? `${quoteData.batteryKwh} kWh` : '5,10 kWh'}</strong>
                       </div>
                       <div className="p3-spec-col">
-                        <span className="p3-spec-lbl">Produksi ±</span>
-                        <strong className="p3-spec-v">{quoteData.estMonthlyKwh ? `${quoteData.estMonthlyKwh} kWh/bln` : '711 kWh/bln'}</strong>
+                        <span className="p3-spec-lbl">
+                          {packageCount > 1 ? `Produksi Total (${packageCount} Paket) ±` : 'Produksi ±'}
+                        </span>
+                        <strong className="p3-spec-v">
+                          {(() => {
+                            const unitKwh = Number(quoteData.estMonthlyKwh) || 711;
+                            const totalKwh = unitKwh * packageCount;
+                            return `${totalKwh.toLocaleString('id-ID')} kWh/bln`;
+                          })()}
+                        </strong>
                       </div>
                       <div className="p3-spec-col">
                         <span className="p3-spec-lbl">Jumlah paket</span>

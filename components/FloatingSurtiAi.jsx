@@ -18,33 +18,35 @@ export default function FloatingSurtiAi() {
         gap: '10px',
       }}
     >
-      {/* Primary SURTI AI Button */}
-      <Link
-        href="/surti"
-        aria-label="Konsultasi Tenaga Surya dengan SURTI AI"
+      {/* Tombol Utama: Mengobrol dengan kami langsung via WhatsApp */}
+      <a
+        href={waUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Mengobrol dengan kami langsung melalui WhatsApp"
         style={{
           display: 'flex',
           alignItems: 'center',
           gap: '10px',
-          background: 'linear-gradient(135deg, #0b192c 0%, #1e3a8a 50%, #d97706 100%)',
+          background: 'linear-gradient(135deg, #041830 0%, #082b54 100%)',
           border: '1.5px solid #f5b742',
           padding: '10px 18px',
           borderRadius: '9999px',
           color: '#fff',
           textDecoration: 'none',
-          boxShadow: '0 8px 25px rgba(245, 183, 66, 0.4)',
+          boxShadow: '0 8px 25px rgba(245, 183, 66, 0.35)',
           backdropFilter: 'blur(12px)',
           fontWeight: 600,
           fontSize: '0.88rem',
-          transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+          transition: 'all 0.25s ease',
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.transform = 'translateY(-3px) scale(1.02)';
-          e.currentTarget.style.boxShadow = '0 12px 32px rgba(245, 183, 66, 0.65)';
+          e.currentTarget.style.transform = 'translateY(-3px)';
+          e.currentTarget.style.boxShadow = '0 12px 30px rgba(245, 183, 66, 0.55)';
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.transform = 'translateY(0) scale(1)';
-          e.currentTarget.style.boxShadow = '0 8px 25px rgba(245, 183, 66, 0.4)';
+          e.currentTarget.style.transform = 'translateY(0)';
+          e.currentTarget.style.boxShadow = '0 8px 25px rgba(245, 183, 66, 0.35)';
         }}
       >
         <span
@@ -57,15 +59,14 @@ export default function FloatingSurtiAi() {
             animation: 'pulse 2s infinite',
           }}
         />
-        <span>⚡ Tanya SURTI AI (Konsultan PLTS)</span>
-      </Link>
+        <span>💬 Mengobrol dengan kami langsung</span>
+      </a>
 
-      {/* Direct WhatsApp Button */}
-      <a
-        href={waUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Konsultasi via WhatsApp"
+      {/* Akses Cepat ke SURTI AI Virtual Assistant */}
+      <Link
+        href="/surti"
+        aria-label="Tanya SURTI AI (Konsultan PLTS)"
+        title="Tanya SURTI AI (Konsultan PLTS)"
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -73,23 +74,25 @@ export default function FloatingSurtiAi() {
           width: '42px',
           height: '42px',
           borderRadius: '50%',
-          background: '#25D366',
+          background: 'linear-gradient(135deg, #0b192c 0%, #1e3a8a 50%, #d97706 100%)',
+          border: '1.5px solid #f5b742',
           color: '#fff',
           textDecoration: 'none',
-          boxShadow: '0 4px 15px rgba(37, 211, 102, 0.4)',
+          boxShadow: '0 4px 15px rgba(245, 183, 66, 0.4)',
           fontSize: '1.2rem',
           transition: 'all 0.25s ease',
         }}
-        title="Hubungi WhatsApp Resmi"
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = 'scale(1.1)';
+          e.currentTarget.style.boxShadow = '0 6px 20px rgba(245, 183, 66, 0.65)';
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.transform = 'scale(1)';
+          e.currentTarget.style.boxShadow = '0 4px 15px rgba(245, 183, 66, 0.4)';
         }}
       >
-        💬
-      </a>
+        ⚡
+      </Link>
     </div>
   );
 }

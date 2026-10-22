@@ -4,25 +4,11 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import './surti.css';
 import SurtiSphPreviewModal from './components/SurtiSphPreviewModal';
+import SurtiGeminiMessageRenderer from './components/SurtiGeminiMessageRenderer';
 import { updateLeadStage, addStoreNotification, saveStoreTask } from '../../lib/sunblixOsStore';
 
-const OFFICIAL_GREETING =
-  'Halo! Dengan SURTI disini, Saya Asisten dari SUNBLIX. Saya siap membantu Anda menemukan solusi tenaga surya yang sesuai dengan kebutuhan, lokasi, dan anggaran Anda. Apakah anda berencana menggunakannya untuk Rumah, Bisnis, atau Proyek Industri?';
-
 export default function SurtiCustomerPage() {
-  const [messages, setMessages] = useState([
-    {
-      id: 'msg-welcome',
-      role: 'assistant',
-      content: OFFICIAL_GREETING,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      quickActions: [
-        { label: '🏠 Rumah Tinggal (Tagihan ~Rp 3 Juta)', action: 'Rumah tinggal dengan tagihan listrik sekitar 3 juta per bulan' },
-        { label: '🏢 Ruko / Bisnis Komersial', action: 'Ruko bisnis komersial dengan tagihan sekitar 6 juta' },
-        { label: '🏭 Pabrik / Proyek Industri', action: 'Kebutuhan industri 3-fasa untuk pabrik' },
-      ],
-    },
-  ]);
+  const [messages, setMessages] = useState([]);
 
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -30,8 +16,10 @@ export default function SurtiCustomerPage() {
   const [theme, setTheme] = useState('light');
   const [previewSph, setPreviewSph] = useState(null);
   const [activeLead, setActiveLead] = useState(null);
+  const [isHistoryLoaded, setIsHistoryLoaded] = useState(false);
+  const [speakingMsgId, setSpeakingMsgId] = useState(null);
 
-  // Load incoming lead from web popup quote form & load saved theme preference
+  // Load incoming lead from web popup quote form & load saved theme & chat history
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedTheme = localStorage.getItem('surti_theme');
@@ -39,7 +27,29 @@ export default function SurtiCustomerPage() {
         setTheme(savedTheme);
       }
 
-      // Check if user came from Get Quote popup
+      // 1. Restore chat history from localStorage
+      try {
+        const savedHistory = localStorage.getItem('surti_chat_history');
+        if (savedHistory) {
+          const parsed = JSON.parse(savedHistory);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setMessages(parsed);
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to parse saved chat history:', e);
+      }
+      setIsHistoryLoaded(true);
+
+      // Pre-warm Web Speech Synthesis voices list
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.getVoices();
+        window.speechSynthesis.onvoiceschanged = () => {
+          window.speechSynthesis.getVoices();
+        };
+      }
+
+      // 2. Check if user came from Get Quote popup
       const pendingRaw = localStorage.getItem('sunblix_pending_quote_surti');
       if (pendingRaw) {
         try {
@@ -49,7 +59,7 @@ export default function SurtiCustomerPage() {
 
           const greetingContent =
             `Halo Bapak/Ibu ${lead.name}! 👋 Senang sekali dapat menyapa Anda.\n\n` +
-            `Saya SURTI, Konsultan Cerdas Tenaga Surya PT SUNBLIX ENERGI INDONESIA.\n` +
+            `Saya SURTI, Sunblix Utility Resources Technical Intelligence PT SUNBLIX ENERGI INDONESIA.\n` +
             `Data permohonan penawaran resmi yang Anda masukkan melalui website telah kami terima:\n\n` +
             `• 👤 **Nama Lengkap:** ${lead.name}\n` +
             `• 📱 **Nomor WhatsApp:** ${lead.whatsapp}\n` +
@@ -77,26 +87,30 @@ export default function SurtiCustomerPage() {
     }
   }, []);
 
+  // Save chat history to localStorage whenever messages update
+  useEffect(() => {
+    if (isHistoryLoaded && typeof window !== 'undefined') {
+      try {
+        if (messages.length > 0) {
+          localStorage.setItem('surti_chat_history', JSON.stringify(messages));
+        } else {
+          localStorage.removeItem('surti_chat_history');
+        }
+      } catch (err) {
+        console.warn('Failed to save chat history:', err);
+      }
+    }
+  }, [messages, isHistoryLoaded]);
+
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   // Handle new chat session
   const handleNewChat = () => {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
+    stopSpeaking();
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('surti_chat_history');
     }
-    setMessages([
-      {
-        id: `msg-welcome-${Date.now()}`,
-        role: 'assistant',
-        content: OFFICIAL_GREETING,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        quickActions: [
-          { label: '🏠 Rumah Tinggal (Tagihan ~Rp 3 Juta)', action: 'Rumah tinggal dengan tagihan listrik sekitar 3 juta per bulan' },
-          { label: '🏢 Ruko / Bisnis Komersial', action: 'Ruko bisnis komersial dengan tagihan sekitar 6 juta' },
-          { label: '🏭 Pabrik / Proyek Industri', action: 'Kebutuhan industri 3-fasa untuk pabrik' },
-        ],
-      },
-    ]);
+    setMessages([]);
   };
 
   const chatSessions = [
@@ -169,46 +183,120 @@ export default function SurtiCustomerPage() {
     }
   }, []);
 
-  // Text-To-Speech (TTS) Speak function
-  const speakText = (text) => {
+  // Stop speech synthesis immediately
+  const stopSpeaking = () => {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       window.speechSynthesis.cancel();
-      // Remove markdown chars for cleaner voice
-      const cleanText = text
-        .replace(/[*#_`]/g, '')
-        .replace(/https?:\/\/\S+/g, '')
-        .slice(0, 350); // Keep voice response concise
-
-      const utterance = new SpeechSynthesisUtterance(cleanText);
-      utterance.lang = 'id-ID';
-      utterance.rate = 1.0;
-      utterance.pitch = 1.1; // Feminine pitch
-
-      utterance.onstart = () => {
-        setVoiceStatus('speaking');
-      };
-
-      utterance.onend = () => {
-        setVoiceStatus('idle');
-        if (isContinuousVoice) {
-          setTimeout(() => {
-            startListening();
-          }, 600);
-        }
-      };
-
-      utterance.onerror = () => {
-        setVoiceStatus('idle');
-      };
-
-      window.speechSynthesis.speak(utterance);
     }
+    setSpeakingMsgId(null);
+    setVoiceStatus('idle');
+  };
+
+  // Helper to pick best natural Indonesian female voice
+  const getBestIndonesianFemaleVoice = () => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return null;
+    const voices = window.speechSynthesis.getVoices() || [];
+    if (!voices.length) return null;
+
+    // Helper to identify and strictly exclude male voices
+    const isMaleVoice = (v) => {
+      const n = (v.name || '').toLowerCase();
+      return n.includes('andika') || n.includes('male') || n.includes('pria') || n.includes('david') || n.includes('guy') || n.includes('stefan') || n.includes('george') || n.includes('mark');
+    };
+
+    // Priority 1: Google Bahasa Indonesia (official Indonesian female voice in Chrome) or Microsoft Gadis Online (Natural) in Edge
+    const topFemaleId = voices.find((v) => {
+      const isId = v.lang.startsWith('id') || v.lang.includes('ID') || (v.lang.toLowerCase && v.lang.toLowerCase().includes('indonesia'));
+      const name = (v.name || '').toLowerCase();
+      const isFemaleIndo = name.includes('google bahasa indonesia') || name.includes('gadis') || name.includes('female') || name.includes('wanita') || name.includes('putri') || name.includes('indah') || name.includes('siti');
+      return isId && isFemaleIndo && !isMaleVoice(v);
+    });
+    if (topFemaleId) return topFemaleId;
+
+    // Priority 2: Any Indonesian voice that is NOT male
+    const nonMaleId = voices.find((v) => {
+      const isId = v.lang.startsWith('id') || v.lang.includes('ID') || (v.lang.toLowerCase && v.lang.toLowerCase().includes('indonesia'));
+      return isId && !isMaleVoice(v);
+    });
+    if (nonMaleId) return nonMaleId;
+
+    // Priority 3: Malay female voice (natural Austronesian female voice)
+    const msFemale = voices.find((v) => {
+      const isMs = v.lang.startsWith('ms') || (v.lang.toLowerCase && v.lang.toLowerCase().includes('malay'));
+      const name = (v.name || '').toLowerCase();
+      return isMs && !isMaleVoice(v) && (name.includes('yasmin') || name.includes('female') || name.includes('wanita'));
+    });
+    if (msFemale) return msFemale;
+
+    // Priority 4: Natural female voice fallback
+    return voices.find((v) => {
+      const name = (v.name || '').toLowerCase();
+      return (name.includes('natural') || name.includes('female') || name.includes('zira') || name.includes('jenny') || name.includes('aria')) && !isMaleVoice(v);
+    }) || null;
+  };
+
+  // Text-To-Speech (TTS) Speak with toggle play/stop support
+  const toggleSpeak = (msgId, text) => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+
+    // IF CLICKED WHILE THIS MESSAGE IS CURRENTLY PLAYING -> STOP IT!
+    if (speakingMsgId === msgId) {
+      stopSpeaking();
+      return;
+    }
+
+    // Cancel any previous speech
+    window.speechSynthesis.cancel();
+
+    // Clean text thoroughly for natural spoken Indonesian
+    const cleanText = text
+      .replace(/[*#_`~]/g, '')
+      .replace(/https?:\/\/\S+/g, '')
+      .replace(/[•\-\*›►]/g, ' ')
+      .replace(/[📋⚡🔋🏠💡🤝📷📄👤📱✉️📍🔌📦📝⚠️📌✓✏️👋🚀😊]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    if (!cleanText) return;
+
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.lang = 'id-ID';
+
+    const bestVoice = getBestIndonesianFemaleVoice();
+    if (bestVoice) {
+      utterance.voice = bestVoice;
+    }
+
+    // Set natural warm female tone
+    utterance.rate = 1.0;
+    utterance.pitch = 1.1; // Warm and clear feminine tone for SURTI
+
+    utterance.onstart = () => {
+      setSpeakingMsgId(msgId);
+      setVoiceStatus('speaking');
+    };
+
+    utterance.onend = () => {
+      setSpeakingMsgId(null);
+      setVoiceStatus('idle');
+      if (isContinuousVoice) {
+        setTimeout(() => startListening(), 600);
+      }
+    };
+
+    utterance.onerror = (e) => {
+      console.warn('TTS error:', e);
+      setSpeakingMsgId(null);
+      setVoiceStatus('idle');
+    };
+
+    window.speechSynthesis.speak(utterance);
   };
 
   const startListening = () => {
     if (recognitionRef.current) {
       try {
-        window.speechSynthesis?.cancel();
+        stopSpeaking();
         recognitionRef.current.start();
         setIsVoiceActive(true);
       } catch (err) {
@@ -223,9 +311,8 @@ export default function SurtiCustomerPage() {
     if (recognitionRef.current) {
       recognitionRef.current.stop();
       setIsVoiceActive(false);
-      setVoiceStatus('idle');
     }
-    window.speechSynthesis?.cancel();
+    stopSpeaking();
   };
 
   const toggleVoice = () => {
@@ -276,24 +363,30 @@ export default function SurtiCustomerPage() {
 
       if (data.success) {
         // Automatically sync lead qualification into central Sunblix OS Store
-        if (activeLead?.quoteCode) {
-          if (data.data?.stage === 'Warm Lead' || data.data?.type === 'survey_request') {
+        if (data.data?.type === 'intake_survey_confirmed' || (activeLead?.quoteCode && (data.data?.stage === 'Warm Lead' || data.data?.type === 'survey_request'))) {
+          const leadName = data.data?.lead?.name || activeLead?.name || 'Pelanggan Baru';
+          const leadCity = data.data?.survey?.siteAddress || activeLead?.city || 'Jakarta';
+          const leadPhone = data.data?.lead?.phone || activeLead?.whatsapp || '';
+
+          if (activeLead?.quoteCode) {
             updateLeadStage(activeLead.quoteCode, 'Warm Lead');
-            saveStoreTask({
-              title: `Survei Teknis: ${activeLead.name} (${activeLead.city})`,
-              category: 'survey',
-              priority: 'medium',
-              dueDate: '3 Hari Kerja',
-              desc: `Survei atap teknis & SLD untuk usulan paket ${activeLead.kwp} kWp. Kategori: Warm Lead. Kontak: ${activeLead.whatsapp}`,
-            });
-            addStoreNotification({
-              title: `Survei Disepakati (Warm Lead): ${activeLead.name}`,
-              desc: `Klien di ${activeLead.city} menyepakati survei teknis. Status CRM: Survey Terjadwal (Warm Lead).`,
-              category: 'survey',
-              targetNav: 'crm',
-              icon: '📐',
-            });
-          } else if (data.data?.stage === 'Cold Lead' || data.data?.action === 'mark_cold_lead') {
+          }
+          saveStoreTask({
+            title: `Survei Teknis: ${leadName}`,
+            category: 'survey',
+            priority: 'high',
+            dueDate: '2 Hari Kerja',
+            desc: `Survei atap teknis & SLD untuk sistem Hybrid. Kontak: ${leadPhone}. Alamat: ${leadCity}`,
+          });
+          addStoreNotification({
+            title: `Survei Disepakati (Warm Lead): ${leadName}`,
+            desc: `Klien di ${leadCity.slice(0, 35)} mengonfirmasi formulir teknis & menyepakati survei lokasi.`,
+            category: 'survey',
+            targetNav: 'crm',
+            icon: '📐',
+          });
+        } else if (activeLead?.quoteCode) {
+          if (data.data?.stage === 'Cold Lead' || data.data?.action === 'mark_cold_lead') {
             updateLeadStage(activeLead.quoteCode, 'Cold Lead');
             addStoreNotification({
               title: `Lead Ditandai Cold Lead: ${activeLead.name}`,
@@ -328,7 +421,7 @@ export default function SurtiCustomerPage() {
 
         // Speak reply if voice was used or requested
         if (spoken || isVoiceActive || isContinuousVoice) {
-          speakText(data.reply);
+          toggleSpeak(assistantMsg.id, data.reply);
         }
 
         // Automatic Proactive Follow-up after "Baik terima kasih, mohon ditunggu sebentar.."
@@ -356,7 +449,7 @@ export default function SurtiCustomerPage() {
             };
             setMessages((prev) => [...prev, followUpMsg]);
             if (spoken || isVoiceActive || isContinuousVoice) {
-              speakText(followUpContent);
+              toggleSpeak(followUpMsg.id, followUpContent);
             }
           }, 2400);
         }
@@ -537,8 +630,70 @@ export default function SurtiCustomerPage() {
 
       {/* CHAT CONTAINER */}
       <main className="surti-chat-container">
-        {/* MESSAGES LIST */}
-        <div className="surti-messages-list">
+        {messages.length === 0 ? (
+          <div className="gemini-empty-hero">
+            <div className="gemini-hero-avatar-wrap">
+              <img src="/asset/surti_logo.png" alt="SURTI AI" className="gemini-hero-avatar" />
+            </div>
+            <h1 className="gemini-hero-title">
+              Halo, ada yang bisa saya bantu hari ini?
+            </h1>
+            <p className="gemini-hero-subtitle">
+              Saya SURTI, Sunblix Utility Resources Technical Intelligence PT SUNBLIX ENERGI INDONESIA.
+            </p>
+
+            <div className="gemini-suggestion-grid">
+              <button
+                type="button"
+                className="gemini-suggestion-card"
+                onClick={() => handleSendMessage('Rumah tinggal dengan daya PLN 3500 VA dan tagihan sekitar 2-3 juta per bulan, berapa estimasi panel surya yang dibutuhkan?')}
+              >
+                <span className="gemini-suggestion-icon">🏠</span>
+                <div className="gemini-suggestion-text">
+                  <strong>Simulasi Rumah Tinggal</strong>
+                  <span>Estimasi paket & penghematan tagihan bulanan</span>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                className="gemini-suggestion-card"
+                onClick={() => handleSendMessage('Saya ingin konsultasi sistem hybrid dengan baterai cadangan agar kulkas dan AC tetap menyala saat listrik padam')}
+              >
+                <span className="gemini-suggestion-icon">🔋</span>
+                <div className="gemini-suggestion-text">
+                  <strong>Sistem Hybrid & Backup Baterai</strong>
+                  <span>Proteksi mati lampu untuk peralatan prioritas</span>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                className="gemini-suggestion-card"
+                onClick={() => handleSendMessage('Tolong buatkan draf SPH resmi untuk rencana pemasangan PLTS')}
+              >
+                <span className="gemini-suggestion-icon">📄</span>
+                <div className="gemini-suggestion-text">
+                  <strong>Draf Penawaran Harga (SPH)</strong>
+                  <span>Rincian spesifikasi teknis dan estimasi investasi</span>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                className="gemini-suggestion-card"
+                onClick={() => handleSendMessage('Bagaimana cara mengajukan survei teknis lokasi atap rumah saya?')}
+              >
+                <span className="gemini-suggestion-icon">📍</span>
+                <div className="gemini-suggestion-text">
+                  <strong>Jadwalkan Survei Lokasi</strong>
+                  <span>Inspeksi fisik atap dan jalur kabel oleh engineer</span>
+                </div>
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="surti-messages-list">
           {messages.map((msg) => (
             <article
               key={msg.id}
@@ -553,7 +708,14 @@ export default function SurtiCustomerPage() {
               </div>
 
               <div className="surti-msg-bubble">
-                <div style={{ whiteSpace: 'pre-line' }}>{msg.content}</div>
+                <SurtiGeminiMessageRenderer
+                  content={msg.content}
+                  data={msg.data}
+                  role={msg.role}
+                  onActionClick={handleSendMessage}
+                  onSpeak={() => toggleSpeak(msg.id, msg.content)}
+                  isSpeaking={speakingMsgId === msg.id}
+                />
 
                 {/* PAYLOAD: SOLAR CALCULATION CARD */}
                 {msg.data?.type === 'solar_calculation' && (
@@ -727,7 +889,8 @@ export default function SurtiCustomerPage() {
 
           <div ref={messagesEndRef} />
         </div>
-      </main>
+      )}
+    </main>
 
       {/* INPUT BAR */}
       <div className="surti-input-wrapper">

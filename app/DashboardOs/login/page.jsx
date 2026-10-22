@@ -11,8 +11,8 @@ const APP_VERSION = 'v.1.0.0';
 
 export default function SunblixLoginPage() {
   const router = useRouter();
-  const [username, setUsername] = useState('danny@sunblix.id');
-  const [password, setPassword] = useState('sunblix2026');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -55,40 +55,59 @@ export default function SunblixLoginPage() {
     const uClean = username.trim().toLowerCase();
     const pClean = password.trim();
 
-    const validUsers = ['danny@sunblix.id', 'danny', 'admin@sunblix.id', 'engineer@sunblix.id', 'sunblix'];
-    const validPass = ['sunblix2026', '2026', 'danny2026', 'admin2026', 'sunblix'];
+    // Akun resmi staf Sunblix dengan validasi ketat (Email & Password harus cocok)
+    const STAFF_ACCOUNTS = [
+      {
+        ids: ['danny@sunblix.id', 'danny'],
+        passwords: ['sunblix2026', 'danny2026'],
+        user: {
+          name: 'Danny',
+          role: 'Director / CEO',
+          avatar: 'D',
+          email: 'danny@sunblix.id',
+        },
+      },
+      {
+        ids: ['engineer@sunblix.id', 'engineer'],
+        passwords: ['sunblix2026', 'engineer2026'],
+        user: {
+          name: 'Tim Engineering EPC',
+          role: 'Lead Rooftop EPC Engineer',
+          avatar: 'E',
+          email: 'engineer@sunblix.id',
+        },
+      },
+      {
+        ids: ['warsa@sunblix.id', 'warsa'],
+        passwords: ['sunblix2026', 'warsa2026'],
+        user: {
+          name: 'Warsa',
+          role: 'Account Executive',
+          avatar: 'W',
+          email: 'warsa@sunblix.id',
+        },
+      },
+      {
+        ids: ['admin@sunblix.id', 'admin', 'sunblix'],
+        passwords: ['sunblix2026', 'admin2026'],
+        user: {
+          name: 'Administrator',
+          role: 'Operations & IT Admin',
+          avatar: 'A',
+          email: 'admin@sunblix.id',
+        },
+      },
+    ];
 
-    if (validUsers.includes(uClean) || pClean === 'sunblix2026' || pClean === '2026' || pClean === 'danny2026') {
-      const isEng = uClean.includes('engineer');
-      const userObj = {
-        name: isEng ? 'Tim Engineering EPC' : 'Danny',
-        role: isEng ? 'Lead Rooftop EPC Engineer' : 'Director / CEO',
-        avatar: isEng ? 'E' : 'D',
-        email: uClean,
-      };
-      executeLogin(userObj);
-    } else {
-      setLoginError('Email atau kata sandi tidak valid. Silakan gunakan tombol akses cepat demo.');
-    }
-  };
+    const matched = STAFF_ACCOUNTS.find(
+      (acc) => acc.ids.includes(uClean) && acc.passwords.includes(pClean)
+    );
 
-  const handleQuickDemoLogin = (roleType) => {
-    if (roleType === 'director') {
-      const userObj = {
-        name: 'Danny',
-        role: 'Director / CEO',
-        avatar: 'D',
-        email: 'danny@sunblix.id',
-      };
-      executeLogin(userObj);
+    if (matched) {
+      setLoginError('');
+      executeLogin(matched.user);
     } else {
-      const userObj = {
-        name: 'Tim EPC Engineer',
-        role: 'Lead Rooftop EPC Engineer',
-        avatar: 'E',
-        email: 'engineer@sunblix.id',
-      };
-      executeLogin(userObj);
+      setLoginError('ID Staf atau kata sandi tidak valid. Akses ditolak.');
     }
   };
 
@@ -132,7 +151,8 @@ export default function SunblixLoginPage() {
                   className="os-input"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="danny@sunblix.id"
+                  placeholder="nama@sunblix.id"
+                  required
                   autoFocus
                 />
               </div>
@@ -146,7 +166,8 @@ export default function SunblixLoginPage() {
                   className="os-input"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••••••"
+                  placeholder="Masukkan kata sandi..."
+                  required
                 />
                 <button
                   type="button"
@@ -160,35 +181,12 @@ export default function SunblixLoginPage() {
             </div>
 
             {loginError && (
-              <div style={{ color: '#f87171', fontSize: '12px', background: 'rgba(239, 68, 68, 0.1)', padding: '8px 12px', borderRadius: '6px' }}>
+              <div style={{ color: '#f87171', fontSize: '12.5px', background: 'rgba(239, 68, 68, 0.12)', border: '1px solid rgba(239, 68, 68, 0.25)', padding: '10px 14px', borderRadius: '8px' }}>
                 ⚠️ {loginError}
               </div>
             )}
 
-            {/* 1-Click Demo Shortcut Login for Review */}
-            <div className="os-demo-pills-box">
-              <span className="os-demo-pills-label">Akses Cepat Pengujian (1-Click Demo):</span>
-              <div className="os-demo-pills-row">
-                <button
-                  type="button"
-                  className="os-demo-pill"
-                  onClick={() => handleQuickDemoLogin('director')}
-                  disabled={isLoading}
-                >
-                  ⚡ Login Pak Danny (Director / CEO)
-                </button>
-                <button
-                  type="button"
-                  className="os-demo-pill"
-                  onClick={() => handleQuickDemoLogin('engineer')}
-                  disabled={isLoading}
-                >
-                  🛠️ Login Tim Engineer
-                </button>
-              </div>
-            </div>
-
-            <button type="submit" className="os-btn-submit" disabled={isLoading}>
+            <button type="submit" className="os-btn-submit" disabled={isLoading} style={{ marginTop: '8px' }}>
               {isLoading ? 'Mengautentikasi Sesi...' : 'Masuk ke Sunblix OS ➔'}
             </button>
           </form>

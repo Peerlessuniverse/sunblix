@@ -1,8 +1,9 @@
 'use client';
 
-import Link from 'next/link';
-
 export default function FloatingSurtiAi() {
+  const waUrl =
+    'https://wa.me/6285288581027?text=Halo%20SUNBLIX,%20saya%20ingin%20konsultasi%20langsung%20mengenai%20pemasangan%20panel%20surya%20PLTS.';
+
   return (
     <div
       style={{
@@ -15,9 +16,11 @@ export default function FloatingSurtiAi() {
         gap: '8px',
       }}
     >
-      <Link
-        href="/surti"
-        aria-label="Mengobrol dengan kami langsung"
+      <a
+        href={waUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Mengobrol dengan kami langsung melalui WhatsApp"
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -53,7 +56,7 @@ export default function FloatingSurtiAi() {
           }}
         />
         <span>💬 Mengobrol dengan kami langsung</span>
-      </Link>
+      </a>
     </div>
   );
 }

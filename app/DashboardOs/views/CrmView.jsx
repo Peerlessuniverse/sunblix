@@ -289,6 +289,18 @@ export default function CrmView({ onBackToDashboard, onNavigateToProjects }) {
                   </td>
                   <td style={{ textAlign: 'right' }}>
                     <div style={{ display: 'inline-flex', gap: '6px' }}>
+                      {l.sphPreset && (
+                        <a
+                          href={`/brosur?preset=${l.sphPreset}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="sbx-row-action-btn"
+                          style={{ color: '#0284c7', borderColor: 'rgba(2, 132, 199, 0.4)' }}
+                          title={`Buka Dokumen Resmi ${l.sphNumber || 'SPH'}`}
+                        >
+                          📄 SPH
+                        </a>
+                      )}
                       <a
                         href={`https://wa.me/${l.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
                           `Halo ${l.name}, saya dari tim Sunblix Energi Indonesia terkait PLTS ${l.targetKwp}.`

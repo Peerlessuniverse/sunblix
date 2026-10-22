@@ -135,6 +135,17 @@ export default function LeadDetailModal({ lead, onClose, onEdit, onConverted }) 
               >
                 💬 Chat WhatsApp Langsung
               </a>
+              {lead.sphPreset && (
+                <a
+                  href={`/brosur?preset=${lead.sphPreset}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="sbx-action-btn"
+                  style={{ background: '#0284c7', color: '#fff', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                >
+                  📄 Buka Dokumen SPH Resmi
+                </a>
+              )}
               <button
                 type="button"
                 className="sbx-filter-pill-btn"

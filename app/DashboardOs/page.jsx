@@ -56,8 +56,8 @@ export default function SunblixDashboardOS() {
   // Authentication State
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
-  const [username, setUsername] = useState('danny@sunblix.id');
-  const [password, setPassword] = useState('sunblix2026');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState('');
   const [currentUser, setCurrentUser] = useState({
@@ -201,19 +201,17 @@ export default function SunblixDashboardOS() {
       if (stored) {
         try {
           const parsed = JSON.parse(stored);
-          // Migrasikan nama Warsa lama ke Pak Danny
-          if (!parsed.name || parsed.name === 'Warsa' || parsed.email === 'admin@sunblix.id') {
-            parsed.name = 'Danny';
-            parsed.role = 'Director / CEO';
-            parsed.avatar = 'D';
-            parsed.email = 'danny@sunblix.id';
-            localStorage.setItem('sunblix_os_session', JSON.stringify(parsed));
+          if (parsed && parsed.email && parsed.name) {
+            setIsLoggedIn(true);
+            setCurrentUser(parsed);
+          } else {
+            setIsLoggedIn(false);
           }
-          setIsLoggedIn(true);
-          setCurrentUser(parsed);
         } catch {
-          setIsLoggedIn(true);
+          setIsLoggedIn(false);
         }
+      } else {
+        setIsLoggedIn(false);
       }
 
       const storedTheme = localStorage.getItem('sunblix_os_theme');
@@ -304,56 +302,69 @@ export default function SunblixDashboardOS() {
 
   const handleLogin = (e) => {
     if (e) e.preventDefault();
+    if (!username.trim() || !password.trim()) {
+      setLoginError('Harap masukkan email/ID staf dan kata sandi.');
+      return;
+    }
+
     const uClean = username.trim().toLowerCase();
     const pClean = password.trim();
 
-    const validUsers = ['danny@sunblix.id', 'admin@sunblix.id', 'danny', 'engineer@sunblix.id', 'sunblix'];
-    const validPass = ['sunblix2026', '2026', 'admin2026', 'sunblix', 'danny2026'];
+    // Akun resmi staf Sunblix dengan validasi ketat (Email & Password harus cocok)
+    const STAFF_ACCOUNTS = [
+      {
+        ids: ['danny@sunblix.id', 'danny'],
+        passwords: ['sunblix2026', 'danny2026'],
+        user: {
+          name: 'Danny',
+          role: 'Director / CEO',
+          avatar: 'D',
+          email: 'danny@sunblix.id',
+        },
+      },
+      {
+        ids: ['engineer@sunblix.id', 'engineer'],
+        passwords: ['sunblix2026', 'engineer2026'],
+        user: {
+          name: 'Tim Engineering EPC',
+          role: 'Lead Rooftop EPC Engineer',
+          avatar: 'E',
+          email: 'engineer@sunblix.id',
+        },
+      },
+      {
+        ids: ['warsa@sunblix.id', 'warsa'],
+        passwords: ['sunblix2026', 'warsa2026'],
+        user: {
+          name: 'Warsa',
+          role: 'Account Executive',
+          avatar: 'W',
+          email: 'warsa@sunblix.id',
+        },
+      },
+      {
+        ids: ['admin@sunblix.id', 'admin', 'sunblix'],
+        passwords: ['sunblix2026', 'admin2026'],
+        user: {
+          name: 'Administrator',
+          role: 'Operations & IT Admin',
+          avatar: 'A',
+          email: 'admin@sunblix.id',
+        },
+      },
+    ];
 
-    if (validUsers.includes(uClean) || pClean === 'sunblix2026' || pClean === '2026' || pClean === 'danny2026') {
-      const isEng = uClean.includes('engineer');
-      const userObj = {
-        name: isEng ? 'Tim Engineering EPC' : 'Danny',
-        role: isEng ? 'Lead Rooftop EPC Engineer' : 'Director / CEO',
-        avatar: isEng ? 'E' : 'D',
-        email: uClean,
-      };
-      localStorage.setItem('sunblix_os_session', JSON.stringify(userObj));
-      setCurrentUser(userObj);
+    const matched = STAFF_ACCOUNTS.find(
+      (acc) => acc.ids.includes(uClean) && acc.passwords.includes(pClean)
+    );
+
+    if (matched) {
+      localStorage.setItem('sunblix_os_session', JSON.stringify(matched.user));
+      setCurrentUser(matched.user);
       setIsLoggedIn(true);
       setLoginError('');
     } else {
-      setLoginError('Username atau password salah. Gunakan akun demo.');
-    }
-  };
-
-  const handleQuickDemoLogin = (roleType) => {
-    if (roleType === 'director') {
-      setUsername('danny@sunblix.id');
-      setPassword('sunblix2026');
-      const userObj = {
-        name: 'Danny',
-        role: 'Director / CEO',
-        avatar: 'D',
-        email: 'danny@sunblix.id',
-      };
-      localStorage.setItem('sunblix_os_session', JSON.stringify(userObj));
-      setCurrentUser(userObj);
-      setIsLoggedIn(true);
-      setLoginError('');
-    } else {
-      setUsername('engineer@sunblix.id');
-      setPassword('sunblix2026');
-      const userObj = {
-        name: 'Tim EPC Engineer',
-        role: 'Lead Rooftop EPC Engineer',
-        avatar: 'E',
-        email: 'engineer@sunblix.id',
-      };
-      localStorage.setItem('sunblix_os_session', JSON.stringify(userObj));
-      setCurrentUser(userObj);
-      setIsLoggedIn(true);
-      setLoginError('');
+      setLoginError('ID Staf atau kata sandi salah. Akses ditolak.');
     }
   };
 
@@ -512,33 +523,12 @@ export default function SunblixDashboardOS() {
               </div>
 
               {loginError && (
-                <div style={{ color: '#f87171', fontSize: '12px', background: 'rgba(239, 68, 68, 0.1)', padding: '8px 12px', borderRadius: '6px' }}>
+                <div style={{ color: '#f87171', fontSize: '12.5px', background: 'rgba(239, 68, 68, 0.12)', border: '1px solid rgba(239, 68, 68, 0.25)', padding: '10px 14px', borderRadius: '8px' }}>
                   ⚠️ {loginError}
                 </div>
               )}
 
-              {/* 1-Click Demo Shortcut Login for Review */}
-              <div className="os-demo-pills-box">
-                <span className="os-demo-pills-label">Akses Cepat Pengujian (1-Click Demo):</span>
-                <div className="os-demo-pills-row">
-                  <button
-                    type="button"
-                    className="os-demo-pill"
-                    onClick={() => handleQuickDemoLogin('director')}
-                  >
-                    ⚡ Login Pak Danny (Director / CEO)
-                  </button>
-                  <button
-                    type="button"
-                    className="os-demo-pill"
-                    onClick={() => handleQuickDemoLogin('engineer')}
-                  >
-                    🛠️ Login Tim Engineer
-                  </button>
-                </div>
-              </div>
-
-              <button type="submit" className="os-btn-submit">
+              <button type="submit" className="os-btn-submit" style={{ marginTop: '12px' }}>
                 Masuk ke Sunblix OS ➔
               </button>
             </form>

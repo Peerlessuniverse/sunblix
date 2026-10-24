@@ -132,9 +132,11 @@ export default function SurtiIntelligenceView({ onBackToDashboard, currentUser }
     if (!confirm('Yakin ingin menghapus semua dummy data (SPH, Prospek, Survei, Tiket)?')) return;
     setLoading(true);
     try {
+      const staffToken = typeof window !== 'undefined' ? localStorage.getItem('sunblix_staff_token') : null;
+      const headers = staffToken ? { Authorization: `Bearer ${staffToken}` } : {};
       await Promise.all([
-        fetch('/api/surti/sph', { method: 'DELETE' }),
-        fetch('/api/surti/crm', { method: 'DELETE' }),
+        fetch('/api/surti/sph', { method: 'DELETE', headers }),
+        fetch('/api/surti/crm', { method: 'DELETE', headers }),
       ]);
       setActionFeedback('🗑️ Semua data laporan SURTI berhasil dikosongkan!');
       await loadData();

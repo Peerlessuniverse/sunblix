@@ -40,9 +40,11 @@ export default function SettingsView({ currentUser, onBackToDashboard }) {
     if (!confirm('PERINGATAN: Apakah Anda yakin ingin MENGHAPUS SEMUA DATA DUMMY di Dashboard OS (CRM, Prospek, Proyek, Faktur, SPH, dan Tugas)? Database akan dikosongkan total.')) return;
     try {
       clearAllStoreData();
+      const staffToken = typeof window !== 'undefined' ? localStorage.getItem('sunblix_staff_token') : null;
+      const headers = staffToken ? { Authorization: `Bearer ${staffToken}` } : {};
       await Promise.all([
-        fetch('/api/surti/sph', { method: 'DELETE' }),
-        fetch('/api/surti/crm', { method: 'DELETE' }),
+        fetch('/api/surti/sph', { method: 'DELETE', headers }),
+        fetch('/api/surti/crm', { method: 'DELETE', headers }),
       ]);
       setToast('🗑️ Seluruh data dummy di Sunblix OS & SURTI berhasil dihapus total!');
       setTimeout(() => setToast(''), 4000);

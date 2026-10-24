@@ -300,75 +300,51 @@ export default function SunblixDashboardOS() {
     }
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     if (e) e.preventDefault();
     if (!username.trim() || !password.trim()) {
       setLoginError('Harap masukkan email/ID staf dan kata sandi.');
       return;
     }
 
-    const uClean = username.trim().toLowerCase();
-    const pClean = password.trim();
+    setLoginError('');
 
-    // Akun resmi staf Sunblix dengan validasi ketat (Email & Password harus cocok)
-    const STAFF_ACCOUNTS = [
-      {
-        ids: ['danny@sunblix.id', 'danny'],
-        passwords: ['sunblix2026', 'danny2026'],
-        user: {
-          name: 'Danny',
-          role: 'Director / CEO',
-          avatar: 'D',
-          email: 'danny@sunblix.id',
-        },
-      },
-      {
-        ids: ['engineer@sunblix.id', 'engineer'],
-        passwords: ['sunblix2026', 'engineer2026'],
-        user: {
-          name: 'Tim Engineering EPC',
-          role: 'Lead Rooftop EPC Engineer',
-          avatar: 'E',
-          email: 'engineer@sunblix.id',
-        },
-      },
-      {
-        ids: ['warsa@sunblix.id', 'warsa'],
-        passwords: ['sunblix2026', 'warsa2026'],
-        user: {
-          name: 'Warsa',
-          role: 'Account Executive',
-          avatar: 'W',
-          email: 'warsa@sunblix.id',
-        },
-      },
-      {
-        ids: ['admin@sunblix.id', 'admin', 'sunblix'],
-        passwords: ['sunblix2026', 'admin2026'],
-        user: {
-          name: 'Administrator',
-          role: 'Operations & IT Admin',
-          avatar: 'A',
-          email: 'admin@sunblix.id',
-        },
-      },
-    ];
+    try {
+      const res = await fetch('/api/auth-staff', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'login-password',
+          username: username.trim(),
+          password: password.trim(),
+        }),
+      });
 
-    const matched = STAFF_ACCOUNTS.find(
-      (acc) => acc.ids.includes(uClean) && acc.passwords.includes(pClean)
-    );
-
-    if (matched) {
-      localStorage.setItem('sunblix_os_session', JSON.stringify(matched.user));
-      setCurrentUser(matched.user);
-      setIsLoggedIn(true);
-      setLoginError('');
-    } else {
-      setLoginError('ID Staf atau kata sandi salah. Akses ditolak.');
+      const data = await res.json();
+      if (res.ok && data.success) {
+        const userObj = data.user || { name: username.trim(), role: 'Staff' };
+        localStorage.setItem('sunblix_os_session', JSON.stringify(userObj));
+        setCurrentUser(userObj);
+        setIsLoggedIn(true);
+        setLoginError('');
+      } else {
+        setLoginError(data.message || 'ID Staf atau kata sandi salah. Akses ditolak.');
+      }
+    } catch {
+      setLoginError('Gagal menghubungi server autentikasi.');
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth-staff', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'logout' }),
+      });
+    } catch (e) {
+      console.warn('Logout API notification failed:', e);
+    }
     localStorage.removeItem('sunblix_os_session');
     setIsLoggedIn(false);
   };

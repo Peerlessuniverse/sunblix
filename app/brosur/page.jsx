@@ -805,36 +805,23 @@ function BrochureGeneratorInner() {
   useEffect(() => {
     const verifySavedSession = async () => {
       if (typeof window !== 'undefined') {
-        const storedToken = localStorage.getItem('sunblix_staff_token');
-        const osSession = localStorage.getItem('sunblix_os_session');
-
-        // Only authenticated DashboardOS executives/staff can access the internal editor
-        if (osSession) {
-          setIsAuthenticated(true);
-          setAuthChecked(true);
-          return;
-        }
-
-        if (storedToken) {
-          try {
-            const res = await fetch('/api/auth-staff', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ action: 'verify-token', token: storedToken }),
-            });
-            const data = await res.json();
-            if (data.valid) {
-              setIsAuthenticated(true);
-            } else {
-              localStorage.removeItem('sunblix_staff_token');
-            }
-          } catch {
-            if (storedToken.length > 20) {
-              setIsAuthenticated(true);
-            }
+        try {
+          const res = await fetch('/api/auth-staff', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'verify-token' }),
+          });
+          const data = await res.json();
+          if (data.valid) {
+            setIsAuthenticated(true);
+          } else {
+            setIsAuthenticated(false);
           }
+        } catch {
+          setIsAuthenticated(false);
+        } finally {
+          setAuthChecked(true);
         }
-        setAuthChecked(true);
       }
     };
     verifySavedSession();
@@ -859,7 +846,6 @@ function BrochureGeneratorInner() {
       const data = await res.json();
 
       if (res.ok && data.success) {
-        localStorage.setItem('sunblix_staff_token', data.token || 'sbx_staff_authenticated');
         setIsAuthenticated(true);
         setPinErrorMsg('');
       } else {
@@ -872,7 +858,14 @@ function BrochureGeneratorInner() {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth-staff', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'logout' }),
+      });
+    } catch {}
     localStorage.removeItem('sunblix_staff_token');
     setIsAuthenticated(false);
     setPinInput('');

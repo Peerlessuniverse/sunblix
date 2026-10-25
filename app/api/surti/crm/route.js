@@ -29,20 +29,20 @@ export async function GET(request) {
   const type = searchParams.get('type') || 'all';
 
   if (type === 'leads') {
-    return NextResponse.json({ success: true, leads: listLeads() });
+    return NextResponse.json({ success: true, leads: await listLeads() });
   }
   if (type === 'surveys') {
-    return NextResponse.json({ success: true, surveys: listSurveys() });
+    return NextResponse.json({ success: true, surveys: await listSurveys() });
   }
   if (type === 'tickets') {
-    return NextResponse.json({ success: true, tickets: listTickets() });
+    return NextResponse.json({ success: true, tickets: await listTickets() });
   }
 
   return NextResponse.json({
     success: true,
-    leads: listLeads(),
-    surveys: listSurveys(),
-    tickets: listTickets(),
+    leads: await listLeads(),
+    surveys: await listSurveys(),
+    tickets: await listTickets(),
   });
 }
 
@@ -69,7 +69,7 @@ export async function POST(request) {
       }
 
       console.warn(`[AUDIT] CRM database cleared by staff session at ${new Date().toISOString()}`);
-      clearAllCrmData();
+      await clearAllCrmData();
       return NextResponse.json({ success: true, message: 'Semua data CRM SURTI berhasil dikosongkan.' });
     }
 
@@ -87,7 +87,7 @@ export async function POST(request) {
           { status: 401 }
         );
       }
-      result = updateSurveyStatus(payload.surveyId, payload.status, payload.assignedEngineer, payload.adminNotes);
+      result = await updateSurveyStatus(payload.surveyId, payload.status, payload.assignedEngineer, payload.adminNotes);
     } else if (action === 'create_ticket') {
       result = createServiceTicket(payload);
     } else if (action === 'update_ticket') {
@@ -99,7 +99,7 @@ export async function POST(request) {
           { status: 401 }
         );
       }
-      result = updateTicketStatus(payload.ticketId, payload.status, payload.assignedStaff, payload.resolution);
+      result = await updateTicketStatus(payload.ticketId, payload.status, payload.assignedStaff, payload.resolution);
     } else {
       return NextResponse.json({ success: false, message: `Aksi ${action} tidak dikenali.` }, { status: 400 });
     }
@@ -136,6 +136,6 @@ export async function DELETE(request) {
   }
 
   console.warn(`[AUDIT] CRM mass DELETE executed by authenticated staff (${auth.payload?.role || 'staff'}) at ${new Date().toISOString()}`);
-  clearAllCrmData();
+  await clearAllCrmData();
   return NextResponse.json({ success: true, message: 'Semua data CRM SURTI berhasil dihapus.' });
 }

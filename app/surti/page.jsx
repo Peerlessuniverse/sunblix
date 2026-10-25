@@ -12,7 +12,21 @@ export default function SurtiCustomerPage() {
 
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [customerId] = useState('customer-web-' + Math.floor(1000 + Math.random() * 9000));
+  // Stable per-browser customer id so records persist across reloads & devices
+  // (previously random per mount — every refresh created a brand-new customer)
+  const [customerId] = useState(() => {
+    if (typeof window === 'undefined') return 'customer-web-ssr';
+    try {
+      let id = localStorage.getItem('surti_customer_id');
+      if (!id) {
+        id = 'customer-web-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+        localStorage.setItem('surti_customer_id', id);
+      }
+      return id;
+    } catch {
+      return 'customer-web-anon';
+    }
+  });
   const [theme, setTheme] = useState('light');
   const [previewSph, setPreviewSph] = useState(null);
   const [activeLead, setActiveLead] = useState(null);

@@ -19,7 +19,7 @@ export default function CatalogueModal({ isOpen, onClose }) {
     setLoading(true);
 
     // 1. Trigger Direct Download of Catalogue PDF
-    const pdfPath = '/asset/SUNBLIX_KATALOG_2026.pdf';
+    const pdfPath = '/SUNBLIX_KATALOG_2026.pdf';
     const downloadLink = document.createElement('a');
     downloadLink.href = pdfPath;
     downloadLink.download = 'SUNBLIX_KATALOG_2026_Solar_Specialist.pdf';
@@ -244,7 +244,7 @@ export default function CatalogueModal({ isOpen, onClose }) {
 
                 <div className="cat-success-actions">
                   <a
-                    href="/asset/SUNBLIX_KATALOG_2026.pdf"
+                    href="/SUNBLIX_KATALOG_2026.pdf"
                     target="_blank"
                     className="cat-btn-action download-again"
                     download="SUNBLIX_KATALOG_2026_Solar_Specialist.pdf"

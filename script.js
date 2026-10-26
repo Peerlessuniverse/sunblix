@@ -1431,7 +1431,7 @@
       if (catSubmitText) catSubmitText.textContent = '⚡ Menyiapkan Unduhan PDF...';
 
       // 1. Trigger Direct Download of Catalogue PDF
-      const pdfPath = 'asset/SUNBLIX_KATALOG_2026.pdf';
+      const pdfPath = '/SUNBLIX_KATALOG_2026.pdf';
       const downloadLink = document.createElement('a');
       downloadLink.href = pdfPath;
       downloadLink.download = 'SUNBLIX_KATALOG_2026_Solar_Specialist.pdf';

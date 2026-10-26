@@ -294,13 +294,33 @@ export default function SurtiCustomerPage() {
     window.speechSynthesis.cancel();
 
     // Clean text thoroughly for natural spoken Indonesian
-    const cleanText = text
-      .replace(/[*#_`~]/g, '')
-      .replace(/https?:\/\/\S+/g, '')
-      .replace(/[•\-\*›►]/g, ' ')
-      .replace(/[📋⚡🔋🏠💡🤝📷📄👤📱✉️📍🔌📦📝⚠️📌✓✏️👋🚀😊]/g, '')
-      .replace(/\s+/g, ' ')
-      .trim();
+    // ATURAN SUARA (per SOUL.md): nama perusahaan ditulis kapital TANPA pemisah
+    // (PT SUNBLIX ENERGI INDONESIA, SURTI, SUNBLIX, PLN, dll.) dibaca langsung
+    // sebagai kata ("sunblix", "surti"), BUKAN dieja per huruf. Ejaan hanya untuk
+    // teks yang memakai tanda pemisah eksplisit (P-T, S.U.R.T.I.).
+    const spokenFix = (t) => {
+      let out = t;
+      // Nama brand/perusahaan: WAJIB dibaca langsung sebagai kata.
+      out = out.replace(/\bPT SUNBLIX ENERGI INDONESIA\b/g, 'Pt Sunblix Energi Indonesia');
+      out = out.replace(/\bSUNBLIX\b/g, 'Sunblix');
+      out = out.replace(/\bSURTI\b/g, 'Surti');
+      out = out.replace(/\bASTRONERGY\b/g, 'Astronergy');
+      out = out.replace(/\bDEYE\b/g, 'Deye');
+      out = out.replace(/\bSOLARMAN\b/g, 'Solarman');
+      // Akronim teknis yang lazim DIEJA (2-3 huruf) → beri spasi agar dieja jelas
+      out = out.replace(/\b(PLN|VA|AC|DC|PV|MPPT|SPD|SLO|BESS|WIB)\b/g, (m) => m.split('').join(' '));
+      return out;
+    };
+
+    const cleanText = spokenFix(
+      text
+        .replace(/[*#_`~]/g, '')
+        .replace(/https?:\/\/\S+/g, '')
+        .replace(/[•\-\*›►]/g, ' ')
+        .replace(/[📋⚡🔋🏠💡🤝📷📄👤📱✉️📍🔌📦📝⚠️📌✓✏️👋🚀😊]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+    );
 
     if (!cleanText) return;
 

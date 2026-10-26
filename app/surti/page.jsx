@@ -118,6 +118,41 @@ export default function SurtiCustomerPage() {
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
+  // AUTO-CLOSE: jika pengguna diam 2 menit setelah jawaban WhatsApp diberikan,
+  // SURTI menutup percakapan dengan sopan + menu tombol (per SOUL.md aturan 3)
+  const [lastUserActivity, setLastUserActivity] = useState(Date.now());
+  const [autoClosed, setAutoClosed] = useState(false);
+
+  useEffect(() => {
+    const onActivity = () => setLastUserActivity(Date.now());
+    window.addEventListener('user-activity-surti', onActivity);
+    return () => window.removeEventListener('user-activity-surti', onActivity);
+  }, []);
+
+  useEffect(() => {
+    if (autoClosed || messages.length === 0 || isLoading) return;
+    // Cek apika jawaban WhatsApp sudah diberikan (kata kunci estimasi muncul)
+    const waAnswered = messages.some((m) =>
+      m.role === 'assistant' && /whatsapp|wa aktif/i.test(m.content || '')
+    );
+    if (!waAnswered) return;
+
+    const timer = setTimeout(() => {
+      setAutoClosed(true);
+      const closeMsg = {
+        id: `msg-autoclose-${Date.now()}`,
+        role: 'assistant',
+        content: 'Baik jika sudah tidak ada yang ditanyakan lagi, izinkan saya tutup percakapan ini. kami akan kembali menjawab dengan senang hati ketika anda kembali nanti.',
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        closeMenu: true,
+        quickActions: [],
+      };
+      setMessages((prev) => [...prev, closeMsg]);
+    }, 2 * 60 * 1000); // 2 menit
+
+    return () => clearTimeout(timer);
+  }, [lastUserActivity, messages, autoClosed, isLoading]);
+
   // Handle new chat session
   const handleNewChat = () => {
     stopSpeaking();
@@ -337,6 +372,11 @@ export default function SurtiCustomerPage() {
   const handleSendMessage = async (textToSend = null, spoken = false) => {
     const query = (textToSend || inputMessage).trim();
     if (!query || isLoading) return;
+
+    // reset timer aktivitas & status auto-close saat pengguna mengetik
+    setLastUserActivity(Date.now());
+    if (autoClosed) setAutoClosed(false);
+    window.dispatchEvent(new Event('user-activity-surti'));
 
     const userMsg = {
       id: `msg-${Date.now()}`,
@@ -712,6 +752,33 @@ export default function SurtiCustomerPage() {
                     </div>
 
                     {/* Pratinjau dokumen dibuka via permintaan teks (mis. "tampilkan SPH") */}
+                  </div>
+                )}
+
+                {/* MENU PENUTUP PERCAKAPAN (auto-close 2 menit, per SOUL.md) */}
+                {msg.closeMenu && (
+                  <div className="surti-quick-actions">
+                    <button
+                      type="button"
+                      className="surti-action-chip"
+                      onClick={() => {
+                        setAutoClosed(false);
+                        setInputMessage('');
+                        document.querySelector('.surti-input-field')?.focus();
+                      }}
+                    >
+                      1. Bertanya kembali
+                    </button>
+                    <button
+                      type="button"
+                      className="surti-action-chip"
+                      onClick={() => handleSendMessage('Saya ingin menjadwalkan survei lokasi')}
+                    >
+                      2. Jadwalkan Survey
+                    </button>
+                    <Link href="/" className="surti-action-chip" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}>
+                      3. Kembali ke Web
+                    </Link>
                   </div>
                 )}
 

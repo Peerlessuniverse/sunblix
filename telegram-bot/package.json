@@ -1,0 +1,17 @@
+{
+  "name": "surti-telegram",
+  "version": "1.0.0",
+  "description": "SURTI — Telegram bot konsultan panel surya SUNBLIX (Nous Portal + TypeSafe + Supabase)",
+  "main": "src/bot.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/bot.js",
+    "dev": "node --watch src/bot.js"
+  },
+  "dependencies": {
+    "grammy": "^1.30.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

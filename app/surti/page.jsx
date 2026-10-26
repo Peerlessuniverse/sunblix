@@ -127,11 +127,7 @@ export default function SurtiCustomerPage() {
     setMessages([]);
   };
 
-  const chatSessions = [
-    { id: 'session-1', title: 'Kalkulasi Surya Rumah 3 Juta', time: 'Hari ini', action: 'Rumah tinggal dengan tagihan listrik sekitar 3 juta per bulan' },
-    { id: 'session-2', title: 'Simulasi Solar Ruko Bisnis', time: 'Kemarin', action: 'Ruko bisnis komersial dengan tagihan sekitar 6 juta' },
-    { id: 'session-3', title: 'Draf SPH Industri 3-Fasa', time: '7 hari lalu', action: 'Kebutuhan industri 3-fasa untuk pabrik' },
-  ];
+  const chatSessions = []; // template sesi contoh dihapus — UX percakapan murni
 
   const toggleTheme = () => {
     setTheme((prev) => {
@@ -530,51 +526,9 @@ export default function SurtiCustomerPage() {
           </button>
         </div>
 
-        {/* SIDEBAR SESSIONS LIST */}
-        <div className="surti-sidebar-sessions">
-          <div className="surti-sidebar-label">Riwayat & Sesi Terkini</div>
-          {chatSessions.map((s) => (
-            <button
-              key={s.id}
-              type="button"
-              className="surti-session-item"
-              onClick={() => {
-                handleSendMessage(s.action);
-                if (typeof window !== 'undefined' && window.innerWidth < 768) {
-                  setSidebarOpen(false);
-                }
-              }}
-            >
-              <span className="surti-session-icon">💬</span>
-              <div className="surti-session-text">
-                <span className="surti-session-title">{s.title}</span>
-                <span className="surti-session-time">{s.time}</span>
-              </div>
-            </button>
-          ))}
-
-          <div className="surti-sidebar-label" style={{ marginTop: '16px' }}>Kalkulasi Cepat</div>
-          <button
-            type="button"
-            className="surti-session-item"
-            onClick={() => handleSendMessage('Tolong hitungkan kapasitas panel surya untuk tagihan saya')}
-          >
-            <span className="surti-session-icon">⚡</span>
-            <div className="surti-session-text">
-              <span className="surti-session-title">Simulasi Daya Listrik</span>
+            <div className="surti-sidebar-sessions">
+              {/* Riwayat sesi diambil dari localStorage pelanggan (bersih, tanpa template palsu) */}
             </div>
-          </button>
-          <button
-            type="button"
-            className="surti-session-item"
-            onClick={() => handleSendMessage('Tolong buatkan draf SPH resmi untuk atap saya')}
-          >
-            <span className="surti-session-icon">📄</span>
-            <div className="surti-session-text">
-              <span className="surti-session-title">Draf Dokumen SPH</span>
-            </div>
-          </button>
-        </div>
 
         {/* BOTTOM LEFT: SUNBLIX BRAND & HOME NAVIGATION */}
         <div className="surti-sidebar-bottom">
@@ -655,56 +609,7 @@ export default function SurtiCustomerPage() {
             <p className="gemini-hero-subtitle">
               Saya SURTI, Sunblix Utility Resources Technical Intelligence PT SUNBLIX ENERGI INDONESIA.
             </p>
-
-            <div className="gemini-suggestion-grid">
-              <button
-                type="button"
-                className="gemini-suggestion-card"
-                onClick={() => handleSendMessage('Rumah tinggal dengan daya PLN 3500 VA dan tagihan sekitar 2-3 juta per bulan, berapa estimasi panel surya yang dibutuhkan?')}
-              >
-                <span className="gemini-suggestion-icon">🏠</span>
-                <div className="gemini-suggestion-text">
-                  <strong>Simulasi Rumah Tinggal</strong>
-                  <span>Estimasi paket & penghematan tagihan bulanan</span>
-                </div>
-              </button>
-
-              <button
-                type="button"
-                className="gemini-suggestion-card"
-                onClick={() => handleSendMessage('Saya ingin konsultasi sistem hybrid dengan baterai cadangan agar kulkas dan AC tetap menyala saat listrik padam')}
-              >
-                <span className="gemini-suggestion-icon">🔋</span>
-                <div className="gemini-suggestion-text">
-                  <strong>Sistem Hybrid & Backup Baterai</strong>
-                  <span>Proteksi mati lampu untuk peralatan prioritas</span>
-                </div>
-              </button>
-
-              <button
-                type="button"
-                className="gemini-suggestion-card"
-                onClick={() => handleSendMessage('Tolong buatkan draf SPH resmi untuk rencana pemasangan PLTS')}
-              >
-                <span className="gemini-suggestion-icon">📄</span>
-                <div className="gemini-suggestion-text">
-                  <strong>Draf Penawaran Harga (SPH)</strong>
-                  <span>Rincian spesifikasi teknis dan estimasi investasi</span>
-                </div>
-              </button>
-
-              <button
-                type="button"
-                className="gemini-suggestion-card"
-                onClick={() => handleSendMessage('Bagaimana cara mengajukan survei teknis lokasi atap rumah saya?')}
-              >
-                <span className="gemini-suggestion-icon">📍</span>
-                <div className="gemini-suggestion-text">
-                  <strong>Jadwalkan Survei Lokasi</strong>
-                  <span>Inspeksi fisik atap dan jalur kabel oleh engineer</span>
-                </div>
-              </button>
-            </div>
+            {/* Sapaan sederhana — tanpa kartu template, langsung chat bebas */}
           </div>
         ) : (
           <div className="surti-messages-list">
@@ -773,22 +678,7 @@ export default function SurtiCustomerPage() {
                       </div>
                     </div>
 
-                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                      <button
-                        type="button"
-                        className="surti-action-chip"
-                        onClick={() => handleSendMessage('Tolong buatkan draf SPH resmi untuk paket ini')}
-                      >
-                        📄 Susun Draf SPH Resmi
-                      </button>
-                      <button
-                        type="button"
-                        className="surti-action-chip"
-                        onClick={() => handleSendMessage('Saya ingin jadwalkan survei lokasi atap')}
-                      >
-                        📍 Jadwalkan Survei Atap
-                      </button>
-                    </div>
+                    {/* Aksi lanjutan via percakapan teks — chip tombol dihapus */}
                   </div>
                 )}
 
@@ -821,64 +711,11 @@ export default function SurtiCustomerPage() {
                       </div>
                     </div>
 
-                    <div style={{ marginTop: '12px' }}>
-                      <button
-                        type="button"
-                        onClick={() => setPreviewSph(msg.data.sph)}
-                        className="surti-action-chip"
-                        style={{
-                          background: '#003b7a',
-                          color: '#ffffff',
-                          fontWeight: 700,
-                          border: 'none',
-                          cursor: 'pointer',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '8px',
-                          padding: '8px 16px',
-                          fontSize: '0.85rem',
-                        }}
-                      >
-                        <span>📄</span>
-                        <span>Lihat Pratinjau Dokumen SPH Resmi (4 Hal) ➔</span>
-                      </button>
-                    </div>
+                    {/* Pratinjau dokumen dibuka via permintaan teks (mis. "tampilkan SPH") */}
                   </div>
                 )}
 
-                {/* QUICK ACTION BUTTONS */}
-                {msg.quickActions && msg.quickActions.length > 0 && (
-                  <div className="surti-quick-actions">
-                    {msg.quickActions.map((qa, idx) => (
-                      <button
-                        key={idx}
-                        type="button"
-                        className="surti-action-chip"
-                        onClick={() => {
-                          if (qa.action === 'view_sph' || qa.sphId) {
-                            if (qa.sph) {
-                              setPreviewSph(qa.sph);
-                            } else if (msg.data?.sph) {
-                              setPreviewSph(msg.data.sph);
-                            } else if (qa.sphId) {
-                              fetch(`/api/surti/sph?id=${qa.sphId}`)
-                                .then((res) => res.json())
-                                .then((d) => {
-                                  if (d.success && d.sph) setPreviewSph(d.sph);
-                                });
-                            }
-                          } else if (qa.action && qa.action.startsWith('http')) {
-                            window.open(qa.action, '_blank');
-                          } else {
-                            handleSendMessage(qa.action || qa.label);
-                          }
-                        }}
-                      >
-                        {qa.label}
-                      </button>
-                    ))}
-                  </div>
-                )}
+                {/* QUICK ACTION BUTTONS dinonaktifkan — interaksi murni percakapan teks */}
 
                 <span className="surti-msg-time">{msg.timestamp}</span>
               </div>

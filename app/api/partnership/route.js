@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { getDbClient, isDbLive } from '../../../lib/supabaseClient.js';
 
 export async function POST(request) {
   try {
@@ -33,6 +34,32 @@ export async function POST(request) {
     const randomSuffix = Math.floor(1000 + Math.random() * 9000);
     const partnerId = `SBX-VND${new Date().getFullYear()}-${randomSuffix}`;
 
+    // Persist to Supabase (partnership inquiries table)
+    if (isDbLive()) {
+      try {
+        const client = getDbClient();
+        await client.insert('surti_partnership_inquiries', {
+          partner_number: partnerId,
+          company_name: companyName,
+          pic_name: picName,
+          pic_position: picPosition || null,
+          email,
+          whatsapp,
+          category,
+          coverage_area: coverageArea || null,
+          website: website || null,
+          npwp: npwp || null,
+          company_profile_url: companyProfileUrl || null,
+          past_experience: pastExperience || null,
+          proposal_description: proposalDescription || null,
+          status: 'submitted',
+        });
+      } catch (dbErr) {
+        console.error('[PARTNERSHIP] DB write failed:', dbErr.message);
+        // Jangan gagalkan respons — pendaftaran tetap dianggap diterima (tercatat di log)
+      }
+    }
+
     console.log(`[SUNBLIX VENDOR PARTNERSHIP INQUIRY] ID: ${partnerId}`, {
       partnerId,
       companyName,
@@ -58,7 +85,6 @@ export async function POST(request) {
         partnerId,
         companyName,
         picName,
-        category,
         receivedAt: new Date().toLocaleDateString('id-ID', {
           day: 'numeric',
           month: 'long',
@@ -67,9 +93,9 @@ export async function POST(request) {
       },
     });
   } catch (error) {
-    console.error('Error handling partnership API:', error);
+    console.error('[API /api/partnership] Error:', error);
     return NextResponse.json(
-      { success: false, message: 'Terjadi kesalahan sistem saat memproses kemitraan vendor.' },
+      { success: false, message: 'Terjadi kesalahan server. Silakan coba lagi.' },
       { status: 500 }
     );
   }

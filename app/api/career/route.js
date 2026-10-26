@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { getDbClient, isDbLive } from '../../../lib/supabaseClient.js';
 
 export async function POST(request) {
   try {
@@ -33,6 +34,32 @@ export async function POST(request) {
     const randomSuffix = Math.floor(1000 + Math.random() * 9000);
     const applicationId = `SBX-HR${new Date().getFullYear()}-${randomSuffix}`;
 
+    // Persist to Supabase (career applications table)
+    if (isDbLive()) {
+      try {
+        const client = getDbClient();
+        await client.insert('surti_career_applications', {
+          application_number: applicationId,
+          full_name: fullName,
+          email,
+          whatsapp,
+          position,
+          city: city || null,
+          education: education || null,
+          experience: experience || null,
+          skills: skills || null,
+          portfolio_url: portfolioUrl || null,
+          expected_salary: expectedSalary || null,
+          availability: availability || null,
+          bio: bio || null,
+          status: 'received',
+        });
+      } catch (dbErr) {
+        console.error('[CAREER] DB write failed:', dbErr.message);
+        // Jangan gagalkan respons — lamaran tetap dianggap diterima (tercatat di log)
+      }
+    }
+
     console.log(`[SUNBLIX CAREER APPLICATION] ID: ${applicationId}`, {
       applicationId,
       fullName,
@@ -66,9 +93,9 @@ export async function POST(request) {
       },
     });
   } catch (error) {
-    console.error('Error handling career application API:', error);
+    console.error('[API /api/career] Error:', error);
     return NextResponse.json(
-      { success: false, message: 'Terjadi kesalahan sistem saat memproses biodata lamaran.' },
+      { success: false, message: 'Terjadi kesalahan server. Silakan coba lagi.' },
       { status: 500 }
     );
   }

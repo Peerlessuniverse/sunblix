@@ -308,6 +308,8 @@ export default function SurtiCustomerPage() {
       out = out.replace(/\bDEYE\b/g, 'Deye');
       out = out.replace(/\bSOLARMAN\b/g, 'Solarman');
       // Akronim teknis yang lazim DIEJA (2-3 huruf) → beri spasi agar dieja jelas
+      // "PT" dieja "P T" (per SOUL.md: ejaan hanya dengan pemisah — PT disebut huruf per huruf)
+      out = out.replace(/\bPT\b(?!\s+SUNBLIX)/g, 'P T');
       out = out.replace(/\b(PLN|VA|AC|DC|PV|MPPT|SPD|SLO|BESS|WIB)\b/g, (m) => m.split('').join(' '));
       return out;
     };

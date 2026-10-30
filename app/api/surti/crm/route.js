@@ -12,6 +12,7 @@ import {
 } from '../../../../lib/surti/crmService.js';
 import { verifyRequestAuth } from '../../../../lib/auth/staffAuth.js';
 import { verifySurtiKey } from '../../../../lib/auth/surtiAuth.js';
+import { createLeadToken } from '../../../../lib/surti/publicLeadToken.js';
 
 export async function GET(request) {
   // Reading customer CRM data (leads, surveys, tickets) requires either an
@@ -80,14 +81,38 @@ export async function POST(request) {
       return NextResponse.json({ success: true, message: 'Semua data CRM SURTI berhasil dikosongkan.' });
     }
 
-    // Identify the caller for auditability. create_* stays open for the public
-    // website; staff-gated actions below still require a staff session.
+    // Identify caller. Lead creation remains available to the website; personal
+    // calculator links require the trusted SURTI service key or staff auth.
     const surti = verifySurtiKey(request);
-    const accessVia = surti.valid ? 'surti-key' : 'public-web';
+    const staff = verifyRequestAuth(request);
+    const accessVia = staff.valid ? 'staff' : surti.valid ? 'surti-key' : 'public-web';
 
     let result;
     if (action === 'create_lead') {
       result = recordLead(payload);
+    } else if (action === 'create_calculator_link') {
+      if (!staff.valid && !surti.valid) {
+        return NextResponse.json(
+          { success: false, message: 'Akses ditolak. Pembuatan link kalkulator memerlukan kunci layanan SURTI.' },
+          { status: 401 }
+        );
+      }
+      if (!payload.customerId || typeof payload.customerId !== 'string') {
+        return NextResponse.json(
+          { success: false, message: 'customerId wajib diisi.' },
+          { status: 400 }
+        );
+      }
+      const token = createLeadToken(payload.customerId);
+      const calculatorUrl = new URL(
+        `/kalkulator?lead=${encodeURIComponent(token)}`,
+        request.url
+      ).toString();
+      result = {
+        customerId: payload.customerId,
+        calculatorUrl,
+        expiresInDays: 7,
+      };
     } else if (action === 'create_survey') {
       result = createSurveyRequest(payload);
     } else if (action === 'update_survey') {

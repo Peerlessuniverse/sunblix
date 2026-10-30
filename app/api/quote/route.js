@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { recordLead } from '../../../lib/surti/crmService.js';
+import { recordLead, parseBillAmount } from '../../../lib/surti/crmService.js';
 
 export async function POST(request) {
   try {
@@ -19,7 +19,7 @@ export async function POST(request) {
     const quoteId = `SBX-Q${new Date().getFullYear()}-${randomSuffix}`;
 
     // Extract numeric monthly bill
-    const billNum = parseInt(String(monthlyBill).replace(/[^0-9]/g, ''), 10) || 2500000;
+    const billNum = parseBillAmount(monthlyBill);
 
     // Automatically record into SURTI CRM database
     recordLead({
@@ -29,7 +29,7 @@ export async function POST(request) {
       email,
       customerType: propertyType === 'Pabrik / Gudang' ? 'industrial' : propertyType === 'Ruko / Bisnis' ? 'commercial' : 'residential',
       companyName: '',
-      city: city || 'Indonesia',
+      city,
       monthlyBill: billNum,
       propertyType: propertyType || 'house',
       systemType: 'hybrid',

@@ -612,7 +612,7 @@ export default function SurtiIntelligenceView({ onBackToDashboard, currentUser }
                       </td>
                       <td style={{ padding: '14px 18px', color: '#334155' }}>{ld.propertyType || 'Residensial'}</td>
                       <td style={{ padding: '14px 18px', color: '#d97706', fontWeight: 600 }}>
-                        {ld.monthlyBill ? formatRupiah(ld.monthlyBill) : 'Rp 3.500.000'}
+                        {ld.monthlyBill ? formatRupiah(ld.monthlyBill) : '—'}
                       </td>
                       <td style={{ padding: '14px 18px', color: '#0284c7', fontWeight: 600 }}>{ld.preferredSystemType || 'Hybrid Solar'}</td>
                       <td style={{ padding: '14px 18px', color: '#64748b' }}>{ld.location || 'Jabodetabek'}</td>

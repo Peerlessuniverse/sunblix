@@ -9,6 +9,7 @@ import {
   updateTicketStatus,
   listTickets,
   clearAllCrmData,
+  approveLeadForCrm,
 } from '../../../../lib/surti/crmService.js';
 import { verifyRequestAuth } from '../../../../lib/auth/staffAuth.js';
 import { verifySurtiKey } from '../../../../lib/auth/surtiAuth.js';
@@ -125,6 +126,18 @@ export async function POST(request) {
         );
       }
       result = await updateSurveyStatus(payload.surveyId, payload.status, payload.assignedEngineer, payload.adminNotes);
+    } else if (action === 'approve_lead') {
+      // Promoting a SURTI-qualified lead into CRM & Leads requires an
+      // authenticated Admin/Direktur session — this is the human-in-the-loop
+      // gate the CRM pipeline relies on.
+      const auth = verifyRequestAuth(request);
+      if (!auth.valid) {
+        return NextResponse.json(
+          { success: false, message: 'Akses ditolak. Persetujuan lead ke CRM memerlukan autentikasi staf.' },
+          { status: 401 }
+        );
+      }
+      result = await approveLeadForCrm(payload.leadId, payload.approverName);
     } else if (action === 'create_ticket') {
       result = createServiceTicket(payload);
     } else if (action === 'update_ticket') {

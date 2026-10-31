@@ -104,6 +104,36 @@ export default function SurtiIntelligenceView({ onBackToDashboard, currentUser }
     }
   };
 
+  // Promote a SURTI-qualified lead into CRM & Leads (human-in-the-loop gate)
+  const handleApproveLead = async (lead) => {
+    const approverName = prompt(
+      'Nama Admin / Direktur yang menyetujui lead ini masuk CRM:',
+      currentUser?.name ? `${currentUser.name} (${currentUser.role || 'Director / CEO'})` : 'Pak Danny (Director / CEO)'
+    );
+    if (!approverName) return;
+
+    try {
+      const staffToken = typeof window !== 'undefined' ? localStorage.getItem('sunblix_staff_token') : null;
+      const res = await fetch('/api/surti/crm', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(staffToken ? { Authorization: `Bearer ${staffToken}` } : {}),
+        },
+        body: JSON.stringify({ action: 'approve_lead', leadId: lead.id, approverName }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setActionFeedback(`✅ Lead ${lead.name || lead.id} disetujui ${approverName} — sekarang masuk CRM & Leads.`);
+        loadData();
+      } else {
+        alert(data.message || 'Gagal menyetujui lead.');
+      }
+    } catch (err) {
+      alert('Terjadi kesalahan koneksi.');
+    }
+  };
+
   // Survey status update
   const handleUpdateSurvey = async (surveyId, newStatus) => {
     try {
@@ -594,12 +624,13 @@ export default function SurtiIntelligenceView({ onBackToDashboard, currentUser }
                   <th style={{ padding: '14px 18px' }}>Sistem Rekomendasi</th>
                   <th style={{ padding: '14px 18px' }}>Wilayah</th>
                   <th style={{ padding: '14px 18px' }}>Tahap Prospek</th>
+                  <th style={{ padding: '14px 18px' }}>Status CRM</th>
                 </tr>
               </thead>
               <tbody>
                 {leads.length === 0 ? (
                   <tr>
-                    <td colSpan={6} style={{ padding: '36px', textAlign: 'center', color: '#64748b' }}>
+                    <td colSpan={7} style={{ padding: '36px', textAlign: 'center', color: '#64748b' }}>
                       Belum ada database prospek pelanggan tersimpan. Silakan lakukan tes pencarian leads melalui konsultasi SURTI atau kalkulator web.
                     </td>
                   </tr>
@@ -608,18 +639,35 @@ export default function SurtiIntelligenceView({ onBackToDashboard, currentUser }
                     <tr key={ld.id} style={{ borderBottom: '1px solid #f1f5f9', transition: 'background 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.background = '#f8fafc')} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
                       <td style={{ padding: '14px 18px' }}>
                         <div style={{ fontWeight: 700, color: '#0f172a' }}>{ld.name || ld.id}</div>
-                        <div style={{ fontSize: '0.74rem', color: '#64748b' }}>Sumber: SURTI AI Chat</div>
+                        <div style={{ fontSize: '0.74rem', color: '#64748b' }}>Sumber: {ld.source || 'SURTI AI Chat'}</div>
                       </td>
                       <td style={{ padding: '14px 18px', color: '#334155' }}>{ld.propertyType || 'Residensial'}</td>
                       <td style={{ padding: '14px 18px', color: '#d97706', fontWeight: 600 }}>
                         {ld.monthlyBill ? formatRupiah(ld.monthlyBill) : '—'}
                       </td>
-                      <td style={{ padding: '14px 18px', color: '#0284c7', fontWeight: 600 }}>{ld.preferredSystemType || 'Hybrid Solar'}</td>
-                      <td style={{ padding: '14px 18px', color: '#64748b' }}>{ld.location || 'Jabodetabek'}</td>
+                      <td style={{ padding: '14px 18px', color: '#0284c7', fontWeight: 600 }}>{ld.systemType || '—'}</td>
+                      <td style={{ padding: '14px 18px', color: '#64748b' }}>{ld.city || '—'}</td>
                       <td style={{ padding: '14px 18px' }}>
                         <span style={{ background: '#eff6ff', border: '1px solid #bfdbfe', color: '#1d4ed8', padding: '4px 10px', borderRadius: '6px', fontSize: '0.76rem', fontWeight: 700 }}>
                           {ld.stage || 'NEW_LEAD'}
                         </span>
+                      </td>
+                      <td style={{ padding: '14px 18px' }}>
+                        {ld.crmApproved ? (
+                          <span style={{ background: '#ecfdf5', border: '1px solid #a7f3d0', color: '#059669', padding: '4px 10px', borderRadius: '6px', fontSize: '0.76rem', fontWeight: 700 }}>
+                            ✅ Di CRM {ld.crmApprovedBy ? `(${ld.crmApprovedBy})` : ''}
+                          </span>
+                        ) : ld.crmReady ? (
+                          <button
+                            type="button"
+                            onClick={() => handleApproveLead(ld)}
+                            style={{ background: '#0284c7', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '0.76rem', fontWeight: 700, cursor: 'pointer' }}
+                          >
+                            Masukkan ke CRM
+                          </button>
+                        ) : (
+                          <span style={{ color: '#94a3b8', fontSize: '0.76rem' }}>Belum sepakat survei/SPH</span>
+                        )}
                       </td>
                     </tr>
                   ))

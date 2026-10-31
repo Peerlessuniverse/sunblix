@@ -40,7 +40,11 @@
 
 /* Base Dashboard Container */
 .sbx-dashboard-root {
-  min-height: 100vh;
+  /* Hard-capped (not min-height): the root must never grow past the
+     viewport, or there is nothing left to scroll the page itself — which
+     is exactly what let the sidebar scroll away despite position: sticky
+     below. Only .sbx-main-content is meant to scroll internally. */
+  height: 100vh;
   background-color: var(--sbx-bg);
   background-image: 
     radial-gradient(circle at 10% 10%, rgba(2, 132, 199, 0.12) 0%, transparent 45%),
@@ -363,8 +367,8 @@
    ========================================================================== */
 .sbx-main-content {
   flex: 1;
-  min-height: 100vh;
-  height: auto;
+  min-height: 0;
+  height: 100%;
   overflow-y: auto;
   padding: 24px 30px 60px;
   display: flex;

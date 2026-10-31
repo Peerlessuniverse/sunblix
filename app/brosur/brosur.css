@@ -579,6 +579,7 @@
     overflow-y: visible;
     padding: 16px;
     border-right: none;
+    position: static;
   }
 
   .generator-sidebar.mobile-hidden {
@@ -678,6 +679,12 @@
   padding: 18px 16px;
   overflow-y: auto;
   max-height: calc(100vh - 65px);
+  /* Pinned to the viewport (below the 65px topbar) so it stays put while
+     the much-taller A4 preview on the right scrolls — only the sidebar's
+     own content scrolls internally via overflow-y above. */
+  position: sticky;
+  top: 65px;
+  align-self: start;
 }
 
 .sidebar-section {

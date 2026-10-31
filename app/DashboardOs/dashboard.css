@@ -144,7 +144,10 @@
   letter-spacing: 1.2px;
 }
 
-/* Sidebar Nav Scrollable Area */
+/* Sidebar Nav Area — menu tidak boleh terlihat/terasa bisa discroll seperti
+   panel kanan; overflow-y tetap "auto" hanya sebagai jaring pengaman di layar
+   sangat pendek (supaya item menu tidak pernah benar-benar hilang/tidak
+   terjangkau), tapi scrollbar-nya disembunyikan. */
 .sbx-sidebar-nav-wrap {
   flex: 1;
   min-height: 0;
@@ -152,25 +155,12 @@
   overflow-x: hidden;
   padding-right: 2px;
   margin-right: -2px;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(148, 163, 184, 0.2) transparent;
+  scrollbar-width: none;
 }
 
 .sbx-sidebar-nav-wrap::-webkit-scrollbar {
-  width: 3px;
-}
-
-.sbx-sidebar-nav-wrap::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.sbx-sidebar-nav-wrap::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.2);
-  border-radius: 4px;
-}
-
-.sbx-sidebar-nav-wrap::-webkit-scrollbar-thumb:hover {
-  background: rgba(56, 189, 248, 0.5);
+  display: none;
+  width: 0;
 }
 
 /* Sidebar Nav Items */
@@ -187,7 +177,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 5.5px 8px;
+  padding: 4.5px 8px;
   border-radius: 8px;
   font-size: 12px;
   font-weight: 600;

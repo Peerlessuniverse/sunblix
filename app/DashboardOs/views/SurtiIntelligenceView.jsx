@@ -476,7 +476,7 @@ export default function SurtiIntelligenceView({ onBackToDashboard, currentUser }
                       </td>
                       <td style={{ padding: '14px 18px', color: '#334155', fontSize: '0.8rem' }}>
                         <div>Inverter: {sph.technicalSpecs?.inverter}</div>
-                        <div style={{ color: '#059669', fontWeight: 600 }}>Estimasi Hemat: {formatRupiah(sph.technicalSpecs?.monthlySavings)}/bln</div>
+                        <div style={{ color: '#059669', fontWeight: 600 }}>Estimasi Hemat: {formatRupiah(sph.technicalSpecs?.monthlySavings ?? sph.technicalSpecs?.estimatedMonthlySavings)}/bln</div>
                       </td>
                       <td style={{ padding: '14px 18px' }}>
                         <div style={{ fontWeight: 700, color: '#0f172a' }}>{formatRupiah(sph.commercial?.totalInclPpn)}</div>

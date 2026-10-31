@@ -591,21 +591,6 @@ export default function SunblixDashboardOS() {
               </button>
             </li>
 
-            {/* AI Agent Fleet Menu Item */}
-            <li>
-              <button
-                type="button"
-                className={`sbx-nav-item ${activeNav === 'ai-fleet' ? 'active' : ''}`}
-                onClick={() => setActiveNav('ai-fleet')}
-              >
-                <div className="sbx-nav-left">
-                  <span className="sbx-nav-icon">🤖</span>
-                  <span>AI Agent Fleet</span>
-                </div>
-                <span className="sbx-nav-badge ai-live">4 Live</span>
-              </button>
-            </li>
-
             <li>
               <button
                 type="button"
@@ -760,6 +745,22 @@ export default function SunblixDashboardOS() {
                   <span className="sbx-nav-icon">⚙️</span>
                   <span>Settings</span>
                 </div>
+              </button>
+            </li>
+
+            {/* AI Agent Fleet — dipindah ke bawah: konsep visual untuk roadmap
+                (Keuangan/HRD/Operasional/Marketing), bukan fitur yang "Live" sekarang */}
+            <li>
+              <button
+                type="button"
+                className={`sbx-nav-item ${activeNav === 'ai-fleet' ? 'active' : ''}`}
+                onClick={() => setActiveNav('ai-fleet')}
+              >
+                <div className="sbx-nav-left">
+                  <span className="sbx-nav-icon">🤖</span>
+                  <span>AI Agent Fleet</span>
+                </div>
+                <span className="sbx-nav-badge">Roadmap</span>
               </button>
             </li>
           </ul>

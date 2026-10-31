@@ -3427,7 +3427,7 @@ function BrochureGeneratorInner() {
 
           if (page.id === '3') {
             const currentSections = ensureSections(quoteData);
-            const packageCount = Number(quoteData.packageCount) || 12;
+            const packageCount = Number(quoteData.packageCount) || 1;
             const currentUnitBasePrice = subtotalAfterDiscount;
             const currentUnitPpn = includePpn ? Math.round(currentUnitBasePrice * 0.11) : 0;
             const currentUnitTotal = currentUnitBasePrice + currentUnitPpn;
@@ -3446,7 +3446,7 @@ function BrochureGeneratorInner() {
                     <div className="p3-sph-meta-row">
                       <div className="p3-sph-meta-left">
                         <div className="p3-sph-meta-yth">Kepada Yth.</div>
-                        <div className="p3-sph-customer-name">{quoteData.customer || 'PT Marga Bara Jaya'}</div>
+                        <div className="p3-sph-customer-name">{quoteData.customer || 'Bapak / Ibu Pelanggan'}</div>
                         <div className="p3-sph-customer-address">{quoteData.customerAddress || 'Di Tempat'}</div>
                         {quoteData.attn && (
                           <div className="p3-sph-customer-attn">Up. {quoteData.attn}</div>
@@ -3462,22 +3462,25 @@ function BrochureGeneratorInner() {
                             <tr>
                               <td className="p3-meta-lbl">Tanggal</td>
                               <td className="p3-meta-sep">:</td>
-                              <td className="p3-meta-val">{quoteData.date || 'Jakarta, 19 Oktober 2026'}</td>
+                              <td className="p3-meta-val">
+                                {quoteData.date ||
+                                  `Jakarta, ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}`}
+                              </td>
                             </tr>
                             <tr>
                               <td className="p3-meta-lbl">No. Penawaran</td>
                               <td className="p3-meta-sep">:</td>
-                              <td className="p3-meta-val bold-doc">{quoteData.docNo || '002/SUNBLIX-SPH/X/2026'}</td>
+                              <td className="p3-meta-val bold-doc">{quoteData.docNo || 'Draf — Nomor Belum Ditetapkan'}</td>
                             </tr>
                             <tr>
                               <td className="p3-meta-lbl">Proyek</td>
                               <td className="p3-meta-sep">:</td>
-                              <td className="p3-meta-val">{quoteData.project || 'PLTS Hybrid 12 Pos Security (1 sistem per pos)'}</td>
+                              <td className="p3-meta-val">{quoteData.project || 'Sistem PLTS (nama proyek belum diisi)'}</td>
                             </tr>
                             <tr>
                               <td className="p3-meta-lbl">Lokasi</td>
                               <td className="p3-meta-sep">:</td>
-                              <td className="p3-meta-val">{quoteData.location || quoteData.delivery || '12 lokasi pos (belum diinformasikan)'}</td>
+                              <td className="p3-meta-val">{quoteData.location || quoteData.delivery || 'Lokasi belum ditentukan'}</td>
                             </tr>
                           </tbody>
                         </table>
@@ -3489,7 +3492,7 @@ function BrochureGeneratorInner() {
 
                     {/* Paragraf Pembuka */}
                     <p className="p3-sph-opening">
-                      Dengan hormat, bersama ini kami sampaikan penawaran harga pengadaan dan pemasangan Pembangkit Listrik Tenaga Surya (PLTS) sistem {quoteData.systemType || 'Hybrid 1 Fasa'} untuk {quoteData.project || 'PLTS Hybrid 12 Pos Security (1 sistem per pos)'}, dengan rincian sebagai berikut:
+                      Dengan hormat, bersama ini kami sampaikan penawaran harga pengadaan dan pemasangan Pembangkit Listrik Tenaga Surya (PLTS) sistem {quoteData.systemType || 'Hybrid 1 Fasa'} untuk {quoteData.project || 'Sistem PLTS (nama proyek belum diisi)'}, dengan rincian sebagai berikut:
                     </p>
 
                     {/* Highlight Box Parameter Teknis (5 Kolom Rapi) */}

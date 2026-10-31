@@ -99,7 +99,17 @@ export async function POST(request) {
         );
       }
 
-      const credRes = verifyStaffCredentials(username, password);
+      let credRes;
+      try {
+        credRes = verifyStaffCredentials(username, password);
+      } catch (cfgError) {
+        console.error('[AUTH_STAFF] Server misconfiguration:', cfgError.message);
+        return NextResponse.json(
+          { success: false, message: 'Konfigurasi password staf belum lengkap di environment variables. Hubungi administrator.' },
+          { status: 500 }
+        );
+      }
+
       if (credRes.valid) {
         failedAttempts.delete(clientIp);
 

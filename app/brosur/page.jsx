@@ -767,7 +767,7 @@ function BrochureGeneratorInner() {
   const searchParams = useSearchParams();
 
   // Active preset & official package catalog (Defaults to official SPH 002)
-  const initialPresetKey = searchParams.get('preset') || 'sph002';
+  const initialPresetKey = searchParams.get('preset') || 'sph001';
   const [activePreset, setActivePreset] = useState(initialPresetKey);
   const [selectedTier, setSelectedTier] = useState('STANDARD+');
   const [discountPercent, setDiscountPercent] = useState(0);

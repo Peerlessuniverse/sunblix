@@ -157,7 +157,10 @@ export async function POST(request) {
     return NextResponse.json({ success: true, accessVia, data: result });
   } catch (error) {
     console.error('[API /api/surti/crm] Error:', error.message);
-    return NextResponse.json({ success: false, message: 'Terjadi kesalahan pemrosesan data CRM.' }, { status: 400 });
+    return NextResponse.json(
+      { success: false, message: error.message || 'Terjadi kesalahan pemrosesan data CRM.' },
+      { status: 400 }
+    );
   }
 }
 

@@ -9,8 +9,10 @@ import React, { useState } from 'react';
 export function formatInlineText(text) {
   if (!text) return null;
 
-  // Split by bold (**text**) and italic (*text*)
-  const parts = text.split(/(\*\*[^*]+?\*\*|\*[^*]+?\*)/g);
+  // Split by bold (**text**), italic (*text*), and raw URLs — without this,
+  // a link SURTI sends (katalog PDF, link kalkulator, dsb.) renders as
+  // plain unclickable text instead of an actual <a href>.
+  const parts = text.split(/(\*\*[^*]+?\*\*|\*[^*]+?\*|https?:\/\/[^\s)\]}>,]+)/g);
 
   return parts.map((part, i) => {
     if (part.startsWith('**') && part.endsWith('**') && part.length >= 4) {
@@ -25,6 +27,21 @@ export function formatInlineText(text) {
         <em key={i} className="gemini-italic">
           {part.slice(1, -1)}
         </em>
+      );
+    }
+    if (/^https?:\/\//.test(part)) {
+      // Trailing punctuation (., ), dll.) that belongs to the sentence, not
+      // the URL, often ends up glued on — trim it off the link itself.
+      const trailingMatch = part.match(/[).,;:!?]+$/);
+      const trailing = trailingMatch ? trailingMatch[0] : '';
+      const url = trailing ? part.slice(0, -trailing.length) : part;
+      return (
+        <React.Fragment key={i}>
+          <a href={url} target="_blank" rel="noopener noreferrer" className="gemini-link">
+            {url}
+          </a>
+          {trailing}
+        </React.Fragment>
       );
     }
     // Clean any accidental stray double asterisks

@@ -1395,6 +1395,18 @@
   letter-spacing: 0.01em;
 }
 
+.gemini-link {
+  color: #38bdf8;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  word-break: break-word;
+}
+
+.gemini-link:hover {
+  color: #7dd3fc;
+}
+
 .gemini-italic {
   font-style: italic;
   color: #94a3b8;
@@ -1756,6 +1768,14 @@
 
 .surti-app.theme-light .gemini-bold {
   color: #0f172a;
+}
+
+.surti-app.theme-light .gemini-link {
+  color: #0284c7;
+}
+
+.surti-app.theme-light .gemini-link:hover {
+  color: #0369a1;
 }
 
 .surti-app.theme-light .gemini-info-card {

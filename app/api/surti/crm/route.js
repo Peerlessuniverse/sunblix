@@ -10,6 +10,7 @@ import {
   listTickets,
   clearAllCrmData,
   approveLeadForCrm,
+  deleteLead,
 } from '../../../../lib/surti/crmService.js';
 import { verifyRequestAuth } from '../../../../lib/auth/staffAuth.js';
 import { verifySurtiKey } from '../../../../lib/auth/surtiAuth.js';
@@ -138,6 +139,21 @@ export async function POST(request) {
         );
       }
       result = await approveLeadForCrm(payload.leadId, payload.approverName);
+    } else if (action === 'delete_lead') {
+      // Permanently remove one bad/spam lead — requires staff auth. Unlike
+      // clear_all this actually deletes the database row, not just the
+      // in-memory cache, and only ever touches the one lead named.
+      const auth = verifyRequestAuth(request);
+      if (!auth.valid) {
+        return NextResponse.json(
+          { success: false, message: 'Akses ditolak. Penghapusan lead memerlukan autentikasi staf.' },
+          { status: 401 }
+        );
+      }
+      if (!payload.leadId) {
+        return NextResponse.json({ success: false, message: 'leadId wajib diisi.' }, { status: 400 });
+      }
+      result = await deleteLead(payload.leadId);
     } else if (action === 'create_ticket') {
       result = createServiceTicket(payload);
     } else if (action === 'update_ticket') {

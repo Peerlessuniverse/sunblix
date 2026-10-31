@@ -134,6 +134,33 @@ export default function SurtiIntelligenceView({ onBackToDashboard, currentUser }
     }
   };
 
+  // Permanently delete a bad/spam lead (actually hits the database, unlike
+  // "Kosongkan Database" which only ever cleared the in-memory cache).
+  const handleDeleteLead = async (lead) => {
+    if (!confirm(`Hapus permanen lead "${lead.name || lead.id}"? Tindakan ini tidak bisa dibatalkan.`)) return;
+
+    try {
+      const staffToken = typeof window !== 'undefined' ? localStorage.getItem('sunblix_staff_token') : null;
+      const res = await fetch('/api/surti/crm', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(staffToken ? { Authorization: `Bearer ${staffToken}` } : {}),
+        },
+        body: JSON.stringify({ action: 'delete_lead', leadId: lead.id }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setActionFeedback(`🗑️ Lead ${lead.name || lead.id} dihapus permanen.`);
+        loadData();
+      } else {
+        alert(data.message || 'Gagal menghapus lead.');
+      }
+    } catch (err) {
+      alert('Terjadi kesalahan koneksi.');
+    }
+  };
+
   // Survey status update
   const handleUpdateSurvey = async (surveyId, newStatus) => {
     try {
@@ -625,12 +652,13 @@ export default function SurtiIntelligenceView({ onBackToDashboard, currentUser }
                   <th style={{ padding: '14px 18px' }}>Wilayah</th>
                   <th style={{ padding: '14px 18px' }}>Tahap Prospek</th>
                   <th style={{ padding: '14px 18px' }}>Status CRM</th>
+                  <th style={{ padding: '14px 18px' }}>Aksi</th>
                 </tr>
               </thead>
               <tbody>
                 {leads.length === 0 ? (
                   <tr>
-                    <td colSpan={7} style={{ padding: '36px', textAlign: 'center', color: '#64748b' }}>
+                    <td colSpan={8} style={{ padding: '36px', textAlign: 'center', color: '#64748b' }}>
                       Belum ada database prospek pelanggan tersimpan. Silakan lakukan tes pencarian leads melalui konsultasi SURTI atau kalkulator web.
                     </td>
                   </tr>
@@ -668,6 +696,16 @@ export default function SurtiIntelligenceView({ onBackToDashboard, currentUser }
                         ) : (
                           <span style={{ color: '#94a3b8', fontSize: '0.76rem' }}>Belum sepakat survei/SPH</span>
                         )}
+                      </td>
+                      <td style={{ padding: '14px 18px' }}>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteLead(ld)}
+                          title="Hapus permanen lead ini dari database"
+                          style={{ background: '#fef2f2', color: '#b91c1c', border: '1px solid #fecaca', padding: '6px 12px', borderRadius: '6px', fontSize: '0.76rem', fontWeight: 700, cursor: 'pointer' }}
+                        >
+                          🗑️ Hapus
+                        </button>
                       </td>
                     </tr>
                   ))

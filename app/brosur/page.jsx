@@ -883,7 +883,7 @@ function BrochureGeneratorInner() {
           searchParams.get('sph') || 'SPH 001',
           searchParams.get('customer') || 'Bapak/Ibu Pelanggan'
         )
-      : (PRESETS[initialPresetKey] || PRESETS.sph002 || PRESETS.sph001);
+      : (PRESETS[initialPresetKey] || PRESETS.sph001);
 
     // Allow URL params override
     return {
@@ -913,7 +913,7 @@ function BrochureGeneratorInner() {
           const pkg = SUNBLIX_OFFICIAL_PACKAGES_2026.find((p) => p.id === s.packageId);
           const loadedPreset = pkg
             ? getPresetFromPackage(pkg, s.sphNumber, s.sphNumber, s.customer?.name || 'Bapak/Ibu Pelanggan')
-            : (PRESETS.sph002 || {});
+            : (PRESETS.sph001 || {});
 
           setQuoteData((prev) => ({
             ...loadedPreset,

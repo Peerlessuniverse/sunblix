@@ -161,6 +161,34 @@ export default function SurtiIntelligenceView({ onBackToDashboard, currentUser }
     }
   };
 
+  // Permanently delete an orphaned/bad survey request (e.g. the linked
+  // customer was already deleted from "Database Prospek Pelanggan", or a
+  // request whose customer link never finished writing).
+  const handleDeleteSurvey = async (survey) => {
+    if (!confirm(`Hapus permanen permintaan survei "${survey.id}"? Tindakan ini tidak bisa dibatalkan.`)) return;
+
+    try {
+      const staffToken = typeof window !== 'undefined' ? localStorage.getItem('sunblix_staff_token') : null;
+      const res = await fetch('/api/surti/crm', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(staffToken ? { Authorization: `Bearer ${staffToken}` } : {}),
+        },
+        body: JSON.stringify({ action: 'delete_survey', surveyId: survey.id }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setActionFeedback(`🗑️ Permintaan survei ${survey.id} dihapus permanen.`);
+        loadData();
+      } else {
+        alert(data.message || 'Gagal menghapus survei.');
+      }
+    } catch (err) {
+      alert('Terjadi kesalahan koneksi.');
+    }
+  };
+
   // Survey status update
   const handleUpdateSurvey = async (surveyId, newStatus) => {
     try {
@@ -751,21 +779,40 @@ export default function SurtiIntelligenceView({ onBackToDashboard, currentUser }
                   surveys.map((sv) => (
                     <tr key={sv.id} style={{ borderBottom: '1px solid #f1f5f9', transition: 'background 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.background = '#f8fafc')} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
                       <td style={{ padding: '14px 18px', fontWeight: 700, color: '#0f172a' }}>{sv.id}</td>
-                      <td style={{ padding: '14px 18px', color: '#0f172a', fontWeight: 600 }}>{sv.customerName || 'Klien SURTI'}</td>
-                      <td style={{ padding: '14px 18px', color: '#0284c7', fontWeight: 600 }}>{sv.scheduledDate || 'Belum dijadwalkan'}</td>
-                      <td style={{ padding: '14px 18px', color: '#64748b' }}>{sv.address || 'DKI Jakarta'}</td>
                       <td style={{ padding: '14px 18px' }}>
-                        <span style={{ background: sv.status === 'COMPLETED' ? '#ecfdf5' : '#fffbeb', border: `1px solid ${sv.status === 'COMPLETED' ? '#a7f3d0' : '#fde68a'}`, color: sv.status === 'COMPLETED' ? '#047857' : '#b45309', padding: '4px 10px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700 }}>
-                          {sv.status || 'SCHEDULED'}
+                        {sv.customerName ? (
+                          <>
+                            <div style={{ color: '#0f172a', fontWeight: 600 }}>{sv.customerName}</div>
+                            {sv.phone ? <div style={{ fontSize: '0.74rem', color: '#64748b' }}>{sv.phone}</div> : null}
+                          </>
+                        ) : (
+                          <span style={{ color: '#b91c1c', fontWeight: 600 }} title="Pelanggan terkait sudah dihapus, atau data pelanggan gagal tersimpan saat permintaan survei ini dibuat.">
+                            ⚠️ Pelanggan tidak teridentifikasi
+                          </span>
+                        )}
+                      </td>
+                      <td style={{ padding: '14px 18px', color: '#0284c7', fontWeight: 600 }}>{sv.preferredDate || 'Belum dijadwalkan'}</td>
+                      <td style={{ padding: '14px 18px', color: '#64748b' }}>{sv.siteAddress || '—'}</td>
+                      <td style={{ padding: '14px 18px' }}>
+                        <span style={{ background: sv.status === 'completed' ? '#ecfdf5' : '#fffbeb', border: `1px solid ${sv.status === 'completed' ? '#a7f3d0' : '#fde68a'}`, color: sv.status === 'completed' ? '#047857' : '#b45309', padding: '4px 10px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700 }}>
+                          {sv.status || 'requested'}
                         </span>
                       </td>
                       <td style={{ padding: '14px 18px', textAlign: 'right' }}>
                         <button
                           type="button"
-                          onClick={() => handleUpdateSurvey(sv.id, 'COMPLETED')}
-                          style={{ background: '#0284c7', border: 'none', color: '#fff', padding: '6px 14px', borderRadius: '6px', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer', boxShadow: '0 1px 4px rgba(2, 132, 199, 0.2)' }}
+                          onClick={() => handleUpdateSurvey(sv.id, 'completed')}
+                          style={{ background: '#0284c7', border: 'none', color: '#fff', padding: '6px 14px', borderRadius: '6px', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer', boxShadow: '0 1px 4px rgba(2, 132, 199, 0.2)', marginRight: '8px' }}
                         >
                           Selesai Survei
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteSurvey(sv)}
+                          title="Hapus permanen permintaan survei ini dari database"
+                          style={{ background: '#fef2f2', color: '#b91c1c', border: '1px solid #fecaca', padding: '6px 12px', borderRadius: '6px', fontSize: '0.76rem', fontWeight: 700, cursor: 'pointer' }}
+                        >
+                          🗑️ Hapus
                         </button>
                       </td>
                     </tr>

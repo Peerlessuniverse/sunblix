@@ -11,6 +11,7 @@ import {
   clearAllCrmData,
   approveLeadForCrm,
   deleteLead,
+  deleteSurvey,
 } from '../../../../lib/surti/crmService.js';
 import { verifyRequestAuth } from '../../../../lib/auth/staffAuth.js';
 import { verifySurtiKey } from '../../../../lib/auth/surtiAuth.js';
@@ -154,6 +155,20 @@ export async function POST(request) {
         return NextResponse.json({ success: false, message: 'leadId wajib diisi.' }, { status: 400 });
       }
       result = await deleteLead(payload.leadId);
+    } else if (action === 'delete_survey') {
+      // Permanently remove one orphaned/bad survey request — requires staff
+      // auth, same as delete_lead.
+      const auth = verifyRequestAuth(request);
+      if (!auth.valid) {
+        return NextResponse.json(
+          { success: false, message: 'Akses ditolak. Penghapusan survei memerlukan autentikasi staf.' },
+          { status: 401 }
+        );
+      }
+      if (!payload.surveyId) {
+        return NextResponse.json({ success: false, message: 'surveyId wajib diisi.' }, { status: 400 });
+      }
+      result = await deleteSurvey(payload.surveyId);
     } else if (action === 'create_ticket') {
       result = createServiceTicket(payload);
     } else if (action === 'update_ticket') {

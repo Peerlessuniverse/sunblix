@@ -17,7 +17,10 @@ import QuoteModal from '../components/QuoteModal';
 import CatalogueModal from '../components/CatalogueModal';
 import FloatingWhatsApp from '../components/FloatingWhatsApp';
 import FloatingBackToTop from '../components/FloatingBackToTop';
-import FloatingSurtiAi from '../components/FloatingSurtiAi';
+// Widget chat SURTI disembunyikan sementara dari web (permintaan user, 2026-11-01).
+// Komponen & seluruh backend SURTI (CRM, SPH, survei) tetap utuh — tinggal
+// kembalikan import + <FloatingSurtiAi /> di bawah untuk mengaktifkan lagi.
+// import FloatingSurtiAi from '../components/FloatingSurtiAi';
 import CinematicEngine from '../components/CinematicEngine';
 
 export default function HomePage() {
@@ -157,7 +160,7 @@ export default function HomePage() {
 
       {/* FLOATING ACTION BUTTONS */}
       <FloatingBackToTop />
-      <FloatingSurtiAi />
+      {/* <FloatingSurtiAi /> — disembunyikan sementara, lihat catatan import di atas */}
       <FloatingWhatsApp />
     </>
   );

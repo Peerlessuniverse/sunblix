@@ -4846,9 +4846,9 @@ html {
   margin: 3px 0 0;
 }
 
-/* FLOATING QUICK CONSULTATION (MOBILE ONLY) */
+/* FLOATING QUICK CONSULTATION (desktop + mobile) */
 .mobile-floating-cta {
-  display: none;
+  display: block;
   position: fixed;
   bottom: 22px;
   right: 18px;
@@ -4857,7 +4857,6 @@ html {
 
 @media (max-width: 768px) {
   .mobile-floating-cta {
-    display: block;
     bottom: 18px;
     right: 16px;
   }

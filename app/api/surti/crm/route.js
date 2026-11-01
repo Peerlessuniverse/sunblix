@@ -12,6 +12,8 @@ import {
   approveLeadForCrm,
   deleteLead,
   deleteSurvey,
+  deleteSpamLeads,
+  isLikelySpamLead,
 } from '../../../../lib/surti/crmService.js';
 import { verifyRequestAuth } from '../../../../lib/auth/staffAuth.js';
 import { verifySurtiKey } from '../../../../lib/auth/surtiAuth.js';
@@ -92,6 +94,17 @@ export async function POST(request) {
 
     let result;
     if (action === 'create_lead') {
+      // Self-service web-form leads (CatalogueModal, kalkulator) are
+      // unauthenticated and skip the CRM approval gate, so this is the only
+      // checkpoint before a submission reaches the dashboard. Reject obvious
+      // bot/garbage data outright rather than letting it in and relying on
+      // cleanup after the fact.
+      if (!staff.valid && !surti.valid && isLikelySpamLead(payload)) {
+        return NextResponse.json(
+          { success: false, message: 'Data yang dikirim tidak valid (nama/kontak tidak terbaca).' },
+          { status: 400 }
+        );
+      }
       result = recordLead(payload);
     } else if (action === 'create_calculator_link') {
       if (!staff.valid && !surti.valid) {
@@ -155,6 +168,19 @@ export async function POST(request) {
         return NextResponse.json({ success: false, message: 'leadId wajib diisi.' }, { status: 400 });
       }
       result = await deleteLead(payload.leadId);
+    } else if (action === 'delete_spam_leads') {
+      // Bulk cleanup: delete every lead the spam heuristic currently flags.
+      // Requires staff auth, same as delete_lead — just scoped to many rows
+      // at once instead of one, for when self-service forms get spammed.
+      const auth = verifyRequestAuth(request);
+      if (!auth.valid) {
+        return NextResponse.json(
+          { success: false, message: 'Akses ditolak. Pembersihan spam memerlukan autentikasi staf.' },
+          { status: 401 }
+        );
+      }
+      console.warn(`[AUDIT] Bulk spam lead cleanup triggered by staff session at ${new Date().toISOString()}`);
+      result = await deleteSpamLeads();
     } else if (action === 'delete_survey') {
       // Permanently remove one orphaned/bad survey request — requires staff
       // auth, same as delete_lead.

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { recordLead, parseBillAmount } from '../../../lib/surti/crmService.js';
+import { recordLead, parseBillAmount, isLikelySpamLead } from '../../../lib/surti/crmService.js';
 
 export async function POST(request) {
   try {
@@ -10,6 +10,16 @@ export async function POST(request) {
     if (!name || !whatsapp || !email) {
       return NextResponse.json(
         { success: false, message: 'Nama, WhatsApp, dan Email wajib diisi.' },
+        { status: 400 }
+      );
+    }
+
+    // This endpoint is public/unauthenticated and writes straight into the
+    // CRM pipeline (self-service leads skip the approval gate) — reject
+    // obvious bot/garbage submissions here rather than cleaning up after.
+    if (isLikelySpamLead({ name, phone: whatsapp, email })) {
+      return NextResponse.json(
+        { success: false, message: 'Data yang dikirim tidak valid (nama/WhatsApp/email tidak terbaca).' },
         { status: 400 }
       );
     }

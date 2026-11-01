@@ -161,6 +161,39 @@ export default function SurtiIntelligenceView({ onBackToDashboard, currentUser }
     }
   };
 
+  // Bulk cleanup: delete every lead SURTI's spam heuristic currently flags
+  // (gibberish name, or both phone and email failing to look real) — for
+  // when self-service web forms (katalog/kalkulator) get spammed at once.
+  const handleDeleteAllSpam = async () => {
+    const spamCount = leads.filter((l) => l.isSpam).length;
+    if (spamCount === 0) {
+      alert('Tidak ada lead yang terdeteksi sebagai spam saat ini.');
+      return;
+    }
+    if (!confirm(`Hapus permanen ${spamCount} lead yang terdeteksi spam? Tindakan ini tidak bisa dibatalkan.`)) return;
+
+    try {
+      const staffToken = typeof window !== 'undefined' ? localStorage.getItem('sunblix_staff_token') : null;
+      const res = await fetch('/api/surti/crm', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(staffToken ? { Authorization: `Bearer ${staffToken}` } : {}),
+        },
+        body: JSON.stringify({ action: 'delete_spam_leads' }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setActionFeedback(`🧹 ${data.data.deleted} lead spam dihapus permanen.`);
+        loadData();
+      } else {
+        alert(data.message || 'Gagal membersihkan spam.');
+      }
+    } catch (err) {
+      alert('Terjadi kesalahan koneksi.');
+    }
+  };
+
   // Permanently delete an orphaned/bad survey request (e.g. the linked
   // customer was already deleted from "Database Prospek Pelanggan", or a
   // request whose customer link never finished writing).
@@ -660,13 +693,25 @@ export default function SurtiIntelligenceView({ onBackToDashboard, currentUser }
       {/* Tab 2: Leads Database (Bright Box Container) */}
       {activeTab === 'leads' && (
         <div style={{ background: '#ffffff', border: '1.5px solid #e2e8f0', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 24px rgba(0, 0, 0, 0.05)' }}>
-          <div style={{ padding: '18px 24px', borderBottom: '1px solid #e2e8f0', background: '#f8fafc' }}>
-            <h3 style={{ margin: 0, fontSize: '1rem', color: '#0f172a', fontWeight: 800 }}>
-              Database Prospek &amp; Catatan Interaksi Pelanggan SURTI
-            </h3>
-            <p style={{ margin: '4px 0 0 0', fontSize: '0.8rem', color: '#64748b' }}>
-              Seluruh preferensi dan data yang disampaikan pelanggan di ruang obrolan SURTI otomatis terekam ke database CRM ini.
-            </p>
+          <div style={{ padding: '18px 24px', borderBottom: '1px solid #e2e8f0', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
+            <div>
+              <h3 style={{ margin: 0, fontSize: '1rem', color: '#0f172a', fontWeight: 800 }}>
+                Database Prospek &amp; Catatan Interaksi Pelanggan SURTI
+              </h3>
+              <p style={{ margin: '4px 0 0 0', fontSize: '0.8rem', color: '#64748b' }}>
+                Seluruh preferensi dan data yang disampaikan pelanggan di ruang obrolan SURTI otomatis terekam ke database CRM ini.
+              </p>
+            </div>
+            {leads.some((l) => l.isSpam) && (
+              <button
+                type="button"
+                onClick={handleDeleteAllSpam}
+                title="Hapus semua lead yang terdeteksi spam oleh SURTI (nama tidak jelas, atau nomor WA & email sama-sama tidak valid)"
+                style={{ background: '#fef2f2', color: '#b91c1c', border: '1px solid #fecaca', padding: '8px 14px', borderRadius: '8px', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}
+              >
+                🧹 Hapus Semua Spam ({leads.filter((l) => l.isSpam).length})
+              </button>
+            )}
           </div>
 
           <div style={{ overflowX: 'auto' }}>
@@ -694,7 +739,14 @@ export default function SurtiIntelligenceView({ onBackToDashboard, currentUser }
                   leads.map((ld) => (
                     <tr key={ld.id} style={{ borderBottom: '1px solid #f1f5f9', transition: 'background 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.background = '#f8fafc')} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
                       <td style={{ padding: '14px 18px' }}>
-                        <div style={{ fontWeight: 700, color: '#0f172a' }}>{ld.name || ld.id}</div>
+                        <div style={{ fontWeight: 700, color: '#0f172a', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          {ld.name || ld.id}
+                          {ld.isSpam && (
+                            <span title="Nama/kontak tidak terbaca — terdeteksi sebagai spam" style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#b91c1c', padding: '1px 7px', borderRadius: '999px', fontSize: '0.66rem', fontWeight: 700 }}>
+                              ⚠️ Spam
+                            </span>
+                          )}
+                        </div>
                         <div style={{ fontSize: '0.74rem', color: '#64748b' }}>Sumber: {ld.source || 'SURTI AI Chat'}</div>
                       </td>
                       <td style={{ padding: '14px 18px', color: '#334155' }}>{ld.propertyType || 'Residensial'}</td>

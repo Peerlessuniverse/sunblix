@@ -8,6 +8,7 @@ import {
   createSessionCookie,
   createClearSessionCookie,
   verifyStaffCredentials,
+  verifyRequestAuth,
 } from '../../../lib/auth/staffAuth.js';
 
 // In-memory rate limiter for brute-force protection

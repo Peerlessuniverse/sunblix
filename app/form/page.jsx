@@ -175,7 +175,29 @@ export default function LeadIntakeWizard() {
         throw new Error(data.message || 'Gagal mengirim data formulir.');
       }
 
-      setSubmittedRef(data.refCode || 'SBX-SUCCESS');
+      const ref = data.refCode || 'SBX-SUCCESS';
+      setSubmittedRef(ref);
+
+      // Otomatis buka chat WhatsApp ke Admin (085288581027) dengan membawa data
+      const waText = [
+        `Halo SUNBLIX, saya sudah mengisi formulir survei kebutuhan PLTS:`,
+        `• No. Ref: ${ref}`,
+        `• Nama: ${name.trim()}`,
+        `• No. WA: ${phone.trim()}`,
+        `• Lokasi: ${city.trim() || '-'}`,
+        `• Daya PLN: ${plnVa} VA (${phase}) - ${meterType}`,
+        `• Rata-rata Tagihan/Token: Rp ${Number(monthlyBill).toLocaleString('id-ID')}/bln`,
+        `• Kebutuhan: ${goal}`,
+        ``,
+        `Berikut saya lampirkan foto rekening listrik / meteran / atap untuk analisa teknis:`
+      ].join('\n');
+
+      const waUrl = `https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(waText)}`;
+
+      // Buka otomatis WhatsApp setelah jeda singkat
+      setTimeout(() => {
+        window.location.href = waUrl;
+      }, 800);
     } catch (err) {
       setErrorMessage(err.message || 'Terjadi gangguan jaringan.');
     } finally {

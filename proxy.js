@@ -8,6 +8,13 @@ import { verifySessionToken, COOKIE_NAME } from './lib/auth/staffAuth.js';
  */
 export function proxy(request) {
   const { pathname } = request.nextUrl;
+  const host = (request.headers.get('host') || '').toLowerCase();
+
+  // Khusus subdomain dashboardv2.sunblix.id:
+  // Root domain (/) langsung otomatis diarahkan ke Dashboard v2 Engineering!
+  if (host.includes('dashboardv2') && (pathname === '/' || pathname === '')) {
+    return NextResponse.rewrite(new URL('/dashboardv2', request.url));
+  }
 
   // Public SURTI chat page is closed (SURTI is private) unless explicitly
   // re-enabled. /surti/admin stays protected by the staff check below, and

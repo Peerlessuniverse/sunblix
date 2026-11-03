@@ -242,21 +242,21 @@ export default function LeadIntakeWizard() {
             </p>
 
             <div className="sbx-bill-box" style={{ maxWidth: '420px', margin: '0 auto 24px auto', textAlign: 'left' }}>
-              <div style={{ fontSize: '11px', color: '#94a3b8' }}>Nomor Referensi Konsultasi:</div>
-              <div style={{ fontSize: '18px', fontWeight: 800, color: '#fbbf24', marginTop: '2px', fontFamily: 'monospace' }}>
+              <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 600 }}>Nomor Referensi Konsultasi:</div>
+              <div style={{ fontSize: '18px', fontWeight: 800, color: '#087be8', marginTop: '2px', fontFamily: 'monospace' }}>
                 {submittedRef}
               </div>
-              <div style={{ marginTop: '14px', paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.08)', fontSize: '12px', display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: '#94a3b8' }}>Estimasi Sistem:</span>
-                <span style={{ color: '#fff', fontWeight: 700 }}>~{sizingPreview.targetKwp} kWp ({sizingPreview.panelsCount} Panel)</span>
+              <div style={{ marginTop: '14px', paddingTop: '12px', borderTop: '1px solid #e2e8f0', fontSize: '12px', display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: '#64748b' }}>Estimasi Sistem:</span>
+                <span style={{ color: '#062b63', fontWeight: 700 }}>~{sizingPreview.targetKwp} kWp ({sizingPreview.panelsCount} Panel)</span>
               </div>
               <div style={{ marginTop: '6px', fontSize: '12px', display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: '#94a3b8' }}>Estimasi Hemat:</span>
-                <span style={{ color: '#34d399', fontWeight: 700 }}>~Rp {sizingPreview.estMonthlySaving.toLocaleString('id-ID')} /bln</span>
+                <span style={{ color: '#64748b' }}>Estimasi Hemat:</span>
+                <span style={{ color: '#059669', fontWeight: 700 }}>~Rp {sizingPreview.estMonthlySaving.toLocaleString('id-ID')} /bln</span>
               </div>
             </div>
 
-            <div style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.25)', borderRadius: '14px', padding: '14px', maxWidth: '420px', margin: '0 auto 28px auto', textAlign: 'left', fontSize: '12px', color: '#fde68a' }}>
+            <div style={{ background: '#fef3c7', border: '1px solid #fde68a', borderRadius: '14px', padding: '14px', maxWidth: '420px', margin: '0 auto 28px auto', textAlign: 'left', fontSize: '12px', color: '#92400e' }}>
               ⚡ <strong>Langkah Berikutnya:</strong> Tim Engineer & AI Copilot kami (SURTI) sedang mengkalkulasi simulasi teknis lengkap dan menyiapkan dokumen resmi <em>Project Planning Analysis (PDF A4)</em> untuk dikirimkan langsung ke WhatsApp Anda ({phone}).
             </div>
 
@@ -346,7 +346,7 @@ export default function LeadIntakeWizard() {
                 </div>
 
                 {/* DAYA PLN PILLS */}
-                <div style={{ marginBottom: '8px', fontSize: '12px', fontWeight: 600, color: '#94a3b8' }}>
+                <div style={{ marginBottom: '8px', fontSize: '12px', fontWeight: 700, color: '#64748b' }}>
                   PILIH DAYA PLN TERPASANG (VA):
                 </div>
                 <div className="sbx-pills-grid">
@@ -427,10 +427,10 @@ export default function LeadIntakeWizard() {
                 {goal.includes('Backup') && (
                   <div className="sbx-backup-box">
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '13px', fontWeight: 700, color: '#fbbf24' }}>
+                      <span style={{ fontSize: '13px', fontWeight: 700, color: '#b45309' }}>
                         Durasi Cadangan Daya (Mati Lampu)
                       </span>
-                      <span style={{ fontSize: '13px', fontWeight: 800, color: '#fff' }}>
+                      <span style={{ fontSize: '13px', fontWeight: 800, color: '#062b63' }}>
                         {backupHours} Jam
                       </span>
                     </div>
@@ -448,7 +448,7 @@ export default function LeadIntakeWizard() {
                       ))}
                     </div>
 
-                    <div style={{ fontSize: '12px', fontWeight: 600, color: '#94a3b8', marginBottom: '8px' }}>
+                    <div style={{ fontSize: '12px', fontWeight: 700, color: '#64748b', marginBottom: '8px' }}>
                       Peralatan Prioritas Yang Wajib Tetap Menyala:
                     </div>
                     <div className="sbx-loads-grid">
@@ -478,7 +478,7 @@ export default function LeadIntakeWizard() {
                 <h1 className="sbx-step-title">Kondisi Fisik Atap & Instalasi</h1>
                 <p className="sbx-step-desc">Membantu engineer menentukan jenis mounting anti-bocor dan rute kabel.</p>
 
-                <div style={{ marginBottom: '8px', fontSize: '12px', fontWeight: 600, color: '#94a3b8' }}>
+                <div style={{ marginBottom: '8px', fontSize: '12px', fontWeight: 700, color: '#64748b' }}>
                   JENIS ATAP BANGUNAN:
                 </div>
                 <div className="sbx-pills-grid" style={{ marginBottom: '24px' }}>

@@ -9,8 +9,19 @@ import { verifySessionToken, COOKIE_NAME } from './lib/auth/staffAuth.js';
 export function proxy(request) {
   const { pathname } = request.nextUrl;
 
+  // Public SURTI chat page is closed (SURTI is private) unless explicitly
+  // re-enabled. /surti/admin stays protected by the staff check below, and
+  // /surti/sph/[id] proposal links stay reachable.
+  if (pathname === '/surti' || pathname === '/surti/') {
+    if (String(process.env.SURTI_PUBLIC_ENABLED || '').toLowerCase() !== 'true') {
+      return new NextResponse('Not Found', { status: 404 });
+    }
+    return NextResponse.next();
+  }
+
   // Protected route patterns
   const isDashboardOs = pathname === '/DashboardOs' || pathname.startsWith('/DashboardOs/');
+  const isDashboardV2 = pathname === '/dashboardv2' || pathname.startsWith('/dashboardv2');
   const isSurtiAdmin = pathname === '/surti/admin' || pathname.startsWith('/surti/admin/');
 
   // Allow unrestricted access to the dedicated login page
@@ -18,7 +29,7 @@ export function proxy(request) {
     return NextResponse.next();
   }
 
-  if (isDashboardOs || isSurtiAdmin) {
+  if (isDashboardOs || isDashboardV2 || isSurtiAdmin) {
     const sessionCookie = request.cookies.get(COOKIE_NAME)?.value;
     const authHeader = request.headers.get('authorization') || '';
     const bearerToken = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : null;
@@ -40,6 +51,8 @@ export function proxy(request) {
 export const config = {
   matcher: [
     '/DashboardOs/:path*',
+    '/dashboardv2/:path*',
     '/surti/admin/:path*',
+    '/surti',
   ],
 };

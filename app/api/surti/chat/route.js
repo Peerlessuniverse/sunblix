@@ -1,6 +1,15 @@
 import { NextResponse } from 'next/server';
 import { processSurtiMessage } from '../../../../lib/surti/aiCoordinator.js';
 import { getDbClient, isDbLive } from '../../../../lib/supabaseClient.js';
+import { verifyRequestAuth } from '../../../../lib/auth/staffAuth.js';
+import { verifySurtiKey } from '../../../../lib/auth/surtiAuth.js';
+import {
+  isSurtiPublicEnabled,
+  notFoundResponse,
+  checkRateLimit,
+  rateLimitResponse,
+  callerId,
+} from '../../../../lib/surti/surtiGuard.js';
 
 /**
  * POST /api/surti/chat
@@ -9,6 +18,16 @@ import { getDbClient, isDbLive } from '../../../../lib/supabaseClient.js';
  * surti_messages under a surti_conversations row keyed by customerId+sessionId.
  */
 export async function POST(request) {
+  // SURTI is private: the public web chat is closed unless explicitly enabled
+  // (SURTI_PUBLIC_ENABLED=true). Staff sessions and the SURTI key still work.
+  if (!isSurtiPublicEnabled()) {
+    const staff = verifyRequestAuth(request);
+    const surti = verifySurtiKey(request);
+    if (!staff.valid && !surti.valid) return notFoundResponse();
+  }
+  const rl = checkRateLimit(`chat:${callerId(request, 'public-web')}`, 30);
+  if (!rl.allowed) return rateLimitResponse(rl.retryAfterSec);
+
   let sessionId = null;
   try {
     const body = await request.json();

@@ -9,6 +9,7 @@ node_modules/
 
 # Environment variables
 .env*.local
+.env
 
 # Logs & Debugging
 *.log

@@ -18,6 +18,15 @@ import {
 import { verifyRequestAuth } from '../../../../lib/auth/staffAuth.js';
 import { verifySurtiKey } from '../../../../lib/auth/surtiAuth.js';
 import { createLeadToken } from '../../../../lib/surti/publicLeadToken.js';
+import {
+  checkRateLimit,
+  rateLimitResponse,
+  callerId,
+  writeAuditLog,
+  getIdempotencyKey,
+  getIdempotentResult,
+  storeIdempotentResult,
+} from '../../../../lib/surti/surtiGuard.js';
 
 export async function GET(request) {
   // Reading customer CRM data (leads, surveys, tickets) requires either an
@@ -36,6 +45,9 @@ export async function GET(request) {
     );
   }
   const accessVia = staff.valid ? 'staff' : 'surti-key';
+
+  const rl = checkRateLimit(`crm:${callerId(request, accessVia)}`, accessVia === 'surti-key' ? 120 : 300);
+  if (!rl.allowed) return rateLimitResponse(rl.retryAfterSec);
 
   const { searchParams } = new URL(request.url);
   const type = searchParams.get('type') || 'all';
@@ -91,6 +103,22 @@ export async function POST(request) {
     const surti = verifySurtiKey(request);
     const staff = verifyRequestAuth(request);
     const accessVia = staff.valid ? 'staff' : surti.valid ? 'surti-key' : 'public-web';
+
+    // Rate limit per caller (public web is the strictest: it is anonymous).
+    const rl = checkRateLimit(
+      `crm:${callerId(request, accessVia)}`,
+      accessVia === 'public-web' ? 20 : accessVia === 'surti-key' ? 120 : 300
+    );
+    if (!rl.allowed) return rateLimitResponse(rl.retryAfterSec);
+
+    // Idempotency: a SURTI retry (or an admin forwarding the same WhatsApp
+    // message twice) with the same Idempotency-Key replays the first result
+    // instead of creating a duplicate record.
+    const idemKey = accessVia === 'surti-key' ? getIdempotencyKey(request) : '';
+    const replay = getIdempotentResult('crm', idemKey);
+    if (replay) {
+      return NextResponse.json({ ...replay, idempotentReplay: true });
+    }
 
     let result;
     if (action === 'create_lead') {
@@ -211,7 +239,18 @@ export async function POST(request) {
       return NextResponse.json({ success: false, message: `Aksi ${action} tidak dikenali.` }, { status: 400 });
     }
 
-    return NextResponse.json({ success: true, accessVia, data: result });
+    const responseBody = { success: true, accessVia, data: result };
+    storeIdempotentResult('crm', idemKey, responseBody);
+    if (accessVia !== 'public-web') {
+      await writeAuditLog({
+        entityType: 'crm',
+        entityId: payload.leadId || payload.surveyId || payload.ticketId || payload.customerId || result?.id,
+        action: action,
+        actor: accessVia,
+        details: { idempotencyKey: idemKey || null },
+      });
+    }
+    return NextResponse.json(responseBody);
   } catch (error) {
     console.error('[API /api/surti/crm] Error:', error.message);
     return NextResponse.json(

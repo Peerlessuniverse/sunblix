@@ -8,6 +8,10 @@ export const config = {
   telegram: {
     // Token dari @BotFather
     token: process.env.TELEGRAM_BOT_TOKEN || '',
+    adminChatIds: (process.env.TELEGRAM_ADMIN_CHAT_ID || '')
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean),
   },
   nous: {
     // Nous Portal inference (OpenAI-compatible)

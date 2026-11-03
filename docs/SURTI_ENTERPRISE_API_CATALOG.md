@@ -18,10 +18,49 @@ Dokumen ini adalah **Kontrak Resmi (Tooling Contract)** yang menjadi acuan asist
 
 ---
 
-## 2. Modul Engineering & Project Analysis (Utama)
+## 2. Modul Form Onboarding Web & Engineering Analysis
 
-### `POST /api/engineering/analyze-and-report`
-Digunakan saat admin mem-forward chat prospek dari WhatsApp ke Telegram. API ini otomatis:
+### A. `POST /api/form/submit` (Portal Onboarding Form Web)
+Endpoint publik yang menerima data dari formulir microsite wizard (`https://sunblix.id/form` atau `/konsultasi`).
+Alur otomatis:
+1. Menerima 17 poin survei kuesioner resmi (Bagian A s/d E).
+2. Menyimpan data prospek ke tabel `surti_customers` dengan status `PENDING_APPROVAL`.
+3. Mengirimkan notifikasi instan ke Telegram Admin yang menanyakan izin: *"Apakah saya diizinkan memproses data ini, Pak Admin?"*.
+4. Mengembalikan nomor referensi konsultasi resmi (`refCode`, contoh: `SBX-FORM-202611-4821`).
+5. Browser klien otomatis diarahkan membuka chat WhatsApp ke Admin (**`085288581027`**) untuk melampirkan foto dokumen pendukung.
+
+**Payload Request:**
+```json
+{
+  "name": "Kelvin",
+  "phone": "089644704032",
+  "email": "kelvin@email.com",
+  "city": "Tangerang Graha Raya",
+  "shareLoc": "https://maps.app.goo.gl/...",
+  "propertyType": "Rumah",
+  "propertyUnits": "1",
+  "plnVa": 2200,
+  "phase": "1 Fasa",
+  "meterType": "Token",
+  "monthlyBill": 800000,
+  "outageFrequency": "Jarang",
+  "goal": "Hemat Tagihan (On-Grid)",
+  "backupHours": 0,
+  "criticalLoads": "",
+  "heavyLoads": "AC 3 unit (dua 0.5PK, satu 1PK), water heater, kulkas, PC, pompa",
+  "usageTime": "Malam",
+  "roofType": "Kombinasi (Dak & Genteng)",
+  "roofArea": "30 m²",
+  "roofShadow": "Tidak ada bayangan",
+  "cableDistance": "Kurang tahu (~20m)",
+  "notes": "Posisi dak di lantai 2"
+}
+```
+
+---
+
+### B. `POST /api/engineering/analyze-and-report`
+Digunakan saat admin membalas **"Ya"** pada notifikasi bot Telegram atau saat admin mem-forward chat prospek dari WhatsApp. API ini otomatis:
 1. Menghitung sizing solar (kWp, jumlah panel, kapasitas inverter, kapasitas baterai) berdasarkan logika resmi **dashboardv2**.
 2. Menghitung analisa finansial (penghematan/bulan, penghematan/tahun, estimasi investasi, payback).
 3. Menyimpan/memperbarui data lead ke tabel `surti_customers` di Supabase.

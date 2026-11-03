@@ -70,9 +70,14 @@ Digunakan saat admin mem-forward chat prospek dari WhatsApp ke Telegram. API ini
 }
 ```
 
-> **Aksi SURTI di Telegram:**
-> 1. Kirim pesan ringkasan ke Admin menggunakan data dari `summary`.
-> 2. Konversi `pdf.base64` menjadi file dokumen lalu kirimkan file PDF tersebut ke chat Admin.
+> **Aksi Standar SURTI di Telegram saat Menerima Data Lead:**
+> 1. Kirim pesan ringkasan eksekutif ke Admin menggunakan data dari `summary`.
+> 2. Sertakan **Catatan Kritis Lapangan (Engineering Highlights & Red Flags)**:
+>    - Jarak kabel penarikan (mitigasi rugi tegangan / *voltage drop*).
+>    - Tipe atap & jenis bracket anti-bocor (*tile roof hook*, *L-feet*, *ballasted*).
+>    - Beban lonjakan (*inrush current*) pompa/motor/AC.
+> 3. Konversi `pdf.base64` menjadi file dokumen (`SUNBLIX_Project_Analysis_<Nama>.pdf`) lalu kirimkan file PDF tersebut langsung ke ruang chat Admin.
+> 4. Siapkan **Draf Pesan WhatsApp untuk Klien (Siap Copas)** berisi edukasi ramah, estimasi kapasitas & penghematan, serta ajakan *Call to Action* untuk jadwal **Site Survey Gratis**.
 
 ---
 

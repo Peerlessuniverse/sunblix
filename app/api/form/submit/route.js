@@ -6,20 +6,34 @@ export async function POST(request) {
   try {
     const body = await request.json();
     const {
+      // A. DATA CUSTOMER
       name,
       phone,
       email,
       city,
+      shareLoc = '',
       propertyType = 'Rumah',
-      plnVa = 5500,
+      propertyUnits = '1',
+
+      // B. LISTRIK PLN
+      plnVa = 2200,
       phase = '1 Fasa',
-      monthlyBill = 2500000,
-      goal = 'Hemat + Backup Pemadaman',
+      meterType = 'Token',
+      monthlyBill = 800000,
+      outageFrequency = 'Jarang',
+
+      // C. KEBUTUHAN
+      goal = 'Hemat Tagihan (On-Grid)',
       backupHours = 0,
       criticalLoads = '',
+      heavyLoads = '',
+      usageTime = 'Malam',
+
+      // D. ATAP & LOKASI
       roofType = 'Genteng',
-      roofArea = 0,
-      cableDistance = 20,
+      roofArea = '30 m²',
+      roofShadow = 'Tidak ada',
+      cableDistance = 'Kurang tahu',
       notes = '',
     } = body;
 
@@ -45,26 +59,41 @@ export async function POST(request) {
       );
     }
 
-    const billNum = parseBillAmount(monthlyBill) || 2500000;
+    const billNum = parseBillAmount(monthlyBill) || 800000;
     const refCode = `SBX-FORM-${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}-${Math.floor(1000 + Math.random() * 9000)}`;
 
     const fullNotes = [
-      `[FORM KONSULTASI RESMI SUNBLIX]`,
-      `Ref: ${refCode}`,
-      `Daya PLN: ${plnVa} VA (${phase})`,
-      `Tagihan: Rp ${billNum.toLocaleString('id-ID')}/bln`,
-      `Tipe Properti: ${propertyType}`,
-      `Tujuan Sistem: ${goal}`,
-      backupHours > 0 ? `Lama Backup: ${backupHours} Jam` : null,
-      criticalLoads ? `Beban Kritis: ${criticalLoads}` : null,
-      `Tipe Atap: ${roofType} (Est. ${roofArea} m2)`,
-      cableDistance ? `Jarak Kabel ke Panel: ~${cableDistance} meter` : null,
-      notes ? `Catatan Tambahan: ${notes}` : null,
+      `[SURVEY DATA RESMI SUNBLIX - REF: ${refCode}]`,
+      `--- A. DATA CUSTOMER ---`,
+      `1. Nama & PIC: ${name.trim()}`,
+      `2. No. WA & Email: ${canonicalPhone} ${email ? `| ${email}` : ''}`,
+      `3. Alamat Lokasi: ${city || '-'} ${shareLoc ? `(${shareLoc})` : ''}`,
+      `4. Jenis Bangunan: ${propertyType}`,
+      `5. Jumlah Unit: ${propertyUnits}`,
+      ``,
+      `--- B. LISTRIK PLN ---`,
+      `6. Daya PLN & Fase: ${plnVa} VA (${phase})`,
+      `7. Meteran PLN: ${meterType}`,
+      `8. Rata-Rata Tagihan/Token: Rp ${billNum.toLocaleString('id-ID')} /bln`,
+      `9. Frekuensi Padam: ${outageFrequency}`,
+      ``,
+      `--- C. KEBUTUHAN ---`,
+      `10. Tujuan Utama: ${goal}`,
+      backupHours > 0 ? `11. Lama Backup Diinginkan: ${backupHours} Jam` : null,
+      criticalLoads ? `12. Beban Wajib Nyala (Padam): ${criticalLoads}` : null,
+      heavyLoads ? `13. Peralatan Besar: ${heavyLoads}` : null,
+      `14. Waktu Pemakaian Dominan: ${usageTime}`,
+      ``,
+      `--- D. ATAP & LOKASI ---`,
+      `15. Jenis Atap & Luas: ${roofType} (${roofArea || '-'})`,
+      `16. Arah Atap & Bayangan: ${roofShadow}`,
+      `17. Jarak Atap ke Panel & Inverter: ${cableDistance}`,
+      notes ? `Catatan Khusus: ${notes}` : null,
     ]
       .filter(Boolean)
       .join('\n');
 
-    // Catat ke CRM Supabase (dengan crmApproved = false agar menunggu persetujuan Admin)
+    // Catat ke CRM Supabase
     const leadRecord = recordLead({
       customerId: refCode,
       name: name.trim(),
@@ -94,10 +123,10 @@ export async function POST(request) {
       phase,
       goal,
       propertyType,
-      roofType,
+      roofType: `${roofType} (${roofArea || '-'})`,
       backupHours,
-      criticalLoads,
-      notes,
+      criticalLoads: criticalLoads || heavyLoads,
+      notes: `Meteran: ${meterType} | Pemakaian: ${usageTime} | Padam: ${outageFrequency} | Alat: ${heavyLoads}`,
     });
 
     return NextResponse.json({

@@ -8,12 +8,14 @@ import { verifySessionToken, COOKIE_NAME } from './lib/auth/staffAuth.js';
  */
 export function proxy(request) {
   const { pathname } = request.nextUrl;
-  const host = (request.headers.get('host') || '').toLowerCase();
+  const forwardedHost = request.headers.get('x-forwarded-host');
+  const rawHost = request.headers.get('host');
+  const host = (forwardedHost || rawHost || '').toLowerCase();
 
   // Khusus subdomain dashboardv2.sunblix.id:
-  // Root domain (/) langsung otomatis diarahkan ke Dashboard v2 Engineering!
+  // Akses ke root (/) langsung otomatis diarahkan ke /dashboardv2
   if (host.includes('dashboardv2') && (pathname === '/' || pathname === '')) {
-    return NextResponse.rewrite(new URL('/dashboardv2', request.url));
+    return NextResponse.redirect(new URL('/dashboardv2', request.url));
   }
 
   // Public SURTI chat page is closed (SURTI is private) unless explicitly
@@ -57,6 +59,7 @@ export function proxy(request) {
 
 export const config = {
   matcher: [
+    '/',
     '/DashboardOs/:path*',
     '/dashboardv2/:path*',
     '/surti/admin/:path*',

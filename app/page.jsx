@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import MobileDrawer from '../components/MobileDrawer';
 import HeroScene from '../components/HeroScene';
@@ -30,6 +30,13 @@ export default function HomePage() {
   const [catalogueModalOpen, setCatalogueModalOpen] = useState(false);
   const [selectedSystem, setSelectedSystem] = useState(null);
   const [projectTab, setProjectTab] = useState('calc');
+
+  useEffect(() => {
+    // Subdomain dashboardv2.sunblix.id dikhususkan untuk sistem Dashboard Engineering
+    if (typeof window !== 'undefined' && window.location.hostname.includes('dashboardv2')) {
+      window.location.replace('/dashboardv2');
+    }
+  }, []);
 
   const handleOpenQuote = (systemData = null) => {
     setSelectedSystem(systemData);

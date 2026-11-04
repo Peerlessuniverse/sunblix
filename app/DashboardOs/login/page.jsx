@@ -17,12 +17,20 @@ export default function SunblixLoginPage() {
   const [loginError, setLoginError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [theme, setTheme] = useState('dark');
+  const [redirectTarget, setRedirectTarget] = useState('/DashboardOs');
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const storedTheme = localStorage.getItem('sunblix_os_theme');
       if (storedTheme === 'light' || storedTheme === 'dark') {
         setTheme(storedTheme);
+      }
+
+      // Baca tujuan redirect dari URL parameter jika ada (misal: /dashboardv2)
+      const params = new URLSearchParams(window.location.search);
+      const target = params.get('redirect');
+      if (target && target.startsWith('/') && !target.startsWith('//')) {
+        setRedirectTarget(target);
       }
     }
   }, []);
@@ -40,9 +48,10 @@ export default function SunblixLoginPage() {
     if (typeof window !== 'undefined') {
       localStorage.setItem('sunblix_os_session', JSON.stringify(userObj));
     }
+    // Arahkan ke halaman tujuan (redirectTarget) atau default /DashboardOs
     setTimeout(() => {
-      router.push('/DashboardOs');
-    }, 400);
+      window.location.href = redirectTarget;
+    }, 300);
   };
 
   const handleLogin = async (e) => {
@@ -106,7 +115,9 @@ export default function SunblixLoginPage() {
             </div>
             <h1 className="os-login-title">SUNBLIX OS</h1>
             <p className="os-login-subtitle">
-              Portal Komando Operasional PLTS, Telemetri IoT & Hub Digital AI PT Sunblix Energi Indonesia.
+              {redirectTarget.includes('dashboardv2')
+                ? 'Silakan masuk dengan akun staf Anda untuk melanjutkan ke Dashboard v2 Engineering OS.'
+                : 'Portal Komando Operasional PLTS, Telemetri IoT & Hub Digital AI PT Sunblix Energi Indonesia.'}
             </p>
           </div>
 

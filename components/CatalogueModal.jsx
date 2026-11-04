@@ -40,11 +40,11 @@ export default function CatalogueModal({ isOpen, onClose }) {
       const newLead = {
         id: leadId,
         name: name.trim(),
-        company: 'Unduh Katalog Resmi (15 Hal)',
+        company: 'Unduh Katalog Resmi (12 Hal)',
         location: 'Website Hero Form',
         phone: phone.trim(),
         plnTariff: 'Residential / Commercial',
-        targetKwp: 'Katalog Edisi 2026 (Standard+, PRO, PRO MAX)',
+        targetKwp: 'Katalog Edisi 2026 (Power A Brighter Tomorrow)',
         estValue: 'Rp 63.500.000 - Rp 310.600.000',
         estValueNum: 88600000,
         stage: 'Kualifikasi',
@@ -83,7 +83,7 @@ export default function CatalogueModal({ isOpen, onClose }) {
           customerType: 'residential',
           city: 'Indonesia',
           source: 'Hero Catalogue Download',
-          notes: `Mengunduh katalog resmi 15 hal. Send WA: ${sendWa ? 'true' : 'false'}.`,
+          notes: `Mengunduh katalog resmi 12 hal. Send WA: ${sendWa ? 'true' : 'false'}.`,
         }),
       }).catch((err) => console.log('API Lead sync background:', err));
     } catch {}
@@ -131,7 +131,7 @@ export default function CatalogueModal({ isOpen, onClose }) {
           <div className="catalogue-preview-col">
             <div>
               <div className="catalogue-preview-badge">
-                <span>⚡</span> 15 Halaman • PDF Resmi
+                <span>⚡</span> 12 Halaman • PDF Resmi
               </div>
               <div className="catalogue-cover-wrap">
                 <img
@@ -144,10 +144,10 @@ export default function CatalogueModal({ isOpen, onClose }) {
             </div>
 
             <ul className="catalogue-highlights-list">
-              <li><span className="check">✓</span> <span>Paket PLTS Standard+ &amp; PRO</span></li>
-              <li><span className="check">✓</span> <span>Sistem Hybrid Inverter &amp; Battery ESS</span></li>
-              <li><span className="check">✓</span> <span>Tabel Estimasi Kebutuhan Luas Atap</span></li>
-              <li><span className="check">✓</span> <span>Jaminan Garansi 12 Tahun Tier-1</span></li>
+              <li><span className="check">✓</span> <span>Solusi PLTS Residensial &amp; Bisnis</span></li>
+              <li><span className="check">✓</span> <span>Astronergy N-Type &amp; Inverter Deye Hybrid</span></li>
+              <li><span className="check">✓</span> <span>Battery Energy Storage (Wall &amp; Rack)</span></li>
+              <li><span className="check">✓</span> <span>Tabel Estimasi Kapasitas Luas Atap</span></li>
             </ul>
           </div>
 

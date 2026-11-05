@@ -128,6 +128,7 @@ export async function POST(request) {
 
         // Terapkan data pelanggan
         S.cust.nama = params.customerName;
+        S.cust.pic = ''; // kosongkan PIC bawaan preset demo agar tidak terbawa ke dokumen klien
         S.cust.kontak = params.phone;
         S.cust.alamat = params.city;
         S.cust.proj = `PLTS Residensial ${params.goal}`;

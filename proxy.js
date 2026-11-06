@@ -5,12 +5,25 @@ import { verifySessionToken, COOKIE_NAME } from './lib/auth/staffAuth.js';
  * NEXT.JS 16 PROXY (SERVER-SIDE GATEWAY)
  * Convention: proxy.js in workspace root.
  * Protects internal staff routes (/DashboardOs, /surti/admin) on the server side.
+ * Routes subdomain requests (dashboardv2.sunblix.id, analisa.sunblix.id).
  */
 export function proxy(request) {
   const { pathname } = request.nextUrl;
   const forwardedHost = request.headers.get('x-forwarded-host');
   const rawHost = request.headers.get('host');
   const host = (forwardedHost || rawHost || '').toLowerCase();
+
+  // Subdomain analisa.sunblix.id:
+  // Akses root atau token slug (mis. /030-arga-3eb687a3) di-rewrite ke /analisa/...
+  if (host.includes('analisa')) {
+    if (pathname === '/' || pathname === '') {
+      return NextResponse.rewrite(new URL('/analisa', request.url));
+    }
+    if (!pathname.startsWith('/analisa')) {
+      const cleanPath = pathname.replace(/\/+$/, '');
+      return NextResponse.rewrite(new URL(`/analisa${cleanPath}`, request.url));
+    }
+  }
 
   // Khusus subdomain dashboardv2.sunblix.id:
   // Akses ke root (/) langsung otomatis diarahkan ke /dashboardv2
@@ -59,10 +72,6 @@ export function proxy(request) {
 
 export const config = {
   matcher: [
-    '/',
-    '/DashboardOs/:path*',
-    '/dashboardv2/:path*',
-    '/surti/admin/:path*',
-    '/surti',
+    '/((?!_next/static|_next/image|favicon.ico|asset/|engineering/).*)',
   ],
 };

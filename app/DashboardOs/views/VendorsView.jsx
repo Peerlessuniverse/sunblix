@@ -2,7 +2,44 @@
 
 import { useState } from 'react';
 
-const INITIAL_VENDORS = [];
+const INITIAL_VENDORS = [
+  {
+    id: 'VND-001',
+    name: 'PT. Energi Semesta Solusindo (ESS)',
+    category: 'Inverter & BESS',
+    products: 'Deye & SolaX Inverter (Hybrid, On-Grid, Off-Grid), LiFePO4 Battery Storage, Smart Meter',
+    pic: 'Sales Engineer ESS',
+    phone: '0852-8858-1027',
+    rating: '⭐ 4.9',
+    sla: '1-3 Hari',
+    paymentTerms: 'Exworks Gudang Jakarta & Tangerang, Lead time 1 bulan pemesanan',
+    status: 'Tier-1 Partner',
+  },
+  {
+    id: 'VND-002',
+    name: 'PT. Astronergy Solar Indonesia / Chint',
+    category: 'Modul Surya Tier-1',
+    products: 'Panel Surya N-Type TOPCon Bifacial Double Glass 585 Wp - 640 Wp',
+    pic: 'Bpk. Hendra (Supply)',
+    phone: '0813-1122-3344',
+    rating: '⭐ 4.95',
+    sla: 'Ready Stock',
+    paymentTerms: 'Termin DP 50% / Pelunasan saat material siap kirim',
+    status: 'Tier-1 Partner',
+  },
+  {
+    id: 'VND-003',
+    name: 'PT. Solar Mounting Nusantara',
+    category: 'Mounting & Struktur',
+    products: 'Rail Aluminium AL6005-T5, L-Feet, Mid & End Clamp, Tile Hook, Ballast',
+    pic: 'Bpk. Dimas',
+    phone: '0819-3344-5566',
+    rating: '⭐ 4.8',
+    sla: 'Ready Stock',
+    paymentTerms: 'Net 14 hari',
+    status: 'Verified Supplier',
+  },
+];
 
 export default function VendorsView({ onBackToDashboard }) {
   const [vendors, setVendors] = useState(INITIAL_VENDORS);

@@ -57,3 +57,4 @@ export async function GET(request, context) {
     headers: { 'Content-Type': 'text/html; charset=utf-8' },
   });
 }
+

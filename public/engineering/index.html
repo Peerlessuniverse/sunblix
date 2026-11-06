@@ -1,4 +1,5 @@
 ﻿<title>SUNBLIX Engineering — Dashboard v2</title>
+<script src="/engineering/lead-sync.js"></script>
 <script>
 /* ============================================================================
    SUNBLIX SUPABASE LIVE SYNC BRIDGE (Dashboard v2)
@@ -39,6 +40,14 @@ window._sbxSync = {
         body: JSON.stringify({ action: 'save_lead', data: leadObj })
       });
     } catch(e) { console.warn('[Sync Bridge] saveLead error:', e); }
+  },
+  async loadLeads() {
+    try {
+      const res = await fetch('/api/engineering/sync?type=leads', { credentials: 'same-origin', cache: 'no-store' });
+      if (res.ok) return await res.json();
+      console.warn('[Sync Bridge] loadLeads HTTP error:', res.status);
+    } catch(e) { console.warn('[Sync Bridge] loadLeads error:', e); }
+    return null;
   },
   async loadAll() {
     try {
@@ -1405,13 +1414,28 @@ async function lPut(id,body){if(L.local){if(id){const i=L.rows.findIndex(r=>r.id
   if(id)await L.db.collection("leads").doc(id).set(body);else await L.db.collection("leads").add(body)}
 async function lPatch(id,patch){if(L.local){const r=L.rows.find(x=>x.id===id);if(r)Object.assign(r,patch);lLocalSave(); if(window._sbxSync)window._sbxSync.saveLead(body); return}await L.db.collection("leads").doc(id).update(patch)}
 async function lDel(id){if(L.local){L.rows=L.rows.filter(r=>r.id!==id);lLocalSave(); if(window._sbxSync)window._sbxSync.saveLead(body); return}await L.db.collection("leads").doc(id).delete()}
-const L={local:false,db:null,assets:null,user:null,rows:null,state:"loading",err:"",canWrite:null,draft:null,editId:null,del:null,busy:false,msg:"",filter:"Semua",unsub:null};
+const L={local:false,db:null,assets:null,user:null,rows:null,state:"loading",err:"",crmSyncError:"",canWrite:null,draft:null,editId:null,del:null,busy:false,msg:"",filter:"Semua",unsub:null};
+async function syncCrmLeads(){
+  if(!window.SbxLeadSync||!window._sbxSync?.loadLeads){L.crmSyncError="Fitur sinkronisasi CRM belum termuat.";return false}
+  const data=await window._sbxSync.loadLeads();
+  if(!data||!data.success||!Array.isArray(data.leads)){
+    L.crmSyncError="Data CRM tidak dapat dimuat. Pastikan sesi staf masih aktif, lalu muat ulang halaman.";
+    if(tab==="leads"&&L.state==="ok"&&!leadTyping())render();
+    return false;
+  }
+  L.crmSyncError="";
+  L.rows=window.SbxLeadSync.mergeCrmLeads(L.rows||[],data.leads);
+  if(L.local)lLocalSave();
+  if(tab==="leads"&&L.state==="ok"&&!leadTyping())render();
+  return true;
+}
 (async()=>{L.db=await cap("db");
-  if(!L.db){L.local=true;L.rows=lLocalLoad();L.state="ok";L.canWrite=true;L.assets=LOCAL_ASSETS;if(tab==="leads")render();return}
-  try{L.unsub=L.db.collection("leads").onSnapshot(s=>{L.rows=s.docs.map(d=>Object.assign({id:d.id},d.data()));L.state="ok";if(tab==="leads"&&!leadTyping())render()},
+  if(!L.db){L.local=true;L.rows=lLocalLoad();L.state="ok";L.canWrite=true;L.assets=LOCAL_ASSETS;if(tab==="leads")render();await syncCrmLeads();return}
+  try{L.unsub=L.db.collection("leads").onSnapshot(s=>{L.rows=s.docs.map(d=>Object.assign({id:d.id},d.data()));L.state="ok";if(tab==="leads"&&!leadTyping())render();syncCrmLeads()},
     e=>{L.state="err";L.err=e&&e.code||"error";if(tab==="leads")render()})}catch(e){L.state="err";L.err=String(e&&e.message||e)}
   L.user=await cap("user");try{L.canWrite=L.user?await L.user.can("data.write"):null}catch(e){L.canWrite=null}
-  L.assets=await cap("assets");if(tab==="leads")render()})();
+  L.assets=await cap("assets");if(tab==="leads")render();await syncCrmLeads()})();
+setInterval(()=>{if(tab==="leads"&&L.state==="ok")syncCrmLeads()},60000);
 function leadTyping(){const a=document.activeElement;return a&&a.closest&&a.closest(".leadform")&&a.tagName!=="SELECT"}
 const canW=()=>L.canWrite!==false&&L.state==="ok";
 function leadVal(r){return N(r.nilai)}
@@ -1427,10 +1451,11 @@ function vLeads(){
   const rowHtml=r=>`<tr><td><b>${esc(r.nama)}</b>${r.pic?`<div class="small">${esc(r.pic)}</div>`:""}${r.kontak?`<div class="small">${esc(r.kontak)}</div>`:""}</td>
     <td>${esc(r.proyek||"—")}<div class="small">${[r.kwp?nf(r.kwp,2)+" kWp":"",r.baterai?nf(r.baterai,1)+" kWh":"",r.inverter||"",r.backup?r.backup+" jam backup":""].filter(Boolean).map(esc).join(" · ")}</div>${r.sph?`<div class="small">SPH ${esc(r.sph)}</div>`:""}</td>
     <td>${esc(r.lokasi||"—")}</td><td class="r num">${isNum(r.nilai)?rp(r.nilai):"—"}</td>
-    <td>${canW()?`<select data-lstat="${esc(r.id)}" aria-label="Status ${esc(r.nama)}">${LSTAT.map(s=>`<option${s===r.status?" selected":""}>${s}</option>`).join("")}</select>`:`<span class="pill ${LSTAT_CLS[r.status]||"s-NA"}">${esc(r.status)}</span>`}<div class="small">${esc(r.tanggal||"")}</div></td>
+    <td>${canW()&&!r.crmLeadId?`<select data-lstat="${esc(r.id)}" aria-label="Status ${esc(r.nama)}">${LSTAT.map(s=>`<option${s===r.status?" selected":""}>${s}</option>`).join("")}</select>`:`<span class="pill ${LSTAT_CLS[r.status]||"s-NA"}">${esc(r.status)}</span>`}<div class="small">${esc(r.tanggal||"")}</div></td>
     <td class="note">${esc(r.next||"")}</td><td><div class="docs">${docLinks(r)}</div></td>
-    <td class="c">${canW()?`<div class="tools" style="justify-content:center"><button class="btn" data-lead="edit" data-id="${esc(r.id)}">Ubah</button>${r.preset&&PRESETS[r.preset]?`<button class="btn" data-lead="open" data-id="${esc(r.id)}">Hitung</button><button class="btn" data-lead="ana" data-id="${esc(r.id)}">Analisa</button>`:""}${L.del===r.id?`<button class="btn" data-lead="delok" data-id="${esc(r.id)}" style="border-color:var(--err);color:var(--err)">Yakin hapus</button>`:`<button class="btn" data-lead="del" data-id="${esc(r.id)}" aria-label="Hapus">×</button>`}</div>`:(r.preset&&PRESETS[r.preset]?`<button class="btn" data-lead="open" data-id="${esc(r.id)}">Hitung</button>`:"")}</td></tr>`;
-  return`${L.local?`<div class="card" style="border-color:var(--warn)"><b>Mode file HTML</b> <span class="note">— leads & lampiran disimpan di browser ini. Pakai <b>Ekspor leads</b> untuk cadangan atau memindahkan ke komputer lain, lalu <b>Impor</b> di sana.</span></div>`:""}
+    <td class="c">${canW()&&!r.crmLeadId?`<div class="tools" style="justify-content:center"><button class="btn" data-lead="edit" data-id="${esc(r.id)}">Ubah</button>${r.preset&&PRESETS[r.preset]?`<button class="btn" data-lead="open" data-id="${esc(r.id)}">Hitung</button><button class="btn" data-lead="ana" data-id="${esc(r.id)}">Analisa</button>`:""}${L.del===r.id?`<button class="btn" data-lead="delok" data-id="${esc(r.id)}" style="border-color:var(--err);color:var(--err)">Yakin hapus</button>`:`<button class="btn" data-lead="del" data-id="${esc(r.id)}" aria-label="Hapus">×</button>`}</div>`:(r.preset&&PRESETS[r.preset]?`<button class="btn" data-lead="open" data-id="${esc(r.id)}">Hitung</button>`:"")}</td></tr>`;
+  return`${L.local?`<div class="card" style="border-color:var(--warn)"><b>Mode penyimpanan lokal</b> <span class="note">— lead CRM disinkronkan dari server; catatan khusus Dashboard v2 tersimpan di peramban ini.</span></div>`:""}
+  ${L.crmSyncError?`<div class="card" role="alert" style="border-color:var(--err)"><b>Sinkronisasi lead gagal</b><div class="note">${esc(L.crmSyncError)}</div></div>`:""}
   <div class="grid g4">${kp.map(([l,v,s])=>`<div class="card kpi"><div class="lab">${l}</div><div class="val">${v}</div><div class="sub">${esc(s)}</div></div>`).join("")}</div>
   ${rows.length?`<div class="grid g2"><div class="card"><h3>Nilai penawaran per status</h3><div class="chart"><canvas id="chL1"></canvas></div></div>
    <div class="card"><h3>Nilai per lead</h3><div class="chart" style="height:${Math.max(240,rows.filter(r=>leadVal(r)>0).length*34+40)}px"><canvas id="chL2"></canvas></div><div class="small">Biru = terkirim/negosiasi · kuning = disiapkan/survey/baru · hijau = deal · abu = batal.</div></div></div>`:""}

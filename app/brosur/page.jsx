@@ -682,6 +682,51 @@ function formatRupiah(num) {
 }
 
 // -----------------------------------------------------------------------------
+// HELPER: Inline Unit Price Input for SPH BOQ Table
+// Tampil sebagai teks Rupiah rapi, klik untuk edit custom angka langsung di tabel
+// -----------------------------------------------------------------------------
+function InlineUnitPriceInput({ value, onCommit }) {
+  const [isFocused, setIsFocused] = useState(false);
+  const [val, setVal] = useState(value !== undefined && value !== null ? value : '');
+
+  useEffect(() => {
+    if (!isFocused) {
+      setVal(value !== undefined && value !== null ? value : '');
+    }
+  }, [value, isFocused]);
+
+  const handleBlur = () => {
+    setIsFocused(false);
+    onCommit(val);
+  };
+
+  const displayFormatted = value ? (typeof value === 'number' ? formatRupiah(value) : value) : '-';
+
+  return (
+    <div className="p3-unitprice-cell-wrap">
+      <span className="p3-print-only-text">{displayFormatted}</span>
+      <input
+        type="text"
+        className="p3-inline-unitprice-field print-hide"
+        value={isFocused ? val : (value ? (typeof value === 'number' ? formatRupiah(value) : value) : '')}
+        placeholder={isFocused ? '0' : '-'}
+        onFocus={(e) => {
+          setIsFocused(true);
+          setVal(value ? String(value) : '');
+          e.target.select();
+        }}
+        onChange={(e) => setVal(e.target.value)}
+        onBlur={handleBlur}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') e.target.blur();
+        }}
+        title="Klik untuk mengubah harga satuan item ini secara custom"
+      />
+    </div>
+  );
+}
+
+// -----------------------------------------------------------------------------
 // OFFICIAL SUNBLIX KOP SURAT (LETTERHEAD) COMPONENT
 // Identik seragam dengan kop surat resmi PT Sunblix Energi Indonesia
 // -----------------------------------------------------------------------------
@@ -1159,7 +1204,7 @@ function BrochureGeneratorInner() {
           {
             code: 'B',
             title: 'MATERIAL PENDUKUNG',
-            priceText: 'Termasuk',
+            priceText: '',
             items: [
               {
                 item: 'Kabel daya PLTS',
@@ -1193,7 +1238,7 @@ function BrochureGeneratorInner() {
           {
             code: 'C',
             title: 'INSTALASI & COMMISSIONING',
-            priceText: 'Termasuk',
+            priceText: '',
             items: [
               {
                 item: 'Instalasi mekanikal',
@@ -3495,7 +3540,7 @@ function BrochureGeneratorInner() {
                       Dengan hormat, bersama ini kami sampaikan penawaran harga pengadaan dan pemasangan Pembangkit Listrik Tenaga Surya (PLTS) sistem {quoteData.systemType || 'Hybrid 1 Fasa'} untuk {quoteData.project || 'Sistem PLTS (nama proyek belum diisi)'}, dengan rincian sebagai berikut:
                     </p>
 
-                    {/* Highlight Box Parameter Teknis (5 Kolom Rapi) */}
+                    {/* Highlight Box Parameter Teknis (4 Kolom Rapi - Produksi ± Disembunyikan) */}
                     <div className="p3-sph-specs-bar">
                       <div className="p3-spec-col">
                         <span className="p3-spec-lbl">Kapasitas PV</span>
@@ -3508,18 +3553,6 @@ function BrochureGeneratorInner() {
                       <div className="p3-spec-col">
                         <span className="p3-spec-lbl">Baterai</span>
                         <strong className="p3-spec-v">{quoteData.batteryKwh ? `${quoteData.batteryKwh} kWh` : '5,10 kWh'}</strong>
-                      </div>
-                      <div className="p3-spec-col">
-                        <span className="p3-spec-lbl">
-                          {packageCount > 1 ? `Produksi Total (${packageCount} Paket) ±` : 'Produksi ±'}
-                        </span>
-                        <strong className="p3-spec-v">
-                          {(() => {
-                            const unitKwh = Number(quoteData.estMonthlyKwh) || 711;
-                            const totalKwh = unitKwh * packageCount;
-                            return `${totalKwh.toLocaleString('id-ID')} kWh/bln`;
-                          })()}
-                        </strong>
                       </div>
                       <div className="p3-spec-col">
                         <span className="p3-spec-lbl">Jumlah paket</span>
@@ -3552,10 +3585,14 @@ function BrochureGeneratorInner() {
                                 <td colSpan={5}></td>
                                 <td style={{ textAlign: 'right', fontWeight: 'bold' }}>
                                   {(() => {
+                                    const secTotal = getSectionSubtotal(sec);
+                                    // Munculkan perhitungan riil paket daripada menampilkan "Termasuk"
+                                    if (sec.priceText && (sec.priceText.toLowerCase().includes('termasuk') || sec.priceText === '-')) {
+                                      if (secTotal > 0) return formatRupiah(secTotal);
+                                    }
                                     if (sec.priceText && sec.priceText !== '-' && sec.priceText !== '') {
                                       return sec.priceText;
                                     }
-                                    const secTotal = getSectionSubtotal(sec);
                                     if (secTotal > 0) return formatRupiah(secTotal);
                                     return sec.priceText || '-';
                                   })()}
@@ -3571,7 +3608,10 @@ function BrochureGeneratorInner() {
                                     <td style={{ textAlign: 'center' }}>{it.qty}</td>
                                     <td style={{ textAlign: 'center' }}>{it.unit}</td>
                                     <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }} className="p3-cell-unitprice">
-                                      {it.unitPrice ? (typeof it.unitPrice === 'number' ? formatRupiah(it.unitPrice) : it.unitPrice) : (it.unitPriceText || '-')}
+                                      <InlineUnitPriceInput
+                                        value={it.unitPrice}
+                                        onCommit={(val) => handleSectionItemChange(sec.code, itIdx, 'unitPrice', val)}
+                                      />
                                     </td>
                                     <td className="p3-cell-warranty">{it.warranty}</td>
                                     <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>{it.priceText || ''}</td>

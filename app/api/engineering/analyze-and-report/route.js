@@ -3,6 +3,7 @@ import { createRequire } from 'module';
 import { recordLeadDurable } from '../../../../lib/surti/crmService.js';
 import { verifySurtiKey } from '../../../../lib/auth/surtiAuth.js';
 import { verifyRequestAuth } from '../../../../lib/auth/staffAuth.js';
+import { createAnalysisReportToken } from '../../../../lib/engineering/analysisReportToken.js';
 
 const require = createRequire(import.meta.url);
 const puppeteer = require('puppeteer-core');
@@ -112,9 +113,9 @@ export async function POST(request) {
       const page = await browser.newPage();
       await page.setViewport({ width: 1200, height: 900 });
 
-      // Akses dashboardv2 internal
-      const origin = new URL(request.url).origin;
-      const targetUrl = `${origin}/engineering/index.html`;
+      // Gunakan alamat loopback container agar pencetakan tidak bergantung pada DNS/proksi publik.
+      const port = process.env.PORT || '8787';
+      const targetUrl = `http://127.0.0.1:${port}/engineering/index.html`;
 
       await page.goto(targetUrl, { waitUntil: 'networkidle2', timeout: 30000 });
       await new Promise((r) => setTimeout(r, 1000));
@@ -208,25 +209,31 @@ export async function POST(request) {
         });
       }
 
-      // Default: Return JSON lengkap dengan ringkasan untuk teks Telegram + Base64 PDF
+      // Default: Return JSON lengkap dengan ringkasan, PDF, dan tautan HTML aman.
+      const summary = {
+        customerName,
+        city,
+        systemType: goal,
+        systemCapacity: `${calcResult.kwp.toFixed(2)} kWp (${calcResult.panelQty} Panel)`,
+        inverter: `${calcResult.invKw} kW`,
+        battery: calcResult.batteryKwh > 0 ? `${calcResult.batteryKwh} kWh` : 'Tanpa Baterai',
+        dailyProduction: `${calcResult.dailyProdKwh.toFixed(1)} kWh / hari`,
+        coverage: `${calcResult.coveragePct}% kebutuhan listrik tertutup PLTS`,
+        monthlySaving: `Rp ${Math.round(calcResult.monthlySaveRp).toLocaleString('id-ID')}`,
+        annualSaving: `Rp ${Math.round(calcResult.annualSaveRp).toLocaleString('id-ID')}`,
+        estimatedInvestment: `Rp ${Math.round(calcResult.investmentRp).toLocaleString('id-ID')}`,
+        payback: calcResult.paybackYears ? `${calcResult.paybackYears.toFixed(1)} Tahun` : '-',
+      };
+      const token = createAnalysisReportToken({ customerName, city, summary, createdAt: new Date().toISOString() });
+      const reportOrigin = (process.env.ANALYSIS_PUBLIC_ORIGIN || 'https://analisa.sunblix.id').replace(/\/$/, '');
+      const reportUrl = `${reportOrigin}/analisa/${token}`;
+
       return NextResponse.json({
         success: true,
         accessVia: auth.accessVia,
         leadId: leadRecord?.dbId || leadRecord?.id,
-        summary: {
-          customerName,
-          city,
-          systemType: goal,
-          systemCapacity: `${calcResult.kwp.toFixed(2)} kWp (${calcResult.panelQty} Panel)`,
-          inverter: `${calcResult.invKw} kW`,
-          battery: calcResult.batteryKwh > 0 ? `${calcResult.batteryKwh} kWh` : 'Tanpa Baterai',
-          dailyProduction: `${calcResult.dailyProdKwh.toFixed(1)} kWh / hari`,
-          coverage: `${calcResult.coveragePct}% kebutuhan listrik tertutup PLTS`,
-          monthlySaving: `Rp ${Math.round(calcResult.monthlySaveRp).toLocaleString('id-ID')}`,
-          annualSaving: `Rp ${Math.round(calcResult.annualSaveRp).toLocaleString('id-ID')}`,
-          estimatedInvestment: `Rp ${Math.round(calcResult.investmentRp).toLocaleString('id-ID')}`,
-          payback: calcResult.paybackYears ? `${calcResult.paybackYears.toFixed(1)} Tahun` : '-',
-        },
+        summary,
+        report: { url: reportUrl, expiresInDays: 30 },
         pdf: {
           filename,
           sizeBytes: calcResult.pdfSize,

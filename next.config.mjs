@@ -26,6 +26,7 @@ const nextConfig = {
   },
   async rewrites() {
     return [
+      { source: '/', has: [{ type: 'host', value: 'dashboardv2.sunblix.id' }], destination: '/dashboardv2' },
       { source: '/cinematic', destination: '/' },
       { source: '/sunblix_cinematic.html', destination: '/' },
       { source: '/dashboard', destination: '/DashboardOs' },

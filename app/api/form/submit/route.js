@@ -111,6 +111,9 @@ export async function POST(request) {
       source: 'Microsite Form Web',
       notes: fullNotes,
       crmApproved: false, // Menunggu persetujuan Admin via Telegram SURTI
+      // Notifikasi Telegram dikirim sendiri di bawah (lebih lengkap: daya/atap/
+      // backup/beban kritis). Jangan dobel dengan notifier di recordLead().
+      skipTelegramNotify: true,
     });
 
     // Kirim notifikasi Telegram ke Admin (jika token Telegram aktif)

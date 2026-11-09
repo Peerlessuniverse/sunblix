@@ -160,6 +160,9 @@ export async function POST(request) {
         city: data.alamat || data.city,
         notes: `Input dari Dashboard v2 Engineering. ${data.proj || ''}`,
         source: 'Engineering Dashboard v2',
+        // Input dari staf di dashboard, bukan lead baru dari pelanggan -
+        // tidak perlu notifikasi Telegram (mengGenerate spam).
+        skipTelegramNotify: true,
       });
       return NextResponse.json({ success: true, lead });
     }

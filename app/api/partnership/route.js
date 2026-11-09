@@ -40,20 +40,23 @@ export async function POST(request) {
     if (client) {
       for (let attempt = 0; attempt < 8; attempt += 1) {
         const candidate = `SBX-VND${year}-${Math.floor(1000 + Math.random() * 9000)}`;
-        const { data: clash, error: clashErr } = await client
-          .from('surti_partnership_inquiries')
-          .select('partner_number')
-          .eq('partner_number', candidate)
-          .maybeSingle();
-        if (clashErr) {
+        try {
+          // maybeSingle() pada client internal ini mengembalikan row langsung
+          // (null kalau tidak ada), bukan objek {data, error}.
+          const clash = await client
+            .from('surti_partnership_inquiries')
+            .select('partner_number')
+            .eq('partner_number', candidate)
+            .maybeSingle();
+          if (!clash) {
+            partnerId = candidate;
+            break;
+          }
+          // nomor sudah dipakai - coba lagi dengan suffix lain
+        } catch (clashErr) {
           console.error('[PARTNERSHIP] cek duplikat gagal:', clashErr.message);
           break;
         }
-        if (!clash) {
-          partnerId = candidate;
-          break;
-        }
-        // nomor sudah dipakai - coba lagi dengan suffix lain
       }
     }
 
@@ -64,22 +67,28 @@ export async function POST(request) {
 
     // Persist to Supabase (partnership inquiries table)
     if (client) {
-      const { error: dbErr } = await client.insert('surti_partnership_inquiries', {
-        partner_number: partnerId,
-        company_name: companyName,
-        pic_name: picName,
-        pic_position: picPosition || null,
-        email,
-        whatsapp,
-        category,
-        coverage_area: coverageArea || null,
-        website: website || null,
-        npwp: npwp || null,
-        company_profile_url: companyProfileUrl || null,
-        past_experience: pastExperience || null,
-        proposal_description: proposalDescription || null,
-        status: 'submitted',
-      });
+      let dbErr = null;
+      try {
+        // insert() pada client internal ini melempar exception saat gagal.
+        await client.insert('surti_partnership_inquiries', {
+          partner_number: partnerId,
+          company_name: companyName,
+          pic_name: picName,
+          pic_position: picPosition || null,
+          email,
+          whatsapp,
+          category,
+          coverage_area: coverageArea || null,
+          website: website || null,
+          npwp: npwp || null,
+          company_profile_url: companyProfileUrl || null,
+          past_experience: pastExperience || null,
+          proposal_description: proposalDescription || null,
+          status: 'submitted',
+        });
+      } catch (err) {
+        dbErr = err;
+      }
 
       if (dbErr) {
         // Pendaftaran BELUM tersimpan. Kalau tetap balas "berhasil", pengguna

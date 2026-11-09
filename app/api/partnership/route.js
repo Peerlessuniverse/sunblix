@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getDbClient, isDbLive } from '../../../lib/supabaseClient.js';
+import { notifyPartnershipCreated } from '../../../lib/telegram/leadNotifier.js';
 
 export async function POST(request) {
   try {
@@ -104,6 +105,26 @@ export async function POST(request) {
           { status: 503 }
         );
       }
+    }
+
+    // Notifikasi ke Telegram (grup + admin): pendaftaran vendor baru.
+    // Fire-and-forget, tidak boleh menggagalkan respons pendaftaran.
+    try {
+      notifyPartnershipCreated({
+        partner_number: partnerId,
+        company_name: companyName,
+        pic_name: picName,
+        pic_position: picPosition,
+        email,
+        whatsapp,
+        category,
+        coverage_area: coverageArea,
+        website,
+        npwp,
+        company_profile_url: companyProfileUrl,
+      });
+    } catch (err) {
+      console.error('[PARTNERSHIP] notifikasi gagal:', err.message);
     }
 
     console.log(`[SUNBLIX VENDOR PARTNERSHIP INQUIRY] ID: ${partnerId}`, {

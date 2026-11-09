@@ -32,7 +32,7 @@ export const config = {
     serviceKey: process.env.SUPABASE_SERVICE_ROLE_KEY || '',
   },
   catalog: {
-    pdfUrl: 'https://www.sunblix.id/SUNBLIX_KATALOG_2026.pdf',
+    pdfUrl: 'https://www.sunblix.id/SUNBLIX%20KATALOG%202026%20NEW.pdf',
   },
   limits: {
     // Percakapan per user yang dikirim ke LLM (window)

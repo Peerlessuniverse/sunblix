@@ -24,6 +24,15 @@ const nextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: '/SUNBLIX_KATALOG_2026.pdf',
+        destination: '/SUNBLIX%20KATALOG%202026%20NEW.pdf',
+        permanent: false,
+      },
+    ];
+  },
   async rewrites() {
     return [
       { source: '/', destination: '/dashboardv2', has: [{ type: 'host', value: 'dashboardv2.sunblix.id' }] },

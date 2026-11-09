@@ -20,7 +20,7 @@ import { verifySurtiKey } from '../../../../lib/auth/surtiAuth.js';
  * Akses: kunci layanan SURTI (header x-surti-key) atau sesi staf.
  */
 
-const PDF_PATH = '/SUNBLIX_KATALOG_2026.pdf';
+const PDF_PATH = '/SUNBLIX%20KATALOG%202026%20NEW.pdf';
 const SECTIONS = ['packages', 'addons', 'terms', 'profile', 'policies', 'pdf'];
 
 function toNumber(value) {

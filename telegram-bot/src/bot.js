@@ -70,7 +70,7 @@ bot.command('bantuan', async (ctx) => {
 
 bot.command('katalog', async (ctx) => {
   await ctx.reply(
-    `Silakan unduh katalog resmi SUNBLIX 2026 di sini:\nhttps://www.sunblix.id/SUNBLIX_KATALOG_2026.pdf\n\nIsinya lengkap: spesifikasi panel, inverter, baterai, dan daftar paket turnkey. 📄`
+    `Silakan unduh katalog resmi SUNBLIX 2026 di sini:\nhttps://www.sunblix.id/SUNBLIX%20KATALOG%202026%20NEW.pdf\n\nIsinya lengkap: spesifikasi panel, inverter, baterai, dan daftar paket turnkey. 📄`
   );
 });
 

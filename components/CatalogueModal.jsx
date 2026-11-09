@@ -19,10 +19,10 @@ export default function CatalogueModal({ isOpen, onClose }) {
     setLoading(true);
 
     // 1. Trigger Direct Download of Catalogue PDF
-    const pdfPath = '/SUNBLIX_KATALOG_2026.pdf';
+    const pdfPath = '/SUNBLIX%20KATALOG%202026%20NEW.pdf';
     const downloadLink = document.createElement('a');
     downloadLink.href = pdfPath;
-    downloadLink.download = 'SUNBLIX_KATALOG_2026_Solar_Specialist.pdf';
+    downloadLink.download = 'SUNBLIX_KATALOG_2026_NEW.pdf';
     downloadLink.target = '_blank';
     document.body.appendChild(downloadLink);
     downloadLink.click();
@@ -239,15 +239,15 @@ export default function CatalogueModal({ isOpen, onClose }) {
                 <h3 className="cat-success-title">Katalog Sedang Diunduh!</h3>
                 <p className="cat-success-sub">
                   Terima kasih, <strong>{name}</strong>!<br />
-                  File PDF resmi <strong>SUNBLIX_KATALOG_2026.pdf</strong> telah terunduh ke perangkat Anda.
+                  File PDF resmi <strong>SUNBLIX KATALOG 2026 NEW.pdf</strong> telah terunduh ke perangkat Anda.
                 </p>
 
                 <div className="cat-success-actions">
                   <a
-                    href="/SUNBLIX_KATALOG_2026.pdf"
+                    href="/SUNBLIX%20KATALOG%202026%20NEW.pdf"
                     target="_blank"
                     className="cat-btn-action download-again"
-                    download="SUNBLIX_KATALOG_2026_Solar_Specialist.pdf"
+                    download="SUNBLIX_KATALOG_2026_NEW.pdf"
                   >
                     <span>📄</span> Buka / Unduh Ulang PDF
                   </a>

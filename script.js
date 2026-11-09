@@ -1431,10 +1431,10 @@
       if (catSubmitText) catSubmitText.textContent = '⚡ Menyiapkan Unduhan PDF...';
 
       // 1. Trigger Direct Download of Catalogue PDF
-      const pdfPath = '/SUNBLIX_KATALOG_2026.pdf';
+      const pdfPath = '/SUNBLIX%20KATALOG%202026%20NEW.pdf';
       const downloadLink = document.createElement('a');
       downloadLink.href = pdfPath;
-      downloadLink.download = 'SUNBLIX_KATALOG_2026_Solar_Specialist.pdf';
+      downloadLink.download = 'SUNBLIX_KATALOG_2026_NEW.pdf';
       downloadLink.target = '_blank';
       document.body.appendChild(downloadLink);
       downloadLink.click();
@@ -1500,7 +1500,7 @@
 
       // 4. Update Success View
       if (catSuccessGreeting) {
-        catSuccessGreeting.innerHTML = `Terima kasih, <strong>${name}</strong>!<br>File PDF resmi <strong>SUNBLIX_KATALOG_2026.pdf</strong> telah terunduh ke perangkat Anda.`;
+        catSuccessGreeting.innerHTML = `Terima kasih, <strong>${name}</strong>!<br>File PDF resmi <strong>SUNBLIX KATALOG 2026 NEW.pdf</strong> telah terunduh ke perangkat Anda.`;
       }
       if (catSuccessWaBtn) {
         const waText = encodeURIComponent(`Halo SUNBLIX, saya ${name} baru saja mendownload katalog resmi 2026 dan ingin berkonsultasi mengenai solusi PLTS.`);

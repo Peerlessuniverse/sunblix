@@ -30,33 +30,70 @@ export async function POST(request) {
       );
     }
 
-    // Generate unique vendor partner ID
-    const randomSuffix = Math.floor(1000 + Math.random() * 9000);
-    const partnerId = `SBX-VND${new Date().getFullYear()}-${randomSuffix}`;
+    // Generate unique vendor partner ID.
+    // Suffiks 4 digit acak bisa bentrok antar pendaftar - cek dulu ke database
+    // supaya tidak ada dua perusahaan memakai nomor registrasi yang sama.
+    const year = new Date().getFullYear();
+    const client = isDbLive() ? getDbClient() : null;
+    let partnerId = null;
+
+    if (client) {
+      for (let attempt = 0; attempt < 8; attempt += 1) {
+        const candidate = `SBX-VND${year}-${Math.floor(1000 + Math.random() * 9000)}`;
+        const { data: clash, error: clashErr } = await client
+          .from('surti_partnership_inquiries')
+          .select('partner_number')
+          .eq('partner_number', candidate)
+          .maybeSingle();
+        if (clashErr) {
+          console.error('[PARTNERSHIP] cek duplikat gagal:', clashErr.message);
+          break;
+        }
+        if (!clash) {
+          partnerId = candidate;
+          break;
+        }
+        // nomor sudah dipakai - coba lagi dengan suffix lain
+      }
+    }
+
+    if (!partnerId) {
+      // Fallback kalau DB tidak hidup atau cek duplikat gagal.
+      partnerId = `SBX-VND${year}-${Date.now().toString().slice(-6)}`;
+    }
 
     // Persist to Supabase (partnership inquiries table)
-    if (isDbLive()) {
-      try {
-        const client = getDbClient();
-        await client.insert('surti_partnership_inquiries', {
-          partner_number: partnerId,
-          company_name: companyName,
-          pic_name: picName,
-          pic_position: picPosition || null,
-          email,
-          whatsapp,
-          category,
-          coverage_area: coverageArea || null,
-          website: website || null,
-          npwp: npwp || null,
-          company_profile_url: companyProfileUrl || null,
-          past_experience: pastExperience || null,
-          proposal_description: proposalDescription || null,
-          status: 'submitted',
-        });
-      } catch (dbErr) {
+    if (client) {
+      const { error: dbErr } = await client.insert('surti_partnership_inquiries', {
+        partner_number: partnerId,
+        company_name: companyName,
+        pic_name: picName,
+        pic_position: picPosition || null,
+        email,
+        whatsapp,
+        category,
+        coverage_area: coverageArea || null,
+        website: website || null,
+        npwp: npwp || null,
+        company_profile_url: companyProfileUrl || null,
+        past_experience: pastExperience || null,
+        proposal_description: proposalDescription || null,
+        status: 'submitted',
+      });
+
+      if (dbErr) {
+        // Pendaftaran BELUM tersimpan. Kalau tetap balas "berhasil", pengguna
+        // memegang nomor registrasi yang tidak ada di database - persis sumber
+        // kebingungan saat kurasi vendor. Lebih baik gagalkan dengan jelas.
         console.error('[PARTNERSHIP] DB write failed:', dbErr.message);
-        // Jangan gagalkan respons — pendaftaran tetap dianggap diterima (tercatat di log)
+        return NextResponse.json(
+          {
+            success: false,
+            message:
+              'Pendaftaran belum dapat disimpan karena ada gangguan pada server. Silakan coba lagi beberapa saat lagi, atau hubungi tim procurement SUNBLIX.',
+          },
+          { status: 503 }
+        );
       }
     }
 

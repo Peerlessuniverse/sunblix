@@ -25,6 +25,7 @@ import CrmView from './views/CrmView';
 import ProjectsView from './views/ProjectsView';
 import ProcurementView from './views/ProcurementView';
 import VendorsView from './views/VendorsView';
+import CareerApplicationsView from './views/CareerApplicationsView';
 import ProductionView from './views/ProductionView';
 import QualityView from './views/QualityView';
 import DeliveryView from './views/DeliveryView';
@@ -673,6 +674,19 @@ export default function SunblixDashboardOS() {
             <li>
               <button
                 type="button"
+                className={`sbx-nav-item ${activeNav === 'career' ? 'active' : ''}`}
+                onClick={() => setActiveNav('career')}
+              >
+                <div className="sbx-nav-left">
+                  <span className="sbx-nav-icon">💼</span>
+                  <span>Rekrutmen &amp; Karir</span>
+                </div>
+              </button>
+            </li>
+
+            <li>
+              <button
+                type="button"
                 className={`sbx-nav-item ${activeNav === 'production' ? 'active' : ''}`}
                 onClick={() => setActiveNav('production')}
               >
@@ -882,6 +896,10 @@ export default function SunblixDashboardOS() {
 
         {activeNav === 'vendors' && (
           <VendorsView onBackToDashboard={() => setActiveNav('dashboard')} />
+        )}
+
+        {activeNav === 'career' && (
+          <CareerApplicationsView onBackToDashboard={() => setActiveNav('dashboard')} />
         )}
 
         {activeNav === 'production' && (

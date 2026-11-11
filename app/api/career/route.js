@@ -1,6 +1,93 @@
 import { NextResponse } from 'next/server';
 import { getDbClient, isDbLive } from '../../../lib/supabaseClient.js';
+import { verifyRequestAuth } from '../../../lib/auth/staffAuth.js';
 import { notifyCareerApplication } from '../../../lib/telegram/leadNotifier.js';
+
+export async function GET(request) {
+  try {
+    const auth = verifyRequestAuth(request);
+    if (!auth.valid) {
+      return NextResponse.json(
+        { success: false, message: 'Akses ditolak. Sesi staf tidak valid.' },
+        { status: 401 }
+      );
+    }
+
+    if (!isDbLive()) {
+      return NextResponse.json({
+        success: true,
+        applications: [],
+        message: 'Database persistence mode: Demo / In-memory',
+      });
+    }
+
+    const client = getDbClient();
+    const applications = await client
+      .from('surti_career_applications')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    return NextResponse.json({
+      success: true,
+      applications: Array.isArray(applications) ? applications : [],
+    });
+  } catch (error) {
+    console.error('[API /api/career GET] Error:', error);
+    return NextResponse.json(
+      { success: false, message: 'Gagal memuat data pelamar kerja.' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PATCH(request) {
+  try {
+    const auth = verifyRequestAuth(request);
+    if (!auth.valid) {
+      return NextResponse.json(
+        { success: false, message: 'Akses ditolak. Sesi staf tidak valid.' },
+        { status: 401 }
+      );
+    }
+
+    const body = await request.json();
+    const { id, status } = body;
+
+    const allowedStatuses = ['received', 'reviewing', 'interview_scheduled', 'accepted', 'rejected'];
+    if (!id || !status || !allowedStatuses.includes(status)) {
+      return NextResponse.json(
+        { success: false, message: 'ID dan status lamaran valid wajib disertakan.' },
+        { status: 400 }
+      );
+    }
+
+    if (!isDbLive()) {
+      return NextResponse.json({
+        success: true,
+        message: 'Status pelamar berhasil diperbarui (demo mode).',
+      });
+    }
+
+    const client = getDbClient();
+    const updated = await client.update(
+      'surti_career_applications',
+      { id },
+      { status, updated_at: new Date().toISOString() }
+    );
+
+    return NextResponse.json({
+      success: true,
+      message: 'Status pelamar berhasil diperbarui.',
+      data: updated,
+    });
+  } catch (error) {
+    console.error('[API /api/career PATCH] Error:', error);
+    return NextResponse.json(
+      { success: false, message: 'Gagal memperbarui status pelamar.' },
+      { status: 500 }
+    );
+  }
+}
 
 export async function POST(request) {
   try {
@@ -32,8 +119,6 @@ export async function POST(request) {
     }
 
     // Generate unique applicant ID.
-    // Suffiks 4 digit acak bisa bentrok antar pelamar - cek dulu ke database
-    // supaya tidak ada dua lamaran memakai nomor yang sama.
     const year = new Date().getFullYear();
     const client = isDbLive() ? getDbClient() : null;
     let applicationId = null;
@@ -42,8 +127,6 @@ export async function POST(request) {
       for (let attempt = 0; attempt < 8; attempt += 1) {
         const candidate = `SBX-HR${year}-${Math.floor(1000 + Math.random() * 9000)}`;
         try {
-          // maybeSingle() pada client internal ini mengembalikan row langsung
-          // (null kalau tidak ada), bukan objek {data, error}.
           const clash = await client
             .from('surti_career_applications')
             .select('application_number')
@@ -68,7 +151,6 @@ export async function POST(request) {
     if (client) {
       let dbErr = null;
       try {
-        // insert() pada client internal ini melempar exception saat gagal.
         await client.insert('surti_career_applications', {
           application_number: applicationId,
           full_name: fullName,
@@ -90,8 +172,6 @@ export async function POST(request) {
       }
 
       if (dbErr) {
-        // Lamaran BELUM tersimpan. Kalau tetap balas "berhasil", pelamar memegang
-        // nomor lamaran yang tidak ada di database. Lebih baik gagalkan dengan jelas.
         console.error('[CAREER] DB write failed:', dbErr.message);
         return NextResponse.json(
           {
@@ -104,8 +184,7 @@ export async function POST(request) {
       }
     }
 
-    // Notifikasi ke Telegram (grup + admin): lamaran kerja baru.
-    // Fire-and-forget, tidak boleh menggagalkan respons lamaran.
+    // Notifikasi ke Telegram (grup + admin)
     try {
       notifyCareerApplication({
         application_number: applicationId,

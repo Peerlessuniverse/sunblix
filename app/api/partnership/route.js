@@ -1,6 +1,93 @@
 import { NextResponse } from 'next/server';
 import { getDbClient, isDbLive } from '../../../lib/supabaseClient.js';
+import { verifyRequestAuth } from '../../../lib/auth/staffAuth.js';
 import { notifyPartnershipCreated } from '../../../lib/telegram/leadNotifier.js';
+
+export async function GET(request) {
+  try {
+    const auth = verifyRequestAuth(request);
+    if (!auth.valid) {
+      return NextResponse.json(
+        { success: false, message: 'Akses ditolak. Sesi staf tidak valid.' },
+        { status: 401 }
+      );
+    }
+
+    if (!isDbLive()) {
+      return NextResponse.json({
+        success: true,
+        inquiries: [],
+        message: 'Database persistence mode: Demo / In-memory',
+      });
+    }
+
+    const client = getDbClient();
+    const inquiries = await client
+      .from('surti_partnership_inquiries')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    return NextResponse.json({
+      success: true,
+      inquiries: Array.isArray(inquiries) ? inquiries : [],
+    });
+  } catch (error) {
+    console.error('[API /api/partnership GET] Error:', error);
+    return NextResponse.json(
+      { success: false, message: 'Gagal memuat data rekanan / kemitraan.' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PATCH(request) {
+  try {
+    const auth = verifyRequestAuth(request);
+    if (!auth.valid) {
+      return NextResponse.json(
+        { success: false, message: 'Akses ditolak. Sesi staf tidak valid.' },
+        { status: 401 }
+      );
+    }
+
+    const body = await request.json();
+    const { id, status } = body;
+
+    const allowedStatuses = ['submitted', 'under_review', 'contacted', 'approved', 'rejected'];
+    if (!id || !status || !allowedStatuses.includes(status)) {
+      return NextResponse.json(
+        { success: false, message: 'ID dan status kemitraan valid wajib disertakan.' },
+        { status: 400 }
+      );
+    }
+
+    if (!isDbLive()) {
+      return NextResponse.json({
+        success: true,
+        message: 'Status rekanan berhasil diperbarui (demo mode).',
+      });
+    }
+
+    const client = getDbClient();
+    const updated = await client.update(
+      'surti_partnership_inquiries',
+      { id },
+      { status, updated_at: new Date().toISOString() }
+    );
+
+    return NextResponse.json({
+      success: true,
+      message: 'Status rekanan berhasil diperbarui.',
+      data: updated,
+    });
+  } catch (error) {
+    console.error('[API /api/partnership PATCH] Error:', error);
+    return NextResponse.json(
+      { success: false, message: 'Gagal memperbarui status rekanan.' },
+      { status: 500 }
+    );
+  }
+}
 
 export async function POST(request) {
   try {
@@ -32,8 +119,6 @@ export async function POST(request) {
     }
 
     // Generate unique vendor partner ID.
-    // Suffiks 4 digit acak bisa bentrok antar pendaftar - cek dulu ke database
-    // supaya tidak ada dua perusahaan memakai nomor registrasi yang sama.
     const year = new Date().getFullYear();
     const client = isDbLive() ? getDbClient() : null;
     let partnerId = null;
@@ -42,8 +127,6 @@ export async function POST(request) {
       for (let attempt = 0; attempt < 8; attempt += 1) {
         const candidate = `SBX-VND${year}-${Math.floor(1000 + Math.random() * 9000)}`;
         try {
-          // maybeSingle() pada client internal ini mengembalikan row langsung
-          // (null kalau tidak ada), bukan objek {data, error}.
           const clash = await client
             .from('surti_partnership_inquiries')
             .select('partner_number')
@@ -53,7 +136,6 @@ export async function POST(request) {
             partnerId = candidate;
             break;
           }
-          // nomor sudah dipakai - coba lagi dengan suffix lain
         } catch (clashErr) {
           console.error('[PARTNERSHIP] cek duplikat gagal:', clashErr.message);
           break;
@@ -62,7 +144,6 @@ export async function POST(request) {
     }
 
     if (!partnerId) {
-      // Fallback kalau DB tidak hidup atau cek duplikat gagal.
       partnerId = `SBX-VND${year}-${Date.now().toString().slice(-6)}`;
     }
 
@@ -70,7 +151,6 @@ export async function POST(request) {
     if (client) {
       let dbErr = null;
       try {
-        // insert() pada client internal ini melempar exception saat gagal.
         await client.insert('surti_partnership_inquiries', {
           partner_number: partnerId,
           company_name: companyName,
@@ -92,9 +172,6 @@ export async function POST(request) {
       }
 
       if (dbErr) {
-        // Pendaftaran BELUM tersimpan. Kalau tetap balas "berhasil", pengguna
-        // memegang nomor registrasi yang tidak ada di database - persis sumber
-        // kebingungan saat kurasi vendor. Lebih baik gagalkan dengan jelas.
         console.error('[PARTNERSHIP] DB write failed:', dbErr.message);
         return NextResponse.json(
           {
@@ -107,8 +184,7 @@ export async function POST(request) {
       }
     }
 
-    // Notifikasi ke Telegram (grup + admin): pendaftaran vendor baru.
-    // Fire-and-forget, tidak boleh menggagalkan respons pendaftaran.
+    // Notifikasi ke Telegram (grup + admin)
     try {
       notifyPartnershipCreated({
         partner_number: partnerId,

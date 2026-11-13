@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;850;900&display=swap');
 
 :root {
+  --site-max-width: 1380px;
   --navy: #062b63;
   --navy-dark: #031c3f;
   --navy-light: #183d68;
@@ -186,7 +187,7 @@ button {
 
 .nav-inner {
   position: relative;
-  width: min(1380px, 94%);
+  width: min(var(--site-max-width, 1380px), 94%);
   height: 100%;
   margin: auto;
   display: flex;
@@ -404,9 +405,12 @@ html {
 .hero-content {
   position: relative;
   z-index: 10;
-  margin: auto clamp(24px, 5vw, 80px);
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-left: max(clamp(24px, 5vw, 80px), calc((100vw - var(--site-max-width, 1380px)) / 2));
+  margin-right: auto;
   padding: 40px 0 20px;
-  width: min(720px, 90vw);
+  width: min(740px, 90vw);
   opacity: 1;
   visibility: visible;
   transform: none;
@@ -544,10 +548,10 @@ html {
 .hero-bottom {
   position: relative;
   z-index: 12;
-  width: 100%;
-  max-width: 1380px;
+  width: min(var(--site-max-width, 1380px), 94%);
+  max-width: var(--site-max-width, 1380px);
   margin: 0 auto 24px;
-  padding: 0 clamp(24px, 5vw, 80px);
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -831,7 +835,7 @@ html {
   gap: clamp(32px, 5vw, 64px);
   align-items: center;
   width: 100%;
-  max-width: 1380px;
+  max-width: var(--site-max-width, 1380px);
   margin: 0 auto;
   position: relative;
   z-index: 5;
@@ -1300,7 +1304,7 @@ html {
   justify-content: space-between;
   gap: 20px;
   width: 100%;
-  max-width: 1400px;
+  max-width: var(--site-max-width, 1400px);
   margin: 0 auto 10px;
 }
 
@@ -1414,7 +1418,7 @@ html {
 /* TRACK VIEWPORT */
 .about-track-viewport {
   width: 100%;
-  max-width: 1400px;
+  max-width: var(--site-max-width, 1400px);
   margin: 0 auto;
   overflow: hidden;
   position: relative;
@@ -1727,7 +1731,7 @@ html {
   justify-content: space-between;
   gap: 20px;
   width: 100%;
-  max-width: 1400px;
+  max-width: var(--site-max-width, 1400px);
   margin: 10px auto 0;
   font-size: 11px;
   color: #5a738e;
@@ -1859,8 +1863,8 @@ html {
   visibility: visible;
   pointer-events: auto;
   transform: none;
-  max-width: 1380px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
   overflow: visible;
   scroll-margin-top: 72px;
 }
@@ -1871,6 +1875,10 @@ html {
   margin-bottom: clamp(4px, 0.8vh, 10px);
   flex: 0 0 auto;
   background: transparent;
+  max-width: var(--site-max-width, 1380px);
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .product-head h2 {
@@ -1898,6 +1906,9 @@ html {
   grid-template-columns: repeat(3, 1fr);
   gap: clamp(16px, 2vw, 28px);
   width: 100%;
+  max-width: var(--site-max-width, 1380px);
+  margin-left: auto;
+  margin-right: auto;
   border: none;
   background: transparent;
 }
@@ -2281,14 +2292,17 @@ html {
   pointer-events: auto;
   transform: none;
   background: linear-gradient(180deg, #f8fbfd 0%, #edf4fb 100%);
-  max-width: 1380px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
   overflow: visible;
   scroll-margin-top: 72px;
 }
 
 .sunlight-container {
   width: 100%;
+  max-width: var(--site-max-width, 1380px);
+  margin-left: auto;
+  margin-right: auto;
   height: auto;
   display: flex;
   flex-direction: column;
@@ -2706,14 +2720,17 @@ html {
   pointer-events: auto;
   transform: none;
   background: linear-gradient(180deg, #f7fafe 0%, #edf4fa 100%);
-  max-width: 1380px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
   overflow: visible;
   scroll-margin-top: 72px;
 }
 
 .how-main-container {
   width: 100%;
+  max-width: var(--site-max-width, 1380px);
+  margin-left: auto;
+  margin-right: auto;
   height: auto;
   display: flex;
   flex-direction: column;
@@ -3261,14 +3278,17 @@ html {
   pointer-events: auto;
   transform: none;
   background: linear-gradient(180deg, #f7fafe 0%, #eef5fb 100%);
-  max-width: 1380px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
   overflow: visible;
   scroll-margin-top: 72px;
 }
 
 .project-container {
   width: 100%;
+  max-width: var(--site-max-width, 1380px);
+  margin-left: auto;
+  margin-right: auto;
   height: auto;
   display: flex;
   flex-direction: column;
@@ -4228,7 +4248,7 @@ html {
   position: relative;
   z-index: 2;
   width: 100%;
-  max-width: 1400px;
+  max-width: var(--site-max-width, 1400px);
   margin: 0 auto;
   padding: clamp(76px, 11vh, 90px) clamp(28px, 5.5vw, 80px) clamp(16px, 2.5vh, 28px);
   display: flex;
@@ -4364,7 +4384,7 @@ html {
   display: grid;
   grid-template-columns: 1.25fr 0.85fr 0.85fr 1.65fr 1.35fr;
   gap: clamp(14px, 2vw, 32px);
-  max-width: 1400px;
+  max-width: var(--site-max-width, 1400px);
   width: 100%;
   margin: 0 auto;
 }
@@ -4590,7 +4610,7 @@ html {
   align-items: center;
   padding-top: 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
-  max-width: 1400px;
+  max-width: var(--site-max-width, 1400px);
   width: 100%;
   margin: 0 auto;
   padding-right: 70px;
@@ -6807,4 +6827,53 @@ html {
   font-size: 14px;
   line-height: 1;
 }
+
+/* ============================================================
+   ULTRAWIDE & LARGE DISPLAY OPTIMIZATION (21:9 & >= 1750px)
+   Balances horizontal guides, rooftop camera focal point,
+   and prevents vertical overcrowding or lateral overextension.
+   ============================================================ */
+@media (min-width: 1750px), (min-aspect-ratio: 19/10) {
+  :root {
+    --site-max-width: 1540px;
+  }
+
+  /* Keep solar-paneled rooftop framed properly in ultrawide 21:9 */
+  .hero-sticky-backdrop .hero-bg,
+  .hero-bg {
+    background-position: 80% 42%;
+    transform-origin: 80% 42%;
+  }
+
+  .hero-bg-video {
+    object-position: 80% 42%;
+  }
+
+  /* Headline scaling tailored for ultra-widescreen viewports */
+  .hero-title {
+    font-size: clamp(52px, 4.2vw, 92px);
+    letter-spacing: -3px;
+  }
+
+  .purpose-title {
+    font-size: clamp(34px, 2.6vw, 54px);
+  }
+
+  .purpose-inner-grid {
+    gap: clamp(40px, 4vw, 80px);
+  }
+
+  .story-card {
+    max-width: 620px;
+  }
+
+  .about-card {
+    width: clamp(360px, 26vw, 460px);
+  }
+
+  .finale-panorama-bg {
+    background-position: 12% 40%;
+  }
+}
+
 

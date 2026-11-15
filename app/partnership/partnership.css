@@ -282,6 +282,167 @@
   cursor: not-allowed;
 }
 
+.form-header-badge,
+.form-header-title,
+.form-header-desc,
+.form-error-banner,
+.applicant-form {
+  position: relative;
+  z-index: 1;
+}
+
+.form-header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  color: #047857;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.form-header-title {
+  margin: 0 0 12px;
+  color: #062b63;
+  font-size: clamp(24px, 3vw, 34px);
+  line-height: 1.2;
+}
+
+.form-header-desc {
+  max-width: 760px;
+  margin: 0 0 28px;
+  color: #475569;
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.applicant-form {
+  display: grid;
+  gap: 20px;
+}
+
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 3px 6px;
+  color: #1e293b;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+.label-required {
+  color: #047857;
+}
+
+.label-hint {
+  flex-basis: 100%;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #1e293b;
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.45;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-input,
+.form-select {
+  min-height: 48px;
+  padding: 11px 13px;
+}
+
+.form-textarea {
+  min-height: 144px;
+  padding: 12px 13px;
+  resize: vertical;
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: #64748b;
+  opacity: 1;
+}
+
+.form-input:focus-visible,
+.form-select:focus-visible,
+.form-textarea:focus-visible {
+  border-color: #059669;
+  outline: 3px solid rgba(5, 150, 105, 0.2);
+  outline-offset: 1px;
+}
+
+.form-checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 15px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #f8fafc;
+  color: #334155;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.form-checkbox-row input {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  margin: 2px 0 0;
+  accent-color: #059669;
+}
+
+.form-submit-row {
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+  align-items: center;
+  gap: 20px;
+  padding-top: 4px;
+}
+
+.btn-submit-vendor {
+  min-height: 48px;
+  cursor: pointer;
+}
+
+.btn-submit-vendor:focus-visible {
+  outline: 3px solid rgba(5, 150, 105, 0.3);
+  outline-offset: 3px;
+}
+
+.form-submit-row a {
+  overflow-wrap: anywhere;
+}
+
 /* ============================================================
    LIGHT FOOTER STRIP
    ============================================================ */
@@ -352,5 +513,19 @@
 
   .category-cards-grid {
     grid-template-columns: 1fr;
+  }
+
+  .form-grid-2 {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .form-submit-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .btn-submit-vendor {
+    width: 100%;
   }
 }

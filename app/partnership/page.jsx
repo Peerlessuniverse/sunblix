@@ -328,7 +328,7 @@ export default function PartnershipPage() {
               <div className="success-ref-pill">
                 No. Registrasi Vendor: {submissionSuccess.partnerId}
               </div>
-              <p style={{ color: '#94a3b8', maxWidth: '640px', margin: '0 auto 24px', fontSize: '15px' }}>
+              <p style={{ color: '#475569', maxWidth: '640px', margin: '0 auto 24px', fontSize: '15px', lineHeight: 1.6 }}>
                 Terima kasih atas minat perusahaan Anda untuk bermitra dengan PT SUNBLIX ENERGI INDONESIA. Tim
                 Procurement &amp; Supply Chain kami akan menelaah katalog dan proposal kerjasama Anda dalam waktu
                 2-3 hari kerja.
@@ -655,11 +655,11 @@ export default function PartnershipPage() {
                   </button>
                   <div style={{ textAlign: 'center', fontSize: '13px', color: '#64748b' }}>
                     Pertanyaan pengadaan atau proposal kemitraan khusus? Hubungi tim procurement via email:{' '}
-                    <a href="mailto:vendor@sunblix.id" style={{ color: '#34d399', textDecoration: 'underline' }}>
+                    <a href="mailto:vendor@sunblix.id" style={{ color: '#059669', fontWeight: 650, textDecoration: 'underline' }}>
                       vendor@sunblix.id
                     </a>{' '}
                     atau{' '}
-                    <a href="mailto:procurement@sunblix.id" style={{ color: '#38bdf8', textDecoration: 'underline' }}>
+                    <a href="mailto:procurement@sunblix.id" style={{ color: '#087be8', fontWeight: 650, textDecoration: 'underline' }}>
                       procurement@sunblix.id
                     </a>.
                   </div>

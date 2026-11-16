@@ -5,13 +5,13 @@
 // -----------------------------------------------------------------------------
 
 export const SUNBLIX_TERMS_2026 = [
-  'Harga katalog merupakan harga paket standar mencakup pengiriman dan instalasi untuk wilayah Jawa, Madura, dan Bali.',
-  'Di luar wilayah Jawa, Madura, dan Bali dapat dikenakan penyesuaian biaya pengiriman material dan akomodasi teknis.',
-  'Harga final dapat disesuaikan setelah site survey berdasarkan kondisi aktual rooftop dan kebutuhan konstruksi sipil.',
-  'Skema Pembayaran Proyek: 50% DP Proyek; 40% Setelah Material Tiba di Lokasi; 10% Setelah Sistem PLTS Selesai Dibangun.',
-  'Harga sudah termasuk PPN (atau disesuaikan faktur pajak) dan berlaku selama kurs tukar USD ke IDR stabil (maks. Rp18.200/USD).',
-  'Garansi Resmi Komponen: Inverter 5 Tahun, Panel Surya 12 Tahun (Kinerja 25 Thn), PV Bracket 5 Tahun, Baterai Lithium 5 Tahun, Garansi Instalasi 1 Tahun.',
-  'Monitoring performa sistem 24/7 didukung aplikasi smart cloud berbasis IoT smartphone.',
+  'Harga penawaran berlaku untuk wilayah Jawa, Madura, dan Bali serta sudah mencakup pengiriman material dan instalasi.',
+  'Di luar wilayah tersebut dapat dikenakan penyesuaian biaya pengiriman material dan akomodasi teknis.',
+  'Harga final dapat disesuaikan setelah site survey berdasarkan kondisi aktual atap dan kebutuhan konstruksi.',
+  'Termin pembayaran (dari total nilai penawaran): 50% uang muka sebelum pengiriman material; 40% setelah material tiba di lokasi; 10% setelah instalasi & commissioning selesai.',
+  'Harga sudah termasuk PPN 11% dan berlaku selama kurs tukar USD ke IDR stabil (maksimum Rp18.200/USD).',
+  'Garansi resmi: inverter 5 tahun, panel surya 12 tahun (kinerja 25 tahun), PV bracket 5 tahun, instalasi 1 tahun.',
+  'Monitoring performa sistem 24/7 melalui aplikasi smart cloud berbasis IoT.',
 ];
 
 export const SUNBLIX_SIGNATORY_DEFAULT = {

@@ -257,16 +257,7 @@ const PRESETS = {
       { id: '3', code: '0240-BAT-WM-5K', desc: 'Wall Mounted LiFePO4 51.2V 100Ah 5.12 kWh Smart BMS', qty: 2, unit: 'Unit', unitPrice: 20500000, notes: '5 thn' },
       { id: '4', code: 'SBX-MTG-LFEET+RAIL', desc: 'Rail aluminium, bracket l feet, clamp & grounding modul', qty: 1, unit: 'Set', unitPrice: 16800000, notes: '5 thn (PV Bracket)' },
     ],
-    terms: [
-      'Termin pembayaran (dari total nilai penawaran): 50% uang muka sebelum pengiriman material (Rp 81.085.500); 40% setelah material tiba di lokasi (Rp 64.868.400); 10% setelah instalasi & commissioning selesai (Rp 16.217.100).',
-      'Masa berlaku penawaran 14 hari, sampai dengan 2 November 2026.',
-      'Garansi instalasi & workmanship SUNBLIX 1 tahun sejak serah terima. Garansi produk mengikuti ketentuan pabrikan sebagaimana tercantum pada tabel.',
-      'Harga dalam Rupiah, PPN dicantumkan terpisah. Harga material mengacu pada kurs maksimum Rp 18.500/USD; kenaikan kurs di atas batas tersebut dapat menyesuaikan harga.',
-      'Biaya pengiriman ke 12 lokasi pos (belum diinformasikan) dikenakan sesuai biaya aktual.',
-      'Pemesanan material dilakukan setelah uang muka diterima. Jadwal pengiriman dan instalasi dikonfirmasi setelah survey lapangan.',
-      'Penawaran disusun berdasarkan data awal dari customer. Kapasitas, konfigurasi dan harga final ditetapkan setelah survey lapangan dan verifikasi engineering.',
-      'Lampiran: Analisa Teknis Sistem PLTS.',
-    ],
+    terms: [...SUNBLIX_TERMS_2026],
     signatory: {
       name: 'Warsa',
       title: 'Account Executive',
@@ -432,14 +423,7 @@ const PRESETS = {
       { id: '3', code: 'SOLAX-LD117-11.7KWH', desc: 'Baterai SolaX LD117 LFP 51.2V 11.7 kWh (2 unit = 23.4 kWh)', qty: 2, unit: 'Unit', unitPrice: 29500000, notes: '10 thn' },
       { id: '4', code: 'SBX-MTG-LFEET-18P', desc: 'Struktur mounting genteng / dak beton L-Feet 18 panel', qty: 1, unit: 'Set', unitPrice: 6600000, notes: '10 thn' },
     ],
-    terms: [
-      'Termin pembayaran: 50% DP (Rp 102.675.000); 40% setelah material tiba di lokasi (Rp 82.140.000); 10% setelah instalasi & commissioning selesai (Rp 20.535.000).',
-      'Masa berlaku penawaran 14 hari, sampai dengan 3 November 2026.',
-      'Garansi instalasi & workmanship SUNBLIX 1 tahun sejak serah terima. Garansi produk mengikuti ketentuan pabrikan.',
-      'Analisa produksi: 29.3 kWh/hari (~879 kWh/bln). Estimasi penghematan Rp 13.513.241/tahun. Balik modal sederhana ~15.2 tahun.',
-      'Harga termasuk PPN 11% (Nilai dasar Rp 185.000.000 + PPN Rp 20.350.000 = Total Rp 205.350.000). Biaya per Wp Rp 18.401/Wp.',
-      'Lampiran: Analisa Perencanaan PLTS (Project Planning Analysis).',
-    ],
+    terms: [...SUNBLIX_TERMS_2026],
     signatory: {
       name: 'Warsa',
       title: 'Account Executive',
@@ -510,14 +494,8 @@ const PRESETS = {
         notes: 'Exclude Delivery',
       },
     ],
-    notes: [
-      'Harga sudah termasuk material dan komponen sesuai scope pada tabel.',
-      'Mounting set: floater part tidak termasuk.',
-      'Akomodasi dan delivery material ke luar Jabodetabek tidak termasuk dan dihitung sesuai kebutuhan aktual.',
-      'Unloading/forklift untuk unit >200 kg menjadi tanggung jawab customer.',
-      'Quotation berlaku 14 hari kalender sejak tanggal quotation atau sampai ada perubahan harga dari principal/vendor.',
-      'Garansi produk dan instalasi: mengikuti masa garansi yang tercantum pada masing-masing item.',
-    ],
+    terms: [...SUNBLIX_TERMS_2026],
+    notes: [...SUNBLIX_TERMS_2026],
     signatory: {
       name: 'Warsa',
       title: 'Account Executive',
@@ -587,13 +565,8 @@ const PRESETS = {
         notes: 'Sertifikasi Resmi',
       },
     ],
-    notes: [
-      'Harga sudah mencakup perizinan SLO ESDM dan asistensi Net-Metering PLN.',
-      'Struktur dudukan atap menggunakan aluminium anodized anti-karosi tahan angin hingga 120 km/jam.',
-      'Sistem dilengkapi aplikasi monitoring smartphone SUNBLIX Cloud 24/7.',
-      'Quotation berlaku 14 hari kerja.',
-      'Garansi performa output modul surya 25 tahun minimal 84.8%.',
-    ],
+    terms: [...SUNBLIX_TERMS_2026],
+    notes: [...SUNBLIX_TERMS_2026],
     signatory: {
       name: 'Tim Engineering SUNBLIX',
       title: 'Head of Technical Solutions',
@@ -662,12 +635,8 @@ const PRESETS = {
         notes: 'Turnkey Full',
       },
     ],
-    notes: [
-      'Dirancang khusus untuk iklim tropis pesisir pantai dengan material anti-korosi standar C4/C5.',
-      'Sistem baterai mampu mem-backup daya saat pemadaman PLN secara instan (< 10 ms UPS grade).',
-      'Termasuk pelatihan operasional dan monitoring berkala 1 tahun pertama gratis.',
-      'Quotation berlaku 14 hari kalender.',
-    ],
+    terms: [...SUNBLIX_TERMS_2026],
+    notes: [...SUNBLIX_TERMS_2026],
     signatory: {
       name: 'Warsa',
       title: 'VP Project Development',
@@ -933,6 +902,7 @@ function BrochureGeneratorInner() {
     // Allow URL params override
     return {
       ...base,
+      terms: base.terms || base.notes || [...SUNBLIX_TERMS_2026],
       portfolios: base.portfolios || DEFAULT_PORTFOLIOS,
       portfolioLayoutStyle: base.portfolioLayoutStyle || 'bento',
       sphCode: searchParams.get('sph') || base.sphCode || 'SPH 002',
@@ -1053,6 +1023,9 @@ function BrochureGeneratorInner() {
       if (!data.portfolios || data.portfolios.length === 0) {
         data.portfolios = DEFAULT_PORTFOLIOS;
       }
+      if (!data.terms || data.terms.length === 0) {
+        data.terms = [...SUNBLIX_TERMS_2026];
+      }
       setQuoteData(data);
     }
   };
@@ -1068,6 +1041,7 @@ function BrochureGeneratorInner() {
         quoteData.sphCode || 'SPH 001',
         quoteData.customer || 'Bapak/Ibu Pelanggan'
       );
+      newPreset.terms = quoteData.terms || [...SUNBLIX_TERMS_2026];
       newPreset.portfolios = quoteData.portfolios || DEFAULT_PORTFOLIOS;
       setQuoteData(newPreset);
     }
@@ -2452,7 +2426,78 @@ function BrochureGeneratorInner() {
             </div>
           </div>
 
-          {/* SECTION 5: SIGNATORY */}
+          {/* SECTION 5: KETENTUAN PENAWARAN (HALAMAN 3) */}
+          <div className="sidebar-section">
+            <div className="sidebar-section-title">
+              <span>📋</span>
+              <span>Ketentuan Penawaran (Halaman 3)</span>
+              <button
+                type="button"
+                className="btn-mode-quick"
+                style={{ marginLeft: 'auto', fontSize: '10px', padding: '2px 8px' }}
+                onClick={() => setQuoteData((prev) => ({ ...prev, terms: [...SUNBLIX_TERMS_2026] }))}
+                title="Kembalikan butir ketentuan ke 7 poin standar resmi SUNBLIX"
+              >
+                ↺ Reset Standar
+              </button>
+            </div>
+            <p className="section-hint-text" style={{ marginBottom: '10px' }}>
+              Atur butir klausul ketentuan penawaran resmi pada Halaman 3 (SPH). Termin pembayaran akan menghitung nominal Rupiah secara otomatis.
+            </p>
+            <div className="terms-editor-list" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {(quoteData.terms || SUNBLIX_TERMS_2026).map((term, tIdx) => (
+                <div key={tIdx} style={{ display: 'flex', gap: '6px', alignItems: 'flex-start' }}>
+                  <span style={{ fontSize: '11px', fontWeight: 700, color: '#0284c7', marginTop: '6px', minWidth: '16px' }}>
+                    {tIdx + 1}.
+                  </span>
+                  <textarea
+                    className="form-input"
+                    rows={2}
+                    style={{ fontSize: '11px', resize: 'vertical', lineHeight: 1.35 }}
+                    value={term}
+                    onChange={(e) => {
+                      const updated = [...(quoteData.terms || SUNBLIX_TERMS_2026)];
+                      updated[tIdx] = e.target.value;
+                      setQuoteData((prev) => ({ ...prev, terms: updated }));
+                    }}
+                  />
+                  <button
+                    type="button"
+                    style={{
+                      background: 'transparent',
+                      border: 'none',
+                      color: '#ef4444',
+                      cursor: 'pointer',
+                      fontSize: '14px',
+                      padding: '4px',
+                      marginTop: '4px',
+                    }}
+                    title="Hapus butir ketentuan ini"
+                    onClick={() => {
+                      const updated = [...(quoteData.terms || SUNBLIX_TERMS_2026)];
+                      updated.splice(tIdx, 1);
+                      setQuoteData((prev) => ({ ...prev, terms: updated }));
+                    }}
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+            </div>
+            <button
+              type="button"
+              className="btn-add-section-item"
+              style={{ marginTop: '10px', width: '100%', justifyContent: 'center' }}
+              onClick={() => {
+                const updated = [...(quoteData.terms || SUNBLIX_TERMS_2026), ''];
+                setQuoteData((prev) => ({ ...prev, terms: updated }));
+              }}
+            >
+              + Tambah Butir Ketentuan
+            </button>
+          </div>
+
+          {/* SECTION 6: SIGNATORY */}
           <div className="sidebar-section">
             <div className="sidebar-section-title">
               <span>✍️</span>
@@ -3477,7 +3522,7 @@ function BrochureGeneratorInner() {
             const currentUnitPpn = includePpn ? Math.round(currentUnitBasePrice * 0.11) : 0;
             const currentUnitTotal = currentUnitBasePrice + currentUnitPpn;
             const currentGrandTotal = currentUnitTotal * packageCount;
-            const termsList = quoteData.terms || quoteData.notes || [];
+            const termsList = (quoteData.terms && quoteData.terms.length > 0) ? quoteData.terms : SUNBLIX_TERMS_2026;
 
             return (
               <section key="page3" className="a4-sheet" id="brosurPage3">
@@ -3669,6 +3714,10 @@ function BrochureGeneratorInner() {
                             const mid40 = Math.round(currentGrandTotal * 0.4);
                             const fin10 = currentGrandTotal - dp50 - mid40;
                             formattedTerm = `Termin pembayaran (dari total nilai penawaran): 50% uang muka sebelum pengiriman material (${formatRupiah(dp50)}); 40% setelah material tiba di lokasi (${formatRupiah(mid40)}); 10% setelah instalasi & commissioning selesai (${formatRupiah(fin10)}).`;
+                          } else if (t.includes('PPN 11%') && t.includes('kurs tukar USD')) {
+                            formattedTerm = includePpn
+                              ? 'Harga sudah termasuk PPN 11% dan berlaku selama kurs tukar USD ke IDR stabil (maksimum Rp18.200/USD).'
+                              : 'Harga belum termasuk PPN 11% dan berlaku selama kurs tukar USD ke IDR stabil (maksimum Rp18.200/USD).';
                           }
                           return <li key={idx}>{formattedTerm}</li>;
                         })}

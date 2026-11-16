@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import './wizard.css';
 
@@ -42,7 +43,11 @@ const QUICK_BILLS = [
   { label: '10 Jt+', val: 10000000 },
 ];
 
-export default function LeadIntakeWizard() {
+function LeadIntakeWizard() {
+  const searchParams = useSearchParams();
+  const sourceParam = searchParams.get('source') || searchParams.get('intent') || '';
+  const isCatalogueLead = sourceParam.toLowerCase() === 'catalogue';
+
   const [step, setStep] = useState(1);
   const totalSteps = 5;
 
@@ -161,7 +166,8 @@ export default function LeadIntakeWizard() {
         roofArea: roofArea.trim(),
         roofShadow,
         cableDistance,
-        notes: notes.trim(),
+        notes: (notes.trim() ? notes.trim() + '\n' : '') + (isCatalogueLead ? '[Permintaan Download Katalog Resmi 2026 via Hero]' : ''),
+        source: isCatalogueLead ? 'Hero Catalogue Download' : 'Microsite Form Web',
       };
 
       const res = await fetch('/api/form/submit', {
@@ -178,26 +184,21 @@ export default function LeadIntakeWizard() {
       const ref = data.refCode || 'SBX-SUCCESS';
       setSubmittedRef(ref);
 
-      // Otomatis buka chat WhatsApp ke Admin (085288581027) dengan membawa data
-      const waText = [
-        `Halo SUNBLIX, saya sudah mengisi formulir survei kebutuhan PLTS:`,
-        `• No. Ref: ${ref}`,
-        `• Nama: ${name.trim()}`,
-        `• No. WA: ${phone.trim()}`,
-        `• Lokasi: ${city.trim() || '-'}`,
-        `• Daya PLN: ${plnVa} VA (${phase}) - ${meterType}`,
-        `• Rata-rata Tagihan/Token: Rp ${Number(monthlyBill).toLocaleString('id-ID')}/bln`,
-        `• Kebutuhan: ${goal}`,
-        ``,
-        `Berikut saya lampirkan foto rekening listrik / meteran / atap untuk analisa teknis:`
-      ].join('\n');
-
-      const waUrl = `https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(waText)}`;
-
-      // Buka otomatis WhatsApp setelah jeda singkat
-      setTimeout(() => {
-        window.location.href = waUrl;
-      }, 800);
+      // Trigger auto-download katalog jika pengunjung berasal dari tombol Katalog Hero
+      if (isCatalogueLead && typeof window !== 'undefined') {
+        try {
+          const pdfPath = '/SUNBLIX%20KATALOG%202026%20NEW.pdf';
+          const downloadLink = document.createElement('a');
+          downloadLink.href = pdfPath;
+          downloadLink.download = 'SUNBLIX_KATALOG_2026_NEW.pdf';
+          downloadLink.target = '_blank';
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+          setTimeout(() => downloadLink.remove(), 400);
+        } catch (downloadErr) {
+          console.warn('[Catalogue Download] Auto-download error:', downloadErr);
+        }
+      }
     } catch (err) {
       setErrorMessage(err.message || 'Terjadi gangguan jaringan.');
     } finally {
@@ -237,9 +238,44 @@ export default function LeadIntakeWizard() {
             <div className="sbx-success-icon">✓</div>
             <div className="sbx-step-meta" style={{ justifyContent: 'center' }}>Registrasi Berhasil</div>
             <h1 className="sbx-step-title">Terima Kasih, {name}!</h1>
-            <p className="sbx-step-desc" style={{ maxWidth: '480px', margin: '0 auto 24px auto' }}>
+            <p className="sbx-step-desc" style={{ maxWidth: '480px', margin: '0 auto 20px auto' }}>
               Data survei teknis Anda telah berhasil diterima oleh tim engineering SUNBLIX.
             </p>
+
+            {/* DEDICATED CATALOGUE DOWNLOAD BOX */}
+            <div className="sbx-catalogue-download-box">
+              <div className="sbx-cat-box-header">
+                <img
+                  src="/asset/katalog_cover.jpg"
+                  alt="Cover Katalog SUNBLIX 2026"
+                  className="sbx-cat-box-cover"
+                />
+                <div className="sbx-cat-box-info">
+                  <div className="sbx-cat-box-badge">Official Document 2026</div>
+                  <div className="sbx-cat-box-title">Katalog Resmi SUNBLIX (PDF)</div>
+                  <div className="sbx-cat-box-sub">
+                    Spesifikasi Lengkap Modul Surya Tier-1, Hybrid Inverter & Baterai LiFePO4
+                  </div>
+                </div>
+              </div>
+
+              <a
+                href="/SUNBLIX%20KATALOG%202026%20NEW.pdf"
+                download="SUNBLIX_KATALOG_2026_NEW.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="sbx-btn-download-cat-primary"
+              >
+                <span style={{ fontSize: '18px' }}>📥</span>
+                <span>Unduh Katalog Resmi SUNBLIX 2026 (PDF)</span>
+              </a>
+
+              <div className="sbx-cat-box-meta">
+                <span>✓ File Resmi PDF (~3.8 MB)</span>
+                <span>•</span>
+                <span>Edisi Terbaru 2026</span>
+              </div>
+            </div>
 
             <div className="sbx-bill-box" style={{ maxWidth: '440px', margin: '0 auto 24px auto', textAlign: 'left' }}>
               <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 600 }}>Nomor Referensi Konsultasi:</div>
@@ -274,7 +310,9 @@ export default function LeadIntakeWizard() {
                 Kembali ke Beranda
               </Link>
               <a
-                href={`https://wa.me/${ADMIN_WA}?text=Halo%20SUNBLIX,%20saya%20sudah%20mengisi%20form%20survei%20PLTS%20atas%20nama%20${encodeURIComponent(name)}%20(Ref:%20${submittedRef}).%20Berikut%20saya%20lampirkan%20foto%20rekening/atapnya:`}
+                href={`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(
+                  `Halo SUNBLIX, saya sudah mengisi form survei PLTS atas nama ${name.trim()} (Ref: ${submittedRef}). Berikut saya lampirkan foto rekening/atapnya:`
+                )}`}
                 target="_blank"
                 rel="noreferrer"
                 className="sbx-btn-next"
@@ -287,6 +325,22 @@ export default function LeadIntakeWizard() {
         ) : (
           /* WIZARD FLOW */
           <div style={{ width: '100%' }}>
+            {/* CATALOGUE INTENT BANNER */}
+            {isCatalogueLead && (
+              <div className="sbx-catalogue-intent-banner">
+                <div className="sbx-catalogue-intent-badge">📥</div>
+                <div>
+                  <div className="sbx-catalogue-intent-title">
+                    <span>Permintaan Unduh Katalog Resmi SUNBLIX 2026</span>
+                    <span className="sbx-catalogue-tag-pill">Edisi 2026</span>
+                  </div>
+                  <div className="sbx-catalogue-intent-desc">
+                    Silakan lengkapi informasi kebutuhan & spesifikasi bangunan Anda di bawah ini. Tombol download file PDF katalog lengkap akan otomatis terbuka setelah seluruh data selesai diisi.
+                  </div>
+                </div>
+              </div>
+            )}
+
             {errorMessage && (
               <div className="sbx-error-box">
                 ⚠️ {errorMessage}
@@ -764,6 +818,15 @@ export default function LeadIntakeWizard() {
                 <div style={{ textAlign: 'center', fontSize: '12px', color: '#64748b', marginBottom: '16px' }}>
                   Laporan resmi <strong>Project Planning Analysis (PDF A4)</strong> akan disiapkan oleh Tim Engineer & SURTI AI atas nama <strong>{name || 'Anda'}</strong>.
                 </div>
+
+                {isCatalogueLead && (
+                  <div style={{ marginTop: '16px', padding: '14px 18px', background: '#fef3c7', border: '1.5px solid #fde68a', borderRadius: '14px', fontSize: '13px', color: '#92400e', display: 'flex', alignItems: 'center', gap: '12px', textAlign: 'left' }}>
+                    <span style={{ fontSize: '24px' }}>📥</span>
+                    <div>
+                      <strong>Akses Download Langsung:</strong> Setelah Anda menekan tombol <em>"Kirim Kebutuhan PLTS Saya ⚡"</em> di bawah, dokumen PDF <strong>Katalog Resmi SUNBLIX 2026</strong> akan otomatis terbuka untuk diunduh.
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -800,5 +863,22 @@ export default function LeadIntakeWizard() {
         </footer>
       )}
     </div>
+  );
+}
+
+export default function FormPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="sbx-wizard-page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
+          <div style={{ textAlign: 'center', padding: '40px 20px', color: '#062b63' }}>
+            <img src="/asset/sublixlogo.svg" alt="SUNBLIX" style={{ height: '36px', marginBottom: '16px' }} />
+            <div style={{ fontWeight: 700, fontSize: '15px' }}>Memuat formulir perencanaan SUNBLIX...</div>
+          </div>
+        </div>
+      }
+    >
+      <LeadIntakeWizard />
+    </Suspense>
   );
 }

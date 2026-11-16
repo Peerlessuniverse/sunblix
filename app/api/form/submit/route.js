@@ -35,6 +35,7 @@ export async function POST(request) {
       roofShadow = 'Tidak ada',
       cableDistance = 'Kurang tahu',
       notes = '',
+      source = '',
     } = body;
 
     if (!name || !phone) {
@@ -108,7 +109,7 @@ export async function POST(request) {
       monthlyBill: billNum,
       propertyType,
       systemType: goal.toLowerCase().includes('backup') || goal.toLowerCase().includes('hybrid') ? 'hybrid' : 'ongrid',
-      source: 'Microsite Form Web',
+      source: source || 'Microsite Form Web',
       notes: fullNotes,
       crmApproved: false, // Menunggu persetujuan Admin via Telegram SURTI
       // Notifikasi Telegram dikirim sendiri di bawah (lebih lengkap: daya/atap/

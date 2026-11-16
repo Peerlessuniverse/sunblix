@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+
 export default function HeroScene({ onOpenQuote, onOpenCatalogue }) {
   return (
     <section className="hero-section section-reveal is-revealed" id="home">
@@ -34,16 +36,15 @@ export default function HeroScene({ onOpenQuote, onOpenCatalogue }) {
             >
               Get a Quote <span style={{ marginLeft: '6px' }}>→</span>
             </button>
-            <button
-              type="button"
+            <Link
+              href="/form?source=catalogue"
               className="hero-button yellow catalogue"
               id="heroBtnCatalogue"
-              onClick={onOpenCatalogue}
               style={{ cursor: 'pointer', border: 'none', display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}
               aria-label="Download Katalog Resmi SUNBLIX 2026"
             >
               Catalogue
-            </button>
+            </Link>
           </div>
 
         </div>

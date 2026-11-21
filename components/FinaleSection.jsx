@@ -288,11 +288,11 @@ export default function FinaleSection({ onOpenQuote }) {
             </a>
             {/* TikTok */}
             <a
-              href="https://www.tiktok.com/@sunblix.id"
+              href="https://www.tiktok.com/@sunblixid"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="TikTok @sunblix.id"
-              title="TikTok @sunblix.id"
+              aria-label="TikTok @sunblixid"
+              title="TikTok @sunblixid"
               className="social-icon-btn"
             >
               <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
@@ -301,11 +301,11 @@ export default function FinaleSection({ onOpenQuote }) {
             </a>
             {/* YouTube */}
             <a
-              href="https://www.youtube.com/@SunblixIndonesia"
+              href="https://www.youtube.com/@Sunblixid"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="YouTube Sunblix Indonesia"
-              title="YouTube Sunblix Indonesia"
+              aria-label="YouTube @Sunblixid"
+              title="YouTube @Sunblixid"
               className="social-icon-btn"
             >
               <svg
